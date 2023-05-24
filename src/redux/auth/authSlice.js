@@ -18,6 +18,10 @@ export const authSlice = createSlice({
     setUserAfterEdit(state, action) {
       let user = state.user
       user.userProfile = action.payload
+    },
+    setUserToken(state, action) {
+      state.user.accessToken = action.payload.accessToken
+      state.user.refreshToken = action.payload.refreshToken
     }
   }
 })

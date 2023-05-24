@@ -1,9 +1,9 @@
 
 import Swal from "sweetalert2";
-import { store } from "../redux";
-import { logout } from "../redux/reducers/auth/action";
+import { store } from "../redux/store";
+import { logout } from "../redux/auth/authAction";
 import withReactContent from "sweetalert2-react-content";
-import Router from "next/router";
+import { Router } from "react-router-dom";
 const MySwal = withReactContent(Swal)
 
 const Error = ({ errorCode, errorMessage }) => {

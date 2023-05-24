@@ -3,11 +3,11 @@
 
 
 import axios from 'axios'
-import { store } from '../redux'
-import { setAuth } from '../redux/reducers/auth/slice'
+import { setAuth } from 'redux/auth/authSlice';
 import errorHandler from './errorHandler'
 import headers from './headers'
 import imageCompression from 'browser-image-compression';
+import { store } from '../redux/store';
 export function isEmpty(str) {
     if (typeof str == 'string' || typeof str == 'number') {
         return (!str || /^\s*$/.test(str))
@@ -102,7 +102,6 @@ export const conditionEmptyฺBody = (body) => {
 
 export const conditionButton = (keys, formState, formPlaceHolder) => {
     for (let i = 0; i < keys.length; i++) {
-        let stackCon = []
         const key = keys[i]
         const firstKey = key.split('.')[0]
         const splitKey = key.split('.')
@@ -156,7 +155,7 @@ async function requestAgain(config) {
                 const response = await axios.get(`${reqeustConfig.url}`, requestOption)
                 return response.data
             } else {
-                const response = await axios[method](`${reqeustConfig.url}`, reqeustConfig.data, requestOption)
+                const response = await axios[reqeustConfig.method](`${reqeustConfig.url}`, reqeustConfig.data, requestOption)
                 return response.data
             }
         } catch (error) {
@@ -166,7 +165,8 @@ async function requestAgain(config) {
 }
 
 async function refreshTokenRequest() {
-    const user = JSON.parse(localStorage.getItem('user'))
+    const user = store.getState().auth.user
+
     if (user == null) {
         return false
     } else if (user.refreshToken == null) {
@@ -176,14 +176,18 @@ async function refreshTokenRequest() {
         headers: headers
     }
     try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/refreshtoken`, {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/refreshtoken`, {
             "refreshToken": user.refreshToken
         }, requestOption)
-        let userAuth = JSON.parse(localStorage.getItem('user'))
-        userAuth.accessToken = res.data.data.accessToken
-        userAuth.refreshToken = res.data.data.refreshToken
-        localStorage.setItem('user', JSON.stringify(userAuth))
-        store.dispatch(setAuth(userAuth))
+        // let userAuth = JSON.parse(localStorage.getItem('user'))
+        // userAuth.accessToken = res.data.data.accessToken
+        // userAuth.refreshToken = res.data.data.refreshToken
+        // localStorage.setItem('user', JSON.stringify(userAuth))
+        const passToken = {
+            accessToken: res.data.data.accessToken,
+            refreshToken: res.data.data.refreshToken
+        }
+        store.dispatch(setAuth(passToken))
         return true
     } catch (error) {
         return false

@@ -48,7 +48,7 @@ export default function Footer() {
         </Text>
       </Text>
       <List display='flex'>
-        <ListItem
+        {/* <ListItem
           me={{
             base: "20px",
             md: "44px",
@@ -91,7 +91,7 @@ export default function Footer() {
             href='https://www.blog.simmmple.com/'>
             Blog
           </Link>
-        </ListItem>
+        </ListItem> */}
       </List>
     </Flex>
   );

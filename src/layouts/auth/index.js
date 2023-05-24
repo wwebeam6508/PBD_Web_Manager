@@ -7,9 +7,12 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 
 // Layout components
 import { SidebarContext } from "contexts/SidebarContext";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 // Custom Chakra theme
 export default function Auth() {
+  const { isAuthenticated } = useSelector((state) => state.auth);
   // states and functions
   const [toggleSidebar, setToggleSidebar] = useState(false);
   // functions for changing the states from components
@@ -59,14 +62,21 @@ export default function Auth() {
           transitionTimingFunction='linear, linear, ease'>
           {getRoute() ? (
             <Box mx='auto' minH='100vh'>
-              <Switch>
-                {getRoutes(routes)}
-                <Redirect
-                  from='/auth'
-                  to='/auth/sign-in/default
+              {
+                isAuthenticated ? (
+                  <Redirect to='/admin' />
+                ) : (
+                  <Switch>
+                    {getRoutes(routes)}
+                    <Redirect
+                      from='/auth'
+                      to='/auth/sign-in/default
                   '
-                />
-              </Switch>
+                    />
+                  </Switch>
+                )
+              }
+
             </Box>
           ) : null}
         </Box>

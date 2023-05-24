@@ -1,7 +1,7 @@
 // Chakra imports
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import Footer from "components/footer/FooterAuth";
 import FixedPlugin from "components/fixedPlugin/FixedPlugin";
 // Custom components
@@ -29,7 +29,7 @@ function AuthIllustration(props) {
         ps={{ xl: "70px" }}
         justifyContent='start'
         direction='column'>
-        <NavLink
+        {/* <NavLink
           to='/admin'
           style={() => ({
             width: "fit-content",
@@ -51,7 +51,7 @@ function AuthIllustration(props) {
               Back to Simmmple
             </Text>
           </Flex>
-        </NavLink>
+        </NavLink> */}
         {children}
         <Box
           display={{ base: "none", md: "block" }}

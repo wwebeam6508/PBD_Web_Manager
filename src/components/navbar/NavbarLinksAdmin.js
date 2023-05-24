@@ -25,6 +25,11 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes.js';
 import { ThemeEditor } from './ThemeEditor';
+import { store } from 'redux/store';
+import { logout } from 'redux/auth/authAction';
+import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+
 export default function HeaderLinks(props) {
 	const { secondary } = props;
 	// Chakra Color Mode
@@ -41,6 +46,9 @@ export default function HeaderLinks(props) {
 		'14px 17px 40px 4px rgba(112, 144, 176, 0.06)'
 	);
 	const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+
+
+	const stateAuth = useSelector(state => state.auth)
 	return (
 		<Flex
 			w={{ sm: '100%', md: 'auto' }}
@@ -51,7 +59,7 @@ export default function HeaderLinks(props) {
 			p="10px"
 			borderRadius="30px"
 			boxShadow={shadow}>
-			<SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" />
+			{/* <SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" /> */}
 			<Flex
 				bg={ethBg}
 				display={secondary ? 'flex' : 'none'}
@@ -72,7 +80,7 @@ export default function HeaderLinks(props) {
 				</Text>
 			</Flex>
 			<SidebarResponsive routes={routes} />
-			<Menu>
+			{/* <Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdNotificationsNone} color={navbarIcon} w="18px" h="18px" me="10px" />
 				</MenuButton>
@@ -103,9 +111,9 @@ export default function HeaderLinks(props) {
 						</MenuItem>
 					</Flex>
 				</MenuList>
-			</Menu>
+			</Menu> */}
 
-			<Menu>
+			{/* <Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdInfoOutline} color={navbarIcon} w="18px" h="18px" me="10px" />
 				</MenuButton>
@@ -144,9 +152,9 @@ export default function HeaderLinks(props) {
 						</Link>
 					</Flex>
 				</MenuList>
-			</Menu>
+			</Menu> */}
 
-			<ThemeEditor navbarIcon={navbarIcon} />
+			{/* <ThemeEditor navbarIcon={navbarIcon} /> */}
 
 			<Menu>
 				<MenuButton p="0px">
@@ -176,26 +184,35 @@ export default function HeaderLinks(props) {
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
-							<Text fontSize="sm">Profile Settings</Text>
-						</MenuItem>
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+						<NavLink to="/admin/profile" >
+							<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+								<Text fontSize="sm">Profile Settings</Text>
+							</MenuItem>
+						</NavLink>
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 							<Text fontSize="sm">Newsletter Settings</Text>
-						</MenuItem>
+						</MenuItem> */}
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
 							color="red.400"
 							borderRadius="8px"
 							px="14px">
-							<Text fontSize="sm">Log out</Text>
+							<Text fontSize="sm" onClick={logoutSubmit}>Log out</Text>
 						</MenuItem>
 					</Flex>
 				</MenuList>
 			</Menu>
 		</Flex>
 	);
+
+	function logoutSubmit(e) {
+		e.preventDefault();
+		store.dispatch(logout({ userID: stateAuth.user.userProfile.userID }));
+	}
 }
+
+
 
 HeaderLinks.propTypes = {
 	variant: PropTypes.string,

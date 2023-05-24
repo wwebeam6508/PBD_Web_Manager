@@ -6,11 +6,16 @@ import Navbar from "components/navbar/NavbarAdmin.js";
 import Sidebar from "components/sidebar/Sidebar.js";
 import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import routes from "routes.js";
 
 // Custom Chakra theme
 export default function Dashboard(props) {
+
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   const { ...rest } = props;
   // states and functions
   const [fixed] = useState(false);
@@ -111,6 +116,7 @@ export default function Dashboard(props) {
   };
   document.documentElement.dir = "ltr";
   const { onOpen } = useDisclosure();
+
   return (
     <Box>
       <SidebarContext.Provider
@@ -153,10 +159,15 @@ export default function Dashboard(props) {
               pe='20px'
               minH='100vh'
               pt='50px'>
-              <Switch>
-                {getRoutes(routes)}
-                <Redirect from='/' to='/admin/default' />
-              </Switch>
+              {
+                isAuthenticated ? <>
+                  <Switch>
+                    {getRoutes(routes)}
+                    <Redirect to='/admin/default' />
+                  </Switch>
+                </> : <Redirect to='/auth' />
+              }
+
             </Box>
           ) : null}
           <Box>
