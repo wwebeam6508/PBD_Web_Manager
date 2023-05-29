@@ -7,6 +7,7 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdWorkHistory
 } from "react-icons/md";
 
 // Admin Imports
@@ -14,6 +15,7 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
+import Projects from "views/admin/projects";
 import RTL from "views/admin/rtl";
 
 // Auth Imports
@@ -50,6 +52,14 @@ const routes = [
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/data-tables",
     component: DataTables,
+    isShow: true,
+  },
+  {
+    name: "งาน",
+    layout: "/admin",
+    path: "/projects",
+    icon: <Icon as={MdWorkHistory} width='20px' height='20px' color='inherit' />,
+    component: Projects,
     isShow: true,
   },
   {

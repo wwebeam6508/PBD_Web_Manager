@@ -2,12 +2,9 @@
 import { Avatar, Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
 import Card from "components/card/Card.js";
 import React from "react";
-import { useSelector } from "react-redux";
 
 export default function Banner(props) {
-  const { banner, avatar, name, job, posts, followers, following } = props;
-  const profileState = useSelector((state) => state.auth.user.userProfile);
-  console.log(profileState)
+  const { username, userType, banner } = props;
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
   const textColorSecondary = "gray.400";
@@ -26,7 +23,7 @@ export default function Banner(props) {
       />
       <Avatar
         mx='auto'
-        name={`${profileState.username}`}
+        name={`${username}`}
         h='87px'
         w='87px'
         mt='-43px'
@@ -34,12 +31,12 @@ export default function Banner(props) {
         borderColor={borderColor}
       />
       <Text color={textColorPrimary} fontWeight='bold' fontSize='xl' mt='10px'>
-        {profileState.username}
+        {username}
       </Text>
       <Text color={textColorSecondary} fontSize='sm'>
-        {profileState.userType.name}
+        {userType.name}
       </Text>
-      <Flex w='max-content' mx='auto' mt='26px'>
+      {/* <Flex w='max-content' mx='auto' mt='26px'>
         <Flex mx='auto' me='60px' align='center' direction='column'>
           <Text color={textColorPrimary} fontSize='2xl' fontWeight='700'>
             {posts}
@@ -64,7 +61,7 @@ export default function Banner(props) {
             Following
           </Text>
         </Flex>
-      </Flex>
+      </Flex> */}
     </Card>
   );
 }
