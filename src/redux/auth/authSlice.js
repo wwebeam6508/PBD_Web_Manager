@@ -26,4 +26,4 @@ export const authSlice = createSlice({
   }
 })
 
-export const { setAuth, setLogout, setUserAfterEdit } = authSlice.actions
+export const { setAuth, setLogout, setUserAfterEdit, setUserToken } = authSlice.actions

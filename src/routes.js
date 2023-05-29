@@ -55,7 +55,7 @@ const routes = [
     isShow: true,
   },
   {
-    name: "งาน",
+    name: "โครงการ",
     layout: "/admin",
     path: "/projects",
     icon: <Icon as={MdWorkHistory} width='20px' height='20px' color='inherit' />,

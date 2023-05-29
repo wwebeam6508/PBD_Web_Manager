@@ -22,24 +22,20 @@
 
 // Chakra imports
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import DevelopmentTable from "views/admin/dataTables/components/DevelopmentTable";
-import CheckTable from "views/admin/dataTables/components/CheckTable";
-import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
-import ComplexTable from "views/admin/dataTables/components/ComplexTable";
-import {
-  columnsDataDevelopment,
-  columnsDataCheck,
-  columnsDataColumns,
-  columnsDataComplex,
-} from "views/admin/dataTables/variables/columnsData";
-import tableDataDevelopment from "views/admin/dataTables/variables/tableDataDevelopment.json";
-import tableDataCheck from "views/admin/dataTables/variables/tableDataCheck.json";
-import tableDataColumns from "views/admin/dataTables/variables/tableDataColumns.json";
-import tableDataComplex from "views/admin/dataTables/variables/tableDataComplex.json";
-import React from "react";
+import ColumnsTable from "views/admin/projects/components/ColumnsTable";
+import React, { useEffect } from "react";
+import { getProjects } from "api/projects";
+import { projectDataColumns } from "./variables/columnsData";
+import moment from "moment";
 
 export default function Settings() {
-  // Chakra Color Mode
+
+  useEffect(() => {
+    getProjectsData();
+  }, []);
+
+  const [projects, setProjects] = React.useState([]);
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid
@@ -47,10 +43,25 @@ export default function Settings() {
         columns={{ sm: 1, md: 1 }}
         spacing={{ base: "20px", xl: "20px" }}>
         <ColumnsTable
-          columnsData={columnsDataColumns}
-          tableData={tableDataColumns}
+          columnsData={projectDataColumns}
+          tableData={projects}
         />
       </SimpleGrid>
     </Box>
   );
+
+  async function getProjectsData() {
+    const result = await getProjects({ page: 1 });
+    const resultData = result.data.map((item) => {
+      let returnData = item
+      if (returnData.date) {
+        returnData.date = moment(returnData.date).format('DD.MM.YYYY')
+      }
+      if (returnData.dateEnd) {
+        returnData.dateEnd = moment(returnData.dateEnd).format('DD.MM.YYYY')
+      }
+      return returnData
+    });
+    setProjects(resultData);
+  }
 }

@@ -60,7 +60,7 @@ export default function ColumnsTable(props) {
           fontSize='22px'
           fontWeight='700'
           lineHeight='100%'>
-          4-Column Table
+          งาน
         </Text>
         <Menu />
       </Flex>
@@ -93,7 +93,7 @@ export default function ColumnsTable(props) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data = "";
-                  if (cell.column.Header === "NAME") {
+                  if (cell.column.id === 'title') {
                     data = (
                       <Flex align='center'>
                         <Text color={textColor} fontSize='sm' fontWeight='700'>
@@ -101,7 +101,7 @@ export default function ColumnsTable(props) {
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.Header === "PROGRESS") {
+                  } else if (cell.column.id === 'contractor') {
                     data = (
                       <Flex align='center'>
                         <Text
@@ -109,17 +109,17 @@ export default function ColumnsTable(props) {
                           color={textColor}
                           fontSize='sm'
                           fontWeight='700'>
-                          {cell.value}%
+                          {cell.value}
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.Header === "QUANTITY") {
+                  } else if (cell.column.id === 'date') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
                       </Text>
                     );
-                  } else if (cell.column.Header === "DATE") {
+                  } else if (cell.column.id === 'dateEnd') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
