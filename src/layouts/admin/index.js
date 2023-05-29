@@ -8,7 +8,6 @@ import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import routes from "routes.js";
 
 // Custom Chakra theme

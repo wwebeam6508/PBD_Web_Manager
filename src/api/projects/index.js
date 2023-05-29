@@ -14,6 +14,6 @@ export const getProjects = async ({ page }) => {
         const response = await axios.get(`${APIURL}/${page}`, requestOption)
         return response.data
     } catch (error) {
-        await errorHandle(error)
+        return await errorHandle(error)
     }
 }

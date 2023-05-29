@@ -142,26 +142,29 @@ export const conditionButton = (keys, formState, formPlaceHolder) => {
 }
 
 async function requestAgain(config) {
-    if (config.data) {
-        const reqeustConfig = {
-            method: config.method,
-            url: config.url,
-            data: JSON.parse(config.data)
-        }
-        const requestOption = {
-            headers: headers
-        }
-        try {
-            if (reqeustConfig.method === 'get') {
-                const response = await axios.get(`${reqeustConfig.url}`, requestOption)
-                return response.data
-            } else {
-                const response = await axios[reqeustConfig.method](`${reqeustConfig.url}`, reqeustConfig.data, requestOption)
-                return response.data
+
+    const requestOption = {
+        headers: headers()
+    }
+    try {
+        if (config.method === 'get') {
+            const reqeustConfig = {
+                method: config.method,
+                url: config.url
             }
-        } catch (error) {
-            await errorHandle(error)
+            const response = await axios.get(`${reqeustConfig.url}`, requestOption)
+            return response.data
+        } else {
+            const reqeustConfig = {
+                method: config.method,
+                url: config.url,
+                data: JSON.parse(config.data)
+            }
+            const response = await axios[reqeustConfig.method](`${reqeustConfig.url}`, reqeustConfig.data, requestOption)
+            return response.data
         }
+    } catch (error) {
+        await errorHandle(error)
     }
 }
 
@@ -174,21 +177,17 @@ async function refreshTokenRequest() {
         return false
     }
     const requestOption = {
-        headers: headers
+        headers: headers()
     }
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/refreshtoken`, {
             "refreshToken": user.refreshToken
         }, requestOption)
-        // let userAuth = JSON.parse(localStorage.getItem('user'))
-        // userAuth.accessToken = res.data.data.accessToken
-        // userAuth.refreshToken = res.data.data.refreshToken
-        // localStorage.setItem('user', JSON.stringify(userAuth))
         const passToken = {
             accessToken: res.data.data.accessToken,
             refreshToken: res.data.data.refreshToken
         }
-        store.dispatch(setUserToken(passToken))
+        await store.dispatch(setUserToken(passToken))
         return true
     } catch (error) {
         return false

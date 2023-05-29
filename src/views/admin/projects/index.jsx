@@ -52,16 +52,18 @@ export default function Settings() {
 
   async function getProjectsData() {
     const result = await getProjects({ page: 1 });
-    const resultData = result.data.map((item) => {
-      let returnData = item
-      if (returnData.date) {
-        returnData.date = moment(returnData.date).format('DD.MM.YYYY')
-      }
-      if (returnData.dateEnd) {
-        returnData.dateEnd = moment(returnData.dateEnd).format('DD.MM.YYYY')
-      }
-      return returnData
-    });
-    setProjects(resultData);
+    if (result) {
+      const resultData = result.data.map((item) => {
+        let returnData = item
+        if (returnData.date) {
+          returnData.date = moment(returnData.date).format('DD.MM.YYYY')
+        }
+        if (returnData.dateEnd) {
+          returnData.dateEnd = moment(returnData.dateEnd).format('DD.MM.YYYY')
+        }
+        return returnData
+      });
+      setProjects(resultData);
+    }
   }
 }

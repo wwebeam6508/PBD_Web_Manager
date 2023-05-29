@@ -8,7 +8,6 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 // Layout components
 import { SidebarContext } from "contexts/SidebarContext";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 // Custom Chakra theme
 export default function Auth() {

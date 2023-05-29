@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { store } from "../redux/store";
 import { logout } from "../redux/auth/authAction";
 import withReactContent from "sweetalert2-react-content";
-import { Router } from "react-router-dom";
+import { useHistory as Router } from "react-router-dom";
 const MySwal = withReactContent(Swal)
 
 const Error = ({ errorCode, errorMessage }) => {
@@ -144,7 +144,7 @@ function ifAccessDenial(errorCode) {
         else {
             const userID = state.auth.user.userProfile.userID
             store.dispatch(logout({ userID: userID }))
-            Router.replace('/admin/login')
+            window.location.pathname = '/admin/login'
         }
     }
 }
