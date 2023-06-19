@@ -18,7 +18,7 @@ export default function PaginationButton(props) {
           {
             !props.pages.includes(1) &&
             <Button
-              onClick={() => props.getProjectsData(1)}
+              onClick={() => props.setPage(1)}
               style={{
                 backgroundColor: props.page == 1 ? "#3182CE" : "#E2E8F0",
                 color: props.page == 1 ? "#FFFFFF" : "#000000",
@@ -37,7 +37,7 @@ export default function PaginationButton(props) {
               return (
                 <Button
                   key={index}
-                  onClick={() => props.getProjectsData(page)}
+                  onClick={() => props.setPage(page)}
                   style={{
                     backgroundColor: page == props.currentPage ? "#3182CE" : "#E2E8F0",
                     color: page == props.currentPage ? "#FFFFFF" : "#000000",

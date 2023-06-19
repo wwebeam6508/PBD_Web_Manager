@@ -51,7 +51,7 @@ export default function Settings() {
           tableData={projects}
         />
       </SimpleGrid>
-      <PaginationButton getProjectsData={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+      <PaginationButton setPage={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
     </Box>
   );
 
