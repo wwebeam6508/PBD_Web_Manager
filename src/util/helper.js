@@ -3,7 +3,6 @@
 
 
 import axios from 'axios'
-import { setAuth } from 'redux/auth/authSlice';
 import errorHandler from './errorHandler'
 import headers from './headers'
 import imageCompression from 'browser-image-compression';
@@ -144,7 +143,8 @@ export const conditionButton = (keys, formState, formPlaceHolder) => {
 async function requestAgain(config) {
 
     const requestOption = {
-        headers: headers()
+        headers: headers(),
+        params: config.params ? config.params : {}
     }
     try {
         if (config.method === 'get') {

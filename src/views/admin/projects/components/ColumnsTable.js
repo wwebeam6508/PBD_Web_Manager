@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   Table,
   Tbody,
@@ -44,7 +45,7 @@ export default function ColumnsTable(props) {
     prepareRow,
     initialState,
   } = tableInstance;
-  initialState.pageSize = 5;
+  initialState.pageSize = 999;
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -62,7 +63,7 @@ export default function ColumnsTable(props) {
           lineHeight='100%'>
           งาน
         </Text>
-        <Menu />
+        <Button>เพิ่ม +</Button>
       </Flex>
       <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
         <Thead>
@@ -70,7 +71,7 @@ export default function ColumnsTable(props) {
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
               {headerGroup.headers.map((column, index) => (
                 <Th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  // {...column.getHeaderProps(column.getSortByToggleProps())}
                   pe='10px'
                   key={index}
                   borderColor={borderColor}>

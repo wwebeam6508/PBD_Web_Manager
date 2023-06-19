@@ -27,6 +27,7 @@ import React, { useEffect } from "react";
 import { getProjects } from "api/projects";
 import { projectDataColumns } from "./variables/columnsData";
 import moment from "moment";
+import PaginationButton from "components/pagination/PaginationButton";
 
 export default function Settings() {
 
@@ -35,6 +36,9 @@ export default function Settings() {
   }, []);
 
   const [projects, setProjects] = React.useState([]);
+  const [pages, setPages] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState("1");
+  const [lastPage, setLastPage] = React.useState("1");
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -47,11 +51,12 @@ export default function Settings() {
           tableData={projects}
         />
       </SimpleGrid>
+      <PaginationButton getProjectsData={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
     </Box>
   );
 
-  async function getProjectsData() {
-    const result = await getProjects({ page: 1 });
+  async function getProjectsData(selectPage = 1) {
+    const result = await getProjects({ page: selectPage, pageSize: 1 });
     if (result) {
       const resultData = result.data.map((item) => {
         let returnData = item
@@ -63,6 +68,9 @@ export default function Settings() {
         }
         return returnData
       });
+      setLastPage(result.lastPage);
+      setCurrentPage(result.currentPage);
+      setPages(result.pages);
       setProjects(resultData);
     }
   }
