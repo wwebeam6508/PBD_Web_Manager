@@ -23,16 +23,26 @@
 // Chakra imports
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import ColumnsTable from "views/admin/projects/components/ColumnsTable";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { getProjects } from "api/projects";
 import { projectDataColumns } from "./variables/columnsData";
 import moment from "moment";
 import PaginationButton from "components/pagination/PaginationButton";
+import { LoadingContext } from "contexts/LoadingContext";
 
 export default function Settings() {
 
+  const { showLoading, hideLoading } = useContext(LoadingContext);
+
+  const [defaultSetting, setDefaultSetting] = React.useState({
+    page: 1,
+    pageSize: 10,
+    firstSort: "date",
+    orderBy: "desc"
+  });
+
   useEffect(() => {
-    getProjectsData();
+    getProjectsData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
   }, []);
 
   const [projects, setProjects] = React.useState([]);
@@ -49,14 +59,21 @@ export default function Settings() {
         <ColumnsTable
           columnsData={projectDataColumns}
           tableData={projects}
+          setting={defaultSetting}
+          selectSort={selectSortData}
         />
       </SimpleGrid>
-      <PaginationButton setPage={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+      {
+        projects.length > 0 && (
+          <PaginationButton setPage={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+        )
+      }
     </Box>
   );
 
-  async function getProjectsData(selectPage = 1) {
-    const result = await getProjects({ page: selectPage, pageSize: 1 });
+  async function getProjectsData(selectPage = 1, sortTitle = "", sortType = "") {
+    showLoading();
+    const result = await getProjects({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
     if (result) {
       const resultData = result.data.map((item) => {
         let returnData = item
@@ -72,6 +89,17 @@ export default function Settings() {
       setCurrentPage(result.currentPage);
       setPages(result.pages);
       setProjects(resultData);
+     
     }
+    hideLoading();
+  }
+
+  function selectSortData (sortTitle, sortType) {
+    setDefaultSetting({
+      ...defaultSetting,
+      firstSort: sortTitle,
+      orderBy: sortType
+    })
+    getProjectsData(currentPage, sortTitle, sortType)
   }
 }

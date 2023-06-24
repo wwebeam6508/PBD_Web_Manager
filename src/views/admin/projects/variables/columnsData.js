@@ -1,5 +1,3 @@
-
-
 export const projectDataColumns = [
   {
     Header: "ชื่อโครงการ",
@@ -12,9 +10,13 @@ export const projectDataColumns = [
   {
     Header: "วันที่เริ่ม",
     accessor: "date",
+    sort: "desc",
+    isSort: true,
   },
   {
     Header: "วันที่สิ้นสุด",
     accessor: "dateEnd",
+    sort: "desc",
+    isSort: false,
   },
 ];
