@@ -5,7 +5,11 @@ export const projectDataColumns = [
   },
   {
     Header: "ผู้ว่าจ้าง",
-    accessor: "contractor",
+    accessor: "customer",
+  },
+  {
+    Header: "รายได้(บาท)",
+    accessor: "profit",
   },
   {
     Header: "วันที่เริ่ม",

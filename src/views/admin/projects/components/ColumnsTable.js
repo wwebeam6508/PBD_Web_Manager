@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Icon,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -21,10 +22,21 @@ import {
 
 // Custom components
 import Card from "components/card/Card";
-import Menu from "components/menu/MainMenu";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  TriangleDownIcon,
+  TriangleUpIcon,
+} from "@chakra-ui/icons";
 export default function ColumnsTable(props) {
-  const { columnsData, tableData, setting, selectSort } = props;
+  const {
+    columnsData,
+    tableData,
+    setting,
+    selectSort,
+    setAddFormOpen,
+    selectEdit,
+  } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
 
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -93,7 +105,7 @@ export default function ColumnsTable(props) {
         >
           งาน
         </Text>
-        <Button>เพิ่ม +</Button>
+        <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
         <Thead>
@@ -143,6 +155,17 @@ export default function ColumnsTable(props) {
                   </Flex>
                 </Th>
               ))}
+              <Th pe="10px" borderColor={borderColor}>
+                <Flex
+                  justify="space-between"
+                  align="center"
+                  fontSize={{ sm: "10px", lg: "12px" }}
+                >
+                  <Flex color="gray.400" justify="space-around">
+                    จัดการ
+                  </Flex>
+                </Flex>
+              </Th>
             </Tr>
           ))}
         </Thead>
@@ -161,7 +184,7 @@ export default function ColumnsTable(props) {
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.id === "contractor") {
+                  } else if (cell.column.id === "customer") {
                     data = (
                       <Flex align="center">
                         <Text
@@ -173,6 +196,12 @@ export default function ColumnsTable(props) {
                           {cell.value}
                         </Text>
                       </Flex>
+                    );
+                  } else if (cell.column.id === "profit") {
+                    data = (
+                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                        {cell.value}
+                      </Text>
                     );
                   } else if (cell.column.id === "date") {
                     data = (
@@ -199,6 +228,27 @@ export default function ColumnsTable(props) {
                     </Td>
                   );
                 })}
+                <Td
+                  borderColor="transparent"
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                >
+                  <Flex justify="space-around">
+                    <IconButton
+                      aria-label="edit"
+                      icon={<EditIcon />}
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => selectEdit(row.original.projectID)}
+                    />
+                    <IconButton
+                      aria-label="delete"
+                      icon={<DeleteIcon />}
+                      size="sm"
+                      colorScheme="red"
+                    />
+                  </Flex>
+                </Td>
               </Tr>
             );
           })}

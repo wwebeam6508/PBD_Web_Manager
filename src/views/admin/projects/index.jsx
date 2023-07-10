@@ -21,20 +21,25 @@
 */
 
 // Chakra imports
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import ColumnsTable from "views/admin/projects/components/ColumnsTable";
-import React, { useContext, useEffect } from "react";
+import React, {useState, useContext, useEffect } from "react";
 import { getProjects } from "api/projects";
 import { projectDataColumns } from "./variables/columnsData";
 import moment from "moment";
 import PaginationButton from "components/pagination/PaginationButton";
 import { LoadingContext } from "contexts/LoadingContext";
+import FormProjectModal from "components/modals/projectModal/FormProjectModal";
+import { getCustomerName } from "api/projects";
 
 export default function Settings() {
 
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [ isEdit , setEdit ] = useState(false);
+  const [ customers, setCustomers ] = useState([]);
 
-  const [defaultSetting, setDefaultSetting] = React.useState({
+  const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
     pageSize: 10,
     firstSort: "date",
@@ -43,6 +48,10 @@ export default function Settings() {
 
   useEffect(() => {
     getProjectsData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
+    getCustomerName().then((res) => {
+        setCustomers(res.data)
+      }
+    )
   }, []);
 
   const [projects, setProjects] = React.useState([]);
@@ -50,8 +59,11 @@ export default function Settings() {
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
+  const [ editProjectID, setEditProjectID ] = useState(null);
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
+      <FormProjectModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customers={customers} projectID={editProjectID}/>
       <SimpleGrid
         mb='20px'
         columns={{ sm: 1, md: 1 }}
@@ -61,6 +73,9 @@ export default function Settings() {
           tableData={projects}
           setting={defaultSetting}
           selectSort={selectSortData}
+          setAddFormOpen={setAddFormOpen}
+
+          selectEdit={selectEditData}
         />
       </SimpleGrid>
       {
@@ -89,7 +104,7 @@ export default function Settings() {
       setCurrentPage(result.currentPage);
       setPages(result.pages);
       setProjects(resultData);
-     
+      
     }
     hideLoading();
   }
@@ -101,5 +116,22 @@ export default function Settings() {
       orderBy: sortType
     })
     getProjectsData(currentPage, sortTitle, sortType)
+  }
+
+  function setAddFormOpen () {
+    onOpen()
+    setEdit(false)
+  }
+
+  function selectEditData (projectID) {
+    setEditProjectID(projectID)
+    setEdit(true)
+    onOpen()
+  }
+  
+  function onCloseModal () {
+    setEditProjectID(null)
+    setEdit(false)
+    onClose()
   }
 }
