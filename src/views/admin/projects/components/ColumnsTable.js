@@ -36,6 +36,7 @@ export default function ColumnsTable(props) {
     selectSort,
     setAddFormOpen,
     selectEdit,
+    setDeleteProjectData,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
 
@@ -246,6 +247,9 @@ export default function ColumnsTable(props) {
                       icon={<DeleteIcon />}
                       size="sm"
                       colorScheme="red"
+                      onClick={() =>
+                        setDeleteProjectData(row.original.projectID)
+                      }
                     />
                   </Flex>
                 </Td>

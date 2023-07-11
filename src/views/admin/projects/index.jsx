@@ -31,6 +31,10 @@ import PaginationButton from "components/pagination/PaginationButton";
 import { LoadingContext } from "contexts/LoadingContext";
 import FormProjectModal from "components/modals/projectModal/FormProjectModal";
 import { getCustomerName } from "api/projects";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { deleteProject } from "api/projects";
+const MySwal = withReactContent(Swal);
 
 export default function Settings() {
 
@@ -74,7 +78,7 @@ export default function Settings() {
           setting={defaultSetting}
           selectSort={selectSortData}
           setAddFormOpen={setAddFormOpen}
-
+          setDeleteProjectData={deleteProjectData}
           selectEdit={selectEditData}
         />
       </SimpleGrid>
@@ -118,6 +122,32 @@ export default function Settings() {
     getProjectsData(currentPage, sortTitle, sortType)
   }
 
+  function deleteProjectData (projectID) {
+    //MySwal confirm
+    MySwal.fire({
+      title: "คุณแน่ใจหรือว่าจะลบ?",
+      text: "คุณจะไม่สามารถย้อนกลับได้!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ใช่, ลบเลย!",
+      cancelButtonText: "ไม่, ยกเลิก!",
+      confirmButtonColor: "red",
+      reverseButtons: true
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        showLoading();
+        const res = await deleteProject(projectID)
+        if (res.message === "success") {
+            MySwal.fire("ลบเรียบร้อย!", "โปรเจคถูกลบเรียบร้อยแล้ว", "success");
+            await getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+        }
+        hideLoading();
+      }
+    }
+    );
+  }
+
+
   function setAddFormOpen () {
     onOpen()
     setEdit(false)
@@ -132,6 +162,7 @@ export default function Settings() {
   function onCloseModal () {
     setEditProjectID(null)
     setEdit(false)
+    getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
     onClose()
   }
 }

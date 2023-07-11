@@ -62,6 +62,20 @@ export const updateProject = async (formData) => {
   }
 };
 
+export const deleteProject = async (id) => {
+  try {
+    const response = await axios.delete(`${APIURL}/delete`, {
+      headers: headers(),
+      params: {
+        workID: id,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};
+
 export const getCustomerName = async () => {
   try {
     const response = await axios.get(`${APIURL}/getCustomerName`, {

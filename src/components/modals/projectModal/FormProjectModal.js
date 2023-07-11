@@ -21,14 +21,13 @@ import {
 import { getProjectByID } from "api/projects";
 import { addProject } from "api/projects";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
-import { LoadingContext } from "contexts/LoadingContext";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fileToUrl } from "util/helper";
 import { isEmpty } from "util/helper";
-import _, { isDate } from "lodash";
-import { is } from "date-fns/locale";
+import _ from "lodash";
 import { updateProject } from "api/projects";
+import { set } from "lodash";
 
 export default function FormProjectModal({
   stateOpen = false,
@@ -37,9 +36,7 @@ export default function FormProjectModal({
   customers = [],
   projectID = null,
 }) {
-  const { showLoading, hideLoading } = useContext(LoadingContext);
-
-  const [formData, setFormData] = useState({
+  const defaultForm = {
     title: "",
     detail: "",
     customer: "",
@@ -47,8 +44,10 @@ export default function FormProjectModal({
     date: new Date(),
     dateEnd: new Date(),
     images: [],
-  });
-  const [formOldData, setFormOldData] = useState(_.cloneDeep(formData));
+  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState(defaultForm);
+  const [formOldData, setFormOldData] = useState(defaultForm);
 
   const [isDateEnd, setIsDateEnd] = useState(false);
   const [isDateEndOld, setIsDateEndOld] = useState(false);
@@ -57,6 +56,9 @@ export default function FormProjectModal({
   useEffect(() => {
     if (isEdit) {
       getEditProjectData();
+    } else {
+      setFormData(defaultForm);
+      setFormOldData(defaultForm);
     }
   }, [isEdit]);
 
@@ -238,6 +240,7 @@ export default function FormProjectModal({
         <Checkbox
           name="isDateEnd"
           id="isDateEnd"
+          isChecked={isDateEnd}
           value={isDateEnd}
           onChange={() => setIsDateEnd((prev) => !prev)}
         />
@@ -259,7 +262,7 @@ export default function FormProjectModal({
         <FormLabel htmlFor="images">รูปภาพ</FormLabel>
         <Grid templateColumns="repeat(5, 1fr)" gap={6}>
           {formData.images.map((image, index) => (
-            <GridItem key={index}>
+            <GridItem key={index} style={{ height: "300px", width: "300px" }}>
               <DeleteIcon
                 marginLeft={2}
                 marginTop={1}
@@ -268,11 +271,15 @@ export default function FormProjectModal({
                 color="red"
                 onClick={() => handleDeleteImage(index)}
               />
-              <img width="300px" src={image} alt="" />
+              <img
+                style={{ height: "300px", width: "300px" }}
+                src={image}
+                alt=""
+              />
             </GridItem>
           ))}
         </Grid>
-        <Input
+        <input
           type="file"
           id="images"
           name="images"
@@ -320,7 +327,7 @@ export default function FormProjectModal({
             {!isEdit ? "เพิ่มรายการงาน" : "แก้ไขรายการงาน"}
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{formAddProject}</ModalBody>
+          <ModalBody>{isSubmitting ? "Loading" : formAddProject}</ModalBody>
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={closeModal}>
               ยกเลิก
@@ -332,7 +339,7 @@ export default function FormProjectModal({
   );
 
   async function getEditProjectData() {
-    showLoading();
+    setIsSubmitting(true);
     const res = await getProjectByID(projectID);
     const project = res.data;
 
@@ -374,11 +381,11 @@ export default function FormProjectModal({
       setIsDateEnd(false);
       setIsDateEndOld(false);
     }
-    hideLoading();
+    setIsSubmitting(false);
   }
 
   async function addSubmit() {
-    showLoading();
+    setIsSubmitting(true);
     let passData = {
       title: formData.title,
       detail: formData.detail,
@@ -395,12 +402,12 @@ export default function FormProjectModal({
     }
 
     await addProject(passData);
-    hideLoading();
-    closeModal();
+    setIsSubmitting(false);
+    closingModal();
   }
 
   async function editSubmit() {
-    showLoading();
+    setIsSubmitting(true);
     const imageUpdate = checkImageUpdate();
     let passData = {
       workID: projectID,
@@ -419,8 +426,20 @@ export default function FormProjectModal({
     if (imageUpdate.imagesAdd.length > 0) {
       passData.imagesAdd = imageUpdate.imagesAdd;
     }
-    await updateProject(passData);
-    hideLoading();
+    await updateProject(passData)
+      .then(() => {
+        setIsSubmitting(false);
+      })
+      .catch((err) => {
+        setIsSubmitting(false);
+        console.log(err);
+      });
+    closingModal();
+  }
+
+  function closingModal() {
+    setFormData(defaultForm);
+    setFormOldData(defaultForm);
     closeModal();
   }
 
