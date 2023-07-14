@@ -27,7 +27,6 @@ import { fileToUrl } from "util/helper";
 import { isEmpty } from "util/helper";
 import _ from "lodash";
 import { updateProject } from "api/projects";
-import { set } from "lodash";
 
 export default function FormProjectModal({
   stateOpen = false,
@@ -51,7 +50,9 @@ export default function FormProjectModal({
 
   const [isDateEnd, setIsDateEnd] = useState(false);
   const [isDateEndOld, setIsDateEndOld] = useState(false);
-  const [error, setError] = useState("");
+
+  const [isCustomerRef, setIsCustomerRef] = useState(true);
+  const [isCustomerRefOld, setIsCustomerRefOld] = useState(true);
 
   useEffect(() => {
     if (isEdit) {
@@ -77,6 +78,41 @@ export default function FormProjectModal({
       }));
     }
   }, [isDateEnd]);
+
+  useEffect(() => {
+    if (isEdit) {
+      if (isCustomerRef) {
+        if (isCustomerRefOld) {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            customer: formOldData.customer,
+          }));
+        } else {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            customer: "",
+          }));
+        }
+      } else {
+        if (isCustomerRefOld) {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            customer: "",
+          }));
+        } else {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            customer: formOldData.customer,
+          }));
+        }
+      }
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        customer: "",
+      }));
+    }
+  }, [isCustomerRef]);
 
   const handleChange = (e) => {
     if (e.target) {
@@ -185,19 +221,37 @@ export default function FormProjectModal({
       </FormControl>
       <FormControl marginBottom="1rem">
         <FormLabel htmlFor="customer">ชื่อผู้ว่าจ้าง</FormLabel>
-        <Select
-          id="customer"
-          name="customer"
-          placeholder="เลือกชื่อผู้ว่าจ้าง"
-          value={formData.customer}
-          onChange={handleChange}
-        >
-          {customers.map((customer) => (
-            <option key={customer.id} value={customer.id}>
-              {customer.name}
-            </option>
-          ))}
-        </Select>
+        <Checkbox
+          name="isCustomerRef"
+          id="isCustomerRef"
+          isChecked={isCustomerRef}
+          value={isCustomerRef}
+          onChange={() => setIsCustomerRef((prev) => !prev)}
+        />
+        {isCustomerRef ? (
+          <Select
+            id="customer"
+            name="customer"
+            placeholder="เลือกชื่อผู้ว่าจ้าง"
+            value={formData.customer}
+            onChange={handleChange}
+          >
+            {customers.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.name}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <Input
+            type="text"
+            id="customer"
+            name="customer"
+            placeholder="ชื่อผู้ว่าจ้าง"
+            value={formData.customer}
+            onChange={handleChange}
+          />
+        )}
         {isEmpty(formData.customer) && (
           <Text color="red.500" marginBottom="1rem">
             กรุณากรอกชื่อผู้ว่าจ้าง
@@ -288,12 +342,6 @@ export default function FormProjectModal({
           onChange={handleFileChange}
         />
       </FormControl>
-
-      {error && (
-        <Text color="red.500" marginBottom="1rem">
-          {error}
-        </Text>
-      )}
       <div style={{ textAlign: "center" }}>
         {!isEdit ? (
           <Button
@@ -346,34 +394,20 @@ export default function FormProjectModal({
     const dateEnd = project.dateEnd
       ? new Date(project.dateEnd._seconds * 1000)
       : new Date();
-    setFormData((prev) => {
-      return {
-        ...prev,
-        title: project.title,
-        detail: project.detail ? project.detail : "",
-        customer: project.customer,
-        profit: project.profit ? project.profit : 0,
-        date: new Date(project.date._seconds * 1000),
-        dateEnd: project.dateEnd
-          ? new Date(project.dateEnd._seconds * 1000)
-          : _.cloneDeep(dateEnd),
-        images: project.images ? project.images : [],
-      };
-    });
-    setFormOldData((prev) => {
-      return {
-        ...prev,
-        title: project.title,
-        detail: project.detail ? project.detail : "",
-        customer: project.customer,
-        profit: project.profit ? project.profit : 0,
-        date: new Date(project.date._seconds * 1000),
-        dateEnd: project.dateEnd
-          ? new Date(project.dateEnd._seconds * 1000)
-          : _.cloneDeep(dateEnd),
-        images: project.images ? project.images : [],
-      };
-    });
+    const form = {
+      title: project.title,
+      detail: project.detail ? project.detail : "",
+      customer: project.customer,
+      profit: project.profit ? project.profit : 0,
+      date: new Date(project.date._seconds * 1000),
+      dateEnd: project.dateEnd
+        ? new Date(project.dateEnd._seconds * 1000)
+        : dateEnd,
+      images: project.images ? project.images : [],
+    };
+    setFormData(form);
+    setFormOldData(form);
+
     if (project.dateEnd) {
       setIsDateEnd(true);
       setIsDateEndOld(true);
@@ -381,6 +415,14 @@ export default function FormProjectModal({
       setIsDateEnd(false);
       setIsDateEndOld(false);
     }
+    if (project.isCustomerRef) {
+      setIsCustomerRef(true);
+      setIsCustomerRefOld(true);
+    } else {
+      setIsCustomerRef(false);
+      setIsCustomerRefOld(false);
+    }
+
     setIsSubmitting(false);
   }
 
@@ -392,6 +434,7 @@ export default function FormProjectModal({
       customer: formData.customer,
       profit: formData.profit,
       date: moment(formData.date).format("YYYY-MM-DD"),
+      isCustomerRef: isCustomerRef,
     };
     if (formData.images.length > 0) {
       passData.images = formData.images;
@@ -416,6 +459,7 @@ export default function FormProjectModal({
       customer: formData.customer,
       profit: formData.profit,
       date: moment(formData.date).format("YYYY-MM-DD"),
+      isCustomerRef: isCustomerRef,
     };
     if (isDateEnd) {
       passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
