@@ -15,6 +15,7 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import Projects from "views/admin/projects";
+import Customers from "views/admin/customers";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -52,6 +53,14 @@ const routes = [
       <Icon as={MdWorkHistory} width="20px" height="20px" color="inherit" />
     ),
     component: Projects,
+    isShow: true,
+  },
+  {
+    name: "คู่ค้า/ลูกค้า",
+    layout: "/admin",
+    path: "/customers",
+    icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
+    component: Customers,
     isShow: true,
   },
   {

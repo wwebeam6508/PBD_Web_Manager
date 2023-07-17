@@ -1,26 +1,14 @@
-export const projectDataColumns = [
+export const customerDataColumns = [
   {
-    Header: "ชื่อโครงการ",
-    accessor: "title",
+    Header: "ชื่อ",
+    accessor: "name",
   },
   {
-    Header: "ผู้ว่าจ้าง",
-    accessor: "customer",
+    Header: "ที่อยู่",
+    accessor: "address",
   },
   {
-    Header: "รายได้(บาท)",
-    accessor: "profit",
-  },
-  {
-    Header: "วันที่เริ่ม",
-    accessor: "date",
-    sort: "desc",
-    isSort: true,
-  },
-  {
-    Header: "วันที่สิ้นสุด",
-    accessor: "dateEnd",
-    sort: "desc",
-    isSort: false,
+    Header: "เลขผู้เสียภาษี",
+    accessor: "taxID",
   },
 ];

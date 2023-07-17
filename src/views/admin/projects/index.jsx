@@ -138,9 +138,12 @@ export default function Settings() {
       if (result.isConfirmed) {
         showLoading();
         const res = await deleteProject(projectID)
-        if (res.message === "success") {
+        if (res) {
+          if (res.message === "success") {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
             await getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+          }
+            
         }
         hideLoading();
       }

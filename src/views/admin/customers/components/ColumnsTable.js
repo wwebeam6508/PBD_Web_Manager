@@ -104,7 +104,7 @@ export default function ColumnsTable(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          งาน
+          รายชื่อ
         </Text>
         <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
       </Flex>
@@ -138,20 +138,6 @@ export default function ColumnsTable(props) {
                       }}
                     >
                       {column.render("Header")}
-                      {column.id === "date" &&
-                        columnsDataE[index].isSort &&
-                        (columnsDataE[index].sort === "desc" ? (
-                          <TriangleDownIcon />
-                        ) : (
-                          <TriangleUpIcon />
-                        ))}
-                      {column.id === "dateEnd" &&
-                        columnsDataE[index].isSort &&
-                        (columnsDataE[index].sort === "desc" ? (
-                          <TriangleDownIcon />
-                        ) : (
-                          <TriangleUpIcon />
-                        ))}
                     </Flex>
                   </Flex>
                 </Th>
@@ -177,7 +163,7 @@ export default function ColumnsTable(props) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data = "";
-                  if (cell.column.id === "title") {
+                  if (cell.column.id === "name") {
                     data = (
                       <Flex align="center">
                         <Text color={textColor} fontSize="sm" fontWeight="700">
@@ -235,7 +221,7 @@ export default function ColumnsTable(props) {
                       icon={<EditIcon />}
                       size="sm"
                       colorScheme="blue"
-                      onClick={() => selectEdit(row.original.projectID)}
+                      onClick={() => selectEdit(row.original.customerID)}
                     />
                     <IconButton
                       aria-label="delete"
@@ -243,7 +229,7 @@ export default function ColumnsTable(props) {
                       size="sm"
                       colorScheme="red"
                       onClick={() =>
-                        setDeleteProjectData(row.original.projectID)
+                        setDeleteProjectData(row.original.customerID)
                       }
                     />
                   </Flex>

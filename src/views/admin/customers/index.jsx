@@ -22,18 +22,16 @@
 
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
-import ColumnsTable from "views/admin/projects/components/ColumnsTable";
+import ColumnsTable from "views/admin/customers/components/ColumnsTable";
 import React, {useState, useContext, useEffect } from "react";
-import { getProjects } from "api/projects";
-import { projectDataColumns } from "./variables/columnsData";
+import { customerDataColumns } from "./variables/columnsData";
 import moment from "moment";
 import PaginationButton from "components/pagination/PaginationButton";
 import { LoadingContext } from "contexts/LoadingContext";
-import FormProjectModal from "components/modals/projectModal/FormProjectModal";
-import { getCustomerName } from "api/projects";
+import FormCustomerModal from "components/modals/customerModal/FormCustomerModal";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { deleteProject } from "api/projects";
+import { getCustomers, deleteCustomer } from "api/customers";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
@@ -41,75 +39,59 @@ export default function Settings() {
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [ isEdit , setEdit ] = useState(false);
-  const [ customers, setCustomers ] = useState([]);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
     pageSize: 10,
-    firstSort: "date",
-    orderBy: "desc"
+    firstSort: "",
+    orderBy: ""
   });
 
   useEffect(() => {
-    getProjectsData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
-    getCustomerName().then((res) => {
-        if ( res) {
-          setCustomers(res.data)
-        }
-      }
-    )
+    getCustomersData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
   }, []);
 
-  const [projects, setProjects] = React.useState([]);
+  const [customers, setCustomers] = React.useState([]);
   const [pages, setPages] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
-  const [ editProjectID, setEditProjectID ] = useState(null);
+  const [ editCustomerID, setEditCustomerID ] = useState(null);
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <FormProjectModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customers={customers} projectID={editProjectID}/>
+      <FormCustomerModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customerID={editCustomerID}/>
       <SimpleGrid
         mb='20px'
         columns={{ sm: 1, md: 1 }}
         spacing={{ base: "20px", xl: "20px" }}>
         <ColumnsTable
-          columnsData={projectDataColumns}
-          tableData={projects}
+          columnsData={customerDataColumns}
+          tableData={customers}
           setting={defaultSetting}
           selectSort={selectSortData}
           setAddFormOpen={setAddFormOpen}
-          setDeleteProjectData={deleteProjectData}
+          setDeleteProjectData={deleteCustomerData}
           selectEdit={selectEditData}
         />
       </SimpleGrid>
       {
-        projects.length > 0 && (
-          <PaginationButton setPage={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+        customers.length > 0 && (
+          <PaginationButton setPage={getCustomersData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
         )
       }
     </Box>
   );
 
-  async function getProjectsData(selectPage = 1, sortTitle = "", sortType = "") {
+  async function getCustomersData(selectPage = 1, sortTitle = "", sortType = "") {
     showLoading();
-    const result = await getProjects({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
+    const result = await getCustomers({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
     if (result) {
-      const resultData = result.data.map((item) => {
-        let returnData = item
-        if (returnData.date) {
-          returnData.date = moment(returnData.date).format('DD.MM.YYYY')
-        }
-        if (returnData.dateEnd) {
-          returnData.dateEnd = moment(returnData.dateEnd).format('DD.MM.YYYY')
-        }
-        return returnData
-      });
+      const resultData = result.data
       setLastPage(result.lastPage);
       setCurrentPage(result.currentPage);
       setPages(result.pages);
-      setProjects(resultData);
+      setCustomers(resultData);
       
     }
     hideLoading();
@@ -121,10 +103,10 @@ export default function Settings() {
       firstSort: sortTitle,
       orderBy: sortType
     })
-    getProjectsData(currentPage, sortTitle, sortType)
+    getCustomersData(currentPage, sortTitle, sortType)
   }
 
-  function deleteProjectData (projectID) {
+  function deleteCustomerData (customerID) {
     MySwal.fire({
       title: "คุณแน่ใจหรือว่าจะลบ?",
       text: "คุณจะไม่สามารถย้อนกลับได้!",
@@ -137,10 +119,12 @@ export default function Settings() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         showLoading();
-        const res = await deleteProject(projectID)
-        if (res.message === "success") {
-            MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
-            await getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+        const res = await deleteCustomer(customerID)
+        if (res) {
+            if (res.message === "success") {
+              MySwal.fire("ลบเรียบร้อย!", "บริษัทหรือลูกค้าถูกลบเรียบร้อยแล้ว", "success");
+              await getCustomersData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+            }
         }
         hideLoading();
       }
@@ -154,16 +138,16 @@ export default function Settings() {
     setEdit(false)
   }
 
-  function selectEditData (projectID) {
-    setEditProjectID(projectID)
+  function selectEditData (customerID) {
+    setEditCustomerID(customerID)
     setEdit(true)
     onOpen()
   }
   
   function onCloseModal () {
-    setEditProjectID(null)
+    setEditCustomerID(null)
     setEdit(false)
-    getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+    getCustomersData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
     onClose()
   }
 }

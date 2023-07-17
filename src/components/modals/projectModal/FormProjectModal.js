@@ -17,6 +17,8 @@ import {
   Grid,
   GridItem,
   Select,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { getProjectByID } from "api/projects";
 import { addProject } from "api/projects";
@@ -371,16 +373,30 @@ export default function FormProjectModal({
       <Modal isOpen={stateOpen} onClose={closeModal} size="full">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {!isEdit ? "เพิ่มรายการงาน" : "แก้ไขรายการงาน"}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{isSubmitting ? "Loading" : formAddProject}</ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={closeModal}>
-              ยกเลิก
-            </Button>
-          </ModalFooter>
+          {isSubmitting ? (
+            <Center
+              // make it middle of screen
+              position="absolute"
+              top="50%"
+              left="50%"
+              transform="translate(-50%, -50%)"
+            >
+              <Spinner />
+            </Center>
+          ) : (
+            <>
+              <ModalHeader>
+                {!isEdit ? "เพิ่มรายการงาน" : "แก้ไขรายการงาน"}
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>{formAddProject}</ModalBody>
+              <ModalFooter>
+                <Button colorScheme="red" mr={3} onClick={closeModal}>
+                  ยกเลิก
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </>
