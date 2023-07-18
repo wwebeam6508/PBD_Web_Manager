@@ -41,7 +41,7 @@ export default function FormProjectModal({
     title: "",
     detail: "",
     customer: "",
-    profit: 0,
+    profit: "",
     date: new Date(),
     dateEnd: new Date(),
     images: [],
@@ -118,7 +118,11 @@ export default function FormProjectModal({
 
   const handleChange = (e) => {
     if (e.target) {
-      const { name, value } = e.target;
+      let { name, value } = e.target;
+
+      if (name === "profit") {
+        value = addCommas(removeNonNumeric(value));
+      }
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
@@ -131,6 +135,12 @@ export default function FormProjectModal({
       }));
     }
   };
+
+  const addCommas = (num) =>
+    num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // const addDot = (num) =>
+  // num.toString().replace(/\B(?=() /gm, ".");
+  const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
 
   const handleFileChange = (e) => {
     const fileList = Array.from(e.target.files);
@@ -264,9 +274,10 @@ export default function FormProjectModal({
       <FormControl marginBottom="1rem">
         <FormLabel htmlFor="profit">รายได้</FormLabel>
         <Input
-          type="number"
+          type="text"
           id="profit"
           name="profit"
+          pattern="[0-9]*"
           placeholder="กรอก 0 เป็นต้น"
           value={formData.profit}
           onChange={handleChange}
@@ -414,7 +425,7 @@ export default function FormProjectModal({
       title: project.title,
       detail: project.detail ? project.detail : "",
       customer: project.customer,
-      profit: project.profit ? project.profit : 0,
+      profit: project.profit ? project.profit : "",
       date: new Date(project.date._seconds * 1000),
       dateEnd: project.dateEnd
         ? new Date(project.dateEnd._seconds * 1000)
@@ -448,7 +459,7 @@ export default function FormProjectModal({
       title: formData.title,
       detail: formData.detail,
       customer: formData.customer,
-      profit: formData.profit,
+      profit: removeCommaParseFloat(formData.profit),
       date: moment(formData.date).format("YYYY-MM-DD"),
       isCustomerRef: isCustomerRef,
     };
@@ -473,7 +484,7 @@ export default function FormProjectModal({
       title: formData.title,
       detail: formData.detail,
       customer: formData.customer,
-      profit: formData.profit,
+      profit: removeCommaParseFloat(formData.profit),
       date: moment(formData.date).format("YYYY-MM-DD"),
       isCustomerRef: isCustomerRef,
     };
@@ -495,6 +506,10 @@ export default function FormProjectModal({
         console.log(err);
       });
     closingModal();
+  }
+
+  function removeCommaParseFloat(value) {
+    return parseFloat(value.replace(/,/g, ""));
   }
 
   function closingModal() {

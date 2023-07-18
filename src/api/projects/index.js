@@ -18,7 +18,6 @@ export const getProjects = async ({ page, pageSize, sortTitle, sortType }) => {
     requestOption.params.sortTitle = sortTitle;
     requestOption.params.sortType = sortType;
   }
-  console.log(requestOption);
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);
     return response.data;

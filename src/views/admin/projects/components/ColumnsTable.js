@@ -201,7 +201,9 @@ export default function ColumnsTable(props) {
                   } else if (cell.column.id === "profit") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {cell.value}
+                        {cell.value
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </Text>
                     );
                   } else if (cell.column.id === "date") {
