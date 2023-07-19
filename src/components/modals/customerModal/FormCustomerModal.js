@@ -374,17 +374,17 @@ export default function FormCustomerModal({
     const removeEmails = formOldData.emails.filter(
       (email) => !formData.emails.includes(email)
     );
-
-    let passData = {
+    let passData;
+    passData = {
+      ...formData,
       customerID: customerID,
-      name: formData.name,
-      address: formData.address,
-      taxID: formData.taxID,
       addPhones: addPhones,
       removePhones: removePhones,
       addEmails: addEmails,
       removeEmails: removeEmails,
     };
+    delete passData.phones;
+    delete passData.emails;
     await updateCustomer(passData)
       .then(() => {
         setIsSubmitting(false);

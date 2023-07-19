@@ -425,7 +425,7 @@ export default function FormProjectModal({
       title: project.title,
       detail: project.detail ? project.detail : "",
       customer: project.customer,
-      profit: project.profit ? project.profit : "",
+      profit: project.profit ? addCommas(removeNonNumeric(project.profit)) : "",
       date: new Date(project.date._seconds * 1000),
       dateEnd: project.dateEnd
         ? new Date(project.dateEnd._seconds * 1000)
@@ -479,15 +479,17 @@ export default function FormProjectModal({
   async function editSubmit() {
     setIsSubmitting(true);
     const imageUpdate = checkImageUpdate();
-    let passData = {
+    let passData;
+    passData = {
       workID: projectID,
       title: formData.title,
-      detail: formData.detail,
-      customer: formData.customer,
       profit: removeCommaParseFloat(formData.profit),
       date: moment(formData.date).format("YYYY-MM-DD"),
+      customer: formData.customer,
+      detail: formData.detail,
       isCustomerRef: isCustomerRef,
     };
+    delete passData.images;
     if (isDateEnd) {
       passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
     }
