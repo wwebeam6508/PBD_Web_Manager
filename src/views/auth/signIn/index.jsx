@@ -91,14 +91,6 @@ function SignIn() {
           <Heading color={textColor} fontSize='36px' mb='10px'>
             Sign In
           </Heading>
-          {/* <Text
-            mb='36px'
-            ms='4px'
-            color={textColorSecondary}
-            fontWeight='400'
-            fontSize='md'>
-            Enter your email and password to sign in!
-          </Text> */}
         </Box>
         <Flex
           zIndex='2'
@@ -110,29 +102,6 @@ function SignIn() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-          {/* <Button
-            fontSize='sm'
-            me='0px'
-            mb='26px'
-            py='15px'
-            h='50px'
-            borderRadius='16px'
-            bg={googleBg}
-            color={googleText}
-            fontWeight='500'
-            _hover={googleHover}
-            _active={googleActive}
-            _focus={googleActive}>
-            <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
-            Sign in with Google
-          </Button> */}
-          {/* <Flex align='center' mb='25px'>
-            <HSeparator />
-            <Text color='gray.400' mx='14px'>
-              or
-            </Text>
-            <HSeparator />
-          </Flex> */}
           <FormControl>
             <FormLabel
               display='flex'
@@ -185,32 +154,6 @@ function SignIn() {
                 />
               </InputRightElement>
             </InputGroup>
-            {/* <Flex justifyContent='space-between' align='center' mb='24px'>
-              <FormControl display='flex' alignItems='center'>
-                <Checkbox
-                  id='remember-login'
-                  colorScheme='brandScheme'
-                  me='10px'
-                />
-                <FormLabel
-                  htmlFor='remember-login'
-                  mb='0'
-                  fontWeight='normal'
-                  color={textColor}
-                  fontSize='sm'>
-                  Keep me logged in
-                </FormLabel>
-              </FormControl>
-              <NavLink to='/auth/forgot-password'>
-                <Text
-                  color={textColorBrand}
-                  fontSize='sm'
-                  w='124px'
-                  fontWeight='500'>
-                  Forgot password?
-                </Text>
-              </NavLink>
-            </Flex> */}
             <Button
               fontSize='sm'
               variant='brand'
@@ -224,32 +167,13 @@ function SignIn() {
               Sign In
             </Button>
           </FormControl>
-          {/* <Flex
-            flexDirection='column'
-            justifyContent='center'
-            alignItems='start'
-            maxW='100%'
-            mt='0px'>
-            <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
-              Not registered yet?
-              <NavLink to='/auth/sign-up'>
-                <Text
-                  color={textColorBrand}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Create an Account
-                </Text>
-              </NavLink>
-            </Text>
-          </Flex> */}
         </Flex>
       </Flex>
     </DefaultAuth>
   );
 
   function loginSubmit() {
-    store.dispatch(login(username, password));
+    store.dispatch(login(username, password))
   }
 }
 

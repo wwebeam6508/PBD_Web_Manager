@@ -8,6 +8,9 @@ import {
   MdLock,
   MdOutlineShoppingCart,
   MdWorkHistory,
+  MdPeople,
+  MdBuild,
+  MdCellTower,
 } from "react-icons/md";
 
 // Admin Imports
@@ -22,29 +25,29 @@ import SignInCentered from "views/auth/signIn";
 
 const routes = [
   {
-    name: "Main Dashboard",
+    name: "หน้าหลัก",
     layout: "/admin",
     path: "/default",
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: MainDashboard,
     isShow: true,
   },
-  {
-    name: "NFT Marketplace",
-    layout: "/admin",
-    path: "/nft-marketplace",
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width="20px"
-        height="20px"
-        color="inherit"
-      />
-    ),
-    component: NFTMarketplace,
-    secondary: true,
-    isShow: true,
-  },
+  // {
+  //   name: "NFT Marketplace",
+  //   layout: "/admin",
+  //   path: "/nft-marketplace",
+  //   icon: (
+  //     <Icon
+  //       as={MdOutlineShoppingCart}
+  //       width="20px"
+  //       height="20px"
+  //       color="inherit"
+  //     />
+  //   ),
+  //   component: NFTMarketplace,
+  //   secondary: true,
+  //   isShow: true,
+  // },
   {
     name: "โครงการ",
     layout: "/admin",
@@ -59,7 +62,7 @@ const routes = [
     name: "คู่ค้า/ลูกค้า",
     layout: "/admin",
     path: "/customers",
-    icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdCellTower} width="20px" height="20px" color="inherit" />,
     component: Customers,
     isShow: true,
   },

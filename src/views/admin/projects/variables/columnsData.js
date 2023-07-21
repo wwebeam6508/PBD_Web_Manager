@@ -10,6 +10,8 @@ export const projectDataColumns = [
   {
     Header: "รายได้(บาท)",
     accessor: "profit",
+    sort: "desc",
+    isSort: false,
   },
   {
     Header: "วันที่เริ่ม",
@@ -20,7 +22,5 @@ export const projectDataColumns = [
   {
     Header: "วันที่สิ้นสุด",
     accessor: "dateEnd",
-    sort: "desc",
-    isSort: false,
   },
 ];

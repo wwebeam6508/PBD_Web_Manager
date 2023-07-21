@@ -138,14 +138,15 @@ export default function ColumnsTable(props) {
                       }}
                     >
                       {column.render("Header")}
-                      {column.id === "date" &&
+                      {column.id === "profit" &&
                         columnsDataE[index].isSort &&
                         (columnsDataE[index].sort === "desc" ? (
                           <TriangleDownIcon />
                         ) : (
                           <TriangleUpIcon />
                         ))}
-                      {column.id === "dateEnd" &&
+
+                      {column.id === "date" &&
                         columnsDataE[index].isSort &&
                         (columnsDataE[index].sort === "desc" ? (
                           <TriangleDownIcon />

@@ -77,7 +77,7 @@ export default function Settings() {
       </SimpleGrid>
       {
         customers.length > 0 && (
-          <PaginationButton setPage={getCustomersData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+          <PaginationButton setPage={(pageNum)=>{getCustomersData(pageNum, defaultSetting.firstSort, defaultSetting.orderBy)}} pages={pages} currentPage={currentPage} lastPage={lastPage} />
         )
       }
     </Box>

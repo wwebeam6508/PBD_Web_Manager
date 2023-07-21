@@ -15,8 +15,7 @@ export default function PaginationButton(props) {
     >
       {
         <>
-          {
-            !props.pages.includes(1) &&
+          {!props.pages.includes(1) && (
             <Button
               onClick={() => props.setPage(1)}
               style={{
@@ -31,15 +30,16 @@ export default function PaginationButton(props) {
             >
               1
             </Button>
-          }
-          {
-            props.pages && props.pages.map((page, index) => {
+          )}
+          {props.pages &&
+            props.pages.map((page, index) => {
               return (
                 <Button
                   key={index}
                   onClick={() => props.setPage(page)}
                   style={{
-                    backgroundColor: page == props.currentPage ? "#3182CE" : "#E2E8F0",
+                    backgroundColor:
+                      page == props.currentPage ? "#3182CE" : "#E2E8F0",
                     color: page == props.currentPage ? "#FFFFFF" : "#000000",
                     border: "none",
                     borderRadius: "5px",
@@ -51,15 +51,14 @@ export default function PaginationButton(props) {
                 >
                   {page}
                 </Button>
-              )
-            })
-          }
-          {
-            props.lastPage && !props.pages.includes(Number(props.lastPage)) &&
+              );
+            })}
+          {props.lastPage && !props.pages.includes(Number(props.lastPage)) && (
             <Button
-              onClick={() => props.getProjectsData(props.lastPage)}
+              onClick={() => props.setPage(props.lastPage)}
               style={{
-                backgroundColor: props.page == props.lastPage ? "#3182CE" : "#E2E8F0",
+                backgroundColor:
+                  props.page == props.lastPage ? "#3182CE" : "#E2E8F0",
                 color: props.page == props.lastPage ? "#FFFFFF" : "#000000",
                 border: "none",
                 borderRadius: "5px",
@@ -70,11 +69,9 @@ export default function PaginationButton(props) {
             >
               {props.lastPage}
             </Button>
-          }
+          )}
         </>
       }
-
     </div>
-  )
-
+  );
 }
