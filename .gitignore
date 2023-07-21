@@ -5,7 +5,6 @@ build
 
 # dependencies
 /node_modules
-.env
 .firebase
 /.pnp
 .pnp.js
