@@ -23,11 +23,13 @@ import {
 // Custom components
 import Card from "components/card/Card";
 import {
+  CheckCircleIcon,
   DeleteIcon,
   EditIcon,
   TriangleDownIcon,
   TriangleUpIcon,
 } from "@chakra-ui/icons";
+import { IoCloseCircle } from "react-icons/io5";
 export default function ColumnsTable(props) {
   const {
     columnsData,
@@ -36,7 +38,7 @@ export default function ColumnsTable(props) {
     selectSort,
     setAddFormOpen,
     selectEdit,
-    setDeleteProjectData,
+    setDelete,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
 
@@ -145,13 +147,6 @@ export default function ColumnsTable(props) {
                         ) : (
                           <TriangleUpIcon />
                         ))}
-                      {column.id === "dateEnd" &&
-                        columnsDataE[index].isSort &&
-                        (columnsDataE[index].sort === "desc" ? (
-                          <TriangleDownIcon />
-                        ) : (
-                          <TriangleUpIcon />
-                        ))}
                     </Flex>
                   </Flex>
                 </Th>
@@ -185,20 +180,7 @@ export default function ColumnsTable(props) {
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.id === "customer") {
-                    data = (
-                      <Flex align="center">
-                        <Text
-                          me="10px"
-                          color={textColor}
-                          fontSize="sm"
-                          fontWeight="700"
-                        >
-                          {cell.value}
-                        </Text>
-                      </Flex>
-                    );
-                  } else if (cell.column.id === "profit") {
+                  } else if (cell.column.id === "totalPrice") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
                         {cell.value
@@ -212,7 +194,27 @@ export default function ColumnsTable(props) {
                         {cell.value}
                       </Text>
                     );
-                  } else if (cell.column.id === "dateEnd") {
+                  } else if (cell.column.id === "isVat") {
+                    data = (
+                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                        {cell.value ? (
+                          <Icon
+                            as={CheckCircleIcon}
+                            color="green.500"
+                            w="20px"
+                            h="20px"
+                          />
+                        ) : (
+                          <Icon
+                            as={IoCloseCircle}
+                            color="red.500"
+                            w="21px"
+                            h="21px"
+                          />
+                        )}
+                      </Text>
+                    );
+                  } else if (cell.column.id === "workRef") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
                         {cell.value}
@@ -242,16 +244,14 @@ export default function ColumnsTable(props) {
                       icon={<EditIcon />}
                       size="sm"
                       colorScheme="blue"
-                      onClick={() => selectEdit(row.original.projectID)}
+                      onClick={() => selectEdit(row.original.expenseID)}
                     />
                     <IconButton
                       aria-label="delete"
                       icon={<DeleteIcon />}
                       size="sm"
                       colorScheme="red"
-                      onClick={() =>
-                        setDeleteProjectData(row.original.projectID)
-                      }
+                      onClick={() => setDelete(row.original.expenseID)}
                     />
                   </Flex>
                 </Td>

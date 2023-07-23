@@ -22,18 +22,18 @@
 
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
-import ColumnsTable from "views/admin/projects/components/ColumnsTable";
+import ColumnsTable from "views/admin/expenses/components/ColumnsTable";
 import React, {useState, useContext, useEffect } from "react";
-import { getProjects } from "api/projects";
-import { projectDataColumns } from "./variables/columnsData";
+import { getExpenses } from "api/expenses";
+import { expenseDataColumns } from "./variables/columnsData";
 import moment from "moment";
 import PaginationButton from "components/pagination/PaginationButton";
 import { LoadingContext } from "contexts/LoadingContext";
-import FormProjectModal from "components/modals/projectModal/FormProjectModal";
-import { getCustomerName } from "api/projects";
+import FormExpenseModal from "components/modals/expenseModal/FormExpenseModal";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { deleteProject } from "api/projects";
+import { deleteExpense } from "api/expenses";
+import { getProjectTitle } from "api/expenses";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
@@ -41,7 +41,7 @@ export default function Settings() {
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [ isEdit , setEdit ] = useState(false);
-  const [ customers, setCustomers ] = useState([]);
+  const [ projects, setProjects ] = useState([]);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
@@ -51,50 +51,50 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    getProjectsData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
-    getCustomerName().then((res) => {
+    getExpensesData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
+    getProjectTitle().then((res) => {
         if ( res) {
-          setCustomers(res.data)
+          setProjects(res.data)
         }
       }
     )
   }, []);
 
-  const [projects, setProjects] = React.useState([]);
+  const [expenses, setExpenses] = React.useState([]);
   const [pages, setPages] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
-  const [ editProjectID, setEditProjectID ] = useState(null);
+  const [ editExpenseID, setEditExpenseID ] = useState(null);
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <FormProjectModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customers={customers} projectID={editProjectID}/>
+      <FormExpenseModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} projects={projects} expenseID={editExpenseID}/>
       <SimpleGrid
         mb='20px'
         columns={{ sm: 1, md: 1 }}
         spacing={{ base: "20px", xl: "20px" }}>
         <ColumnsTable
-          columnsData={projectDataColumns}
-          tableData={projects}
+          columnsData={expenseDataColumns}
+          tableData={expenses}
           setting={defaultSetting}
           selectSort={selectSortData}
           setAddFormOpen={setAddFormOpen}
-          setDeleteProjectData={deleteProjectData}
+          setDelete={deleteExpenseData}
           selectEdit={selectEditData}
         />
       </SimpleGrid>
       {
-        projects.length > 0 && (
-          <PaginationButton setPage={getProjectsData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
+        expenses.length > 0 && (
+          <PaginationButton setPage={getExpensesData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
         )
       }
     </Box>
   );
 
-  async function getProjectsData(selectPage = 1, sortTitle = "", sortType = "") {
+  async function getExpensesData(selectPage = 1, sortTitle = "", sortType = "") {
     showLoading();
-    const result = await getProjects({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
+    const result = await getExpenses({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
     if (result) {
       const resultData = result.data.map((item) => {
         let returnData = item
@@ -109,7 +109,7 @@ export default function Settings() {
       setLastPage(result.lastPage);
       setCurrentPage(result.currentPage);
       setPages(result.pages);
-      setProjects(resultData);
+      setExpenses(resultData);
       
     }
     hideLoading();
@@ -121,10 +121,10 @@ export default function Settings() {
       firstSort: sortTitle,
       orderBy: sortType
     })
-    getProjectsData(currentPage, sortTitle, sortType)
+    getExpensesData(currentPage, sortTitle, sortType)
   }
 
-  function deleteProjectData (projectID) {
+  function deleteExpenseData (expenseID) {
     MySwal.fire({
       title: "คุณแน่ใจหรือว่าจะลบ?",
       text: "คุณจะไม่สามารถย้อนกลับได้!",
@@ -137,11 +137,11 @@ export default function Settings() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         showLoading();
-        const res = await deleteProject(projectID)
+        const res = await deleteExpense(expenseID)
         if (res) {
           if (res.message === "success") {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
-            await getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+            await getExpensesData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
           }
             
         }
@@ -157,16 +157,16 @@ export default function Settings() {
     setEdit(false)
   }
 
-  function selectEditData (projectID) {
-    setEditProjectID(projectID)
+  function selectEditData (expenseID) {
+    setEditExpenseID(expenseID)
     setEdit(true)
     onOpen()
   }
   
   function onCloseModal () {
-    setEditProjectID(null)
+    setEditExpenseID(null)
     setEdit(false)
-    getProjectsData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+    getExpensesData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
     onClose()
   }
 }

@@ -137,7 +137,7 @@ export default function FormCustomerModal({
     //check phone and email if empty fill
     compareData.phones = compareData.phones.filter((phone) => !isEmpty(phone));
     compareData.emails = compareData.emails.filter((email) => !isEmpty(email));
-    const compareDataOld = _.cloneDeep(formOldData);
+    const compareDataOld = formOldData;
     if (JSON.stringify(compareData) === JSON.stringify(compareDataOld)) {
       return true;
     }
@@ -340,8 +340,8 @@ export default function FormCustomerModal({
       phones: customer.phones ? customer.phones : [],
       emails: customer.emails ? customer.emails : [],
     };
-    setFormData(form);
-    setFormOldData(form);
+    setFormData(_.cloneDeep(form));
+    setFormOldData(_.cloneDeep(form));
 
     setIsSubmitting(false);
   }

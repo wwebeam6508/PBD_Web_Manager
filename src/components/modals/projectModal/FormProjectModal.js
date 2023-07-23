@@ -185,9 +185,9 @@ export default function FormProjectModal({
 
   const editValidtion = () => {
     //check if form data is not change
-    const compareData = _.cloneDeep(formData);
+    const compareData = formData;
     delete compareData.dateEnd;
-    const compareDataOld = _.cloneDeep(formOldData);
+    const compareDataOld = formOldData;
     delete compareDataOld.dateEnd;
     if (
       isDateEnd === isDateEndOld &&
@@ -432,8 +432,8 @@ export default function FormProjectModal({
         : dateEnd,
       images: project.images ? project.images : [],
     };
-    setFormData(form);
-    setFormOldData(form);
+    setFormData(_.cloneDeep(form));
+    setFormOldData(_.cloneDeep(form));
 
     if (project.dateEnd) {
       setIsDateEnd(true);
