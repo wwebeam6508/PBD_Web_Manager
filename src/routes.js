@@ -51,30 +51,46 @@ const routes = [
   //   isShow: true,
   // },
   {
-    name: "โครงการ",
-    layout: "/admin",
-    path: "/projects",
-    icon: (
-      <Icon as={MdWorkHistory} width="20px" height="20px" color="inherit" />
-    ),
-    component: Projects,
-    isShow: true,
+    category: "accounting",
+    name: "จัดการค่าใช้จ่ายรายได้",
+    items: [
+      {
+        name: "ค่าใช้จ่าย",
+        layout: "/admin",
+        path: "/expenses",
+        icon: (
+          <Icon as={MdMoneyOff} width="20px" height="20px" color="inherit" />
+        ),
+        component: Expenses,
+        isShow: true,
+      },
+      {
+        name: "รายได้จากงาน",
+        layout: "/admin",
+        path: "/projects",
+        icon: (
+          <Icon as={MdWorkHistory} width="20px" height="20px" color="inherit" />
+        ),
+        component: Projects,
+        isShow: true,
+      },
+    ],
   },
   {
-    name: "คู่ค้า/ลูกค้า",
-    layout: "/admin",
-    path: "/customers",
-    icon: <Icon as={MdCellTower} width="20px" height="20px" color="inherit" />,
-    component: Customers,
-    isShow: true,
-  },
-  {
-    name: "ค่าใช้จ่าย",
-    layout: "/admin",
-    path: "/expenses",
-    icon: <Icon as={MdMoneyOff} width="20px" height="20px" color="inherit" />,
-    component: Expenses,
-    isShow: true,
+    category: "management",
+    name: "จัดการข้อมูล",
+    items: [
+      {
+        name: "คู่ค้า/ลูกค้า",
+        layout: "/admin",
+        path: "/customers",
+        icon: (
+          <Icon as={MdCellTower} width="20px" height="20px" color="inherit" />
+        ),
+        component: Customers,
+        isShow: true,
+      },
+    ],
   },
   {
     name: "Profile",

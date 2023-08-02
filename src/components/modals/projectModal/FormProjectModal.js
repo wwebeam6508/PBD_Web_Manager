@@ -16,10 +16,10 @@ import {
   Textarea,
   Grid,
   GridItem,
-  Select,
   Spinner,
   Center,
 } from "@chakra-ui/react";
+import Select from "react-select";
 import { getProjectByID } from "api/projects";
 import { addProject } from "api/projects";
 import { SingleDatepicker } from "chakra-dayzed-datepicker";
@@ -245,15 +245,18 @@ export default function FormProjectModal({
             id="customer"
             name="customer"
             placeholder="เลือกชื่อผู้ว่าจ้าง"
-            value={formData.customer}
-            onChange={handleChange}
-          >
-            {customers.map((customer) => (
-              <option key={customer.id} value={customer.id}>
-                {customer.name}
-              </option>
-            ))}
-          </Select>
+            defaultValue={""}
+            onChange={(e) => {
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                customer: e.value,
+              }));
+            }}
+            options={customers.map((customer) => ({
+              value: customer.id,
+              label: customer.name,
+            }))}
+          />
         ) : (
           <Input
             type="text"

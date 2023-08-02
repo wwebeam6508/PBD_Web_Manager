@@ -16,12 +16,12 @@ import {
   Textarea,
   Grid,
   GridItem,
-  Select,
   Center,
   Spinner,
   NumberInput,
   NumberInputField,
 } from "@chakra-ui/react";
+import Select from "react-select";
 import React, { useEffect, useState } from "react";
 import { isEmpty } from "util/helper";
 import _ from "lodash";
@@ -208,82 +208,89 @@ export default function FormExpenseModal({
 
   const formAddExpense = (
     <form>
-      <FormControl marginBottom="1rem">
-        <FormLabel htmlFor="title">ชื่อรายการ</FormLabel>
-        <Input
-          type="text"
-          id="title"
-          name="title"
-          placeholder="ชื่อรายการ"
-          value={formData.title}
-          onChange={handleChange}
-        />
-        {isEmpty(formData.title) && (
-          <Text color="red.500" marginBottom="1rem">
-            กรุณากรอกชื่อรายการใช้จ่าย
-          </Text>
-        )}
-      </FormControl>
-      <FormControl marginBottom="1rem">
-        <FormLabel htmlFor="expense">รายละเอียด</FormLabel>
-        <Textarea
-          type="text"
-          id="detail"
-          name="detail"
-          placeholder="รายละเอียด"
-          value={formData.detail}
-          onChange={handleChange}
-        />
-      </FormControl>
+      <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+        <GridItem>
+          <FormControl marginBottom="1rem">
+            <FormLabel htmlFor="title">ชื่อรายการ</FormLabel>
+            <Input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="ชื่อรายการ"
+              value={formData.title}
+              onChange={handleChange}
+            />
+            {isEmpty(formData.title) && (
+              <Text color="red.500" marginBottom="1rem">
+                กรุณากรอกชื่อรายการใช้จ่าย
+              </Text>
+            )}
+          </FormControl>
+        </GridItem>
+        <GridItem>
+          <FormControl marginBottom="1rem">
+            <FormLabel htmlFor="expense">รายละเอียด</FormLabel>
+            <Textarea
+              type="text"
+              id="detail"
+              name="detail"
+              placeholder="รายละเอียด"
+              value={formData.detail}
+              onChange={handleChange}
+            />
+          </FormControl>
+        </GridItem>
 
-      <FormControl marginBottom="1rem">
-        <FormLabel htmlFor="date">วันที่</FormLabel>
-        <SingleDatepicker
-          name="date"
-          id="date"
-          date={formData.date}
-          onDateChange={(e) => handleChange({ name: "date", value: e })}
-          configs={{
-            dateFormat: "dd-MM-yyyy",
-          }}
-        />
-      </FormControl>
+        <GridItem>
+          <FormControl marginBottom="1rem">
+            <FormLabel htmlFor="date">วันที่</FormLabel>
+            <SingleDatepicker
+              name="date"
+              id="date"
+              date={formData.date}
+              onDateChange={(e) => handleChange({ name: "date", value: e })}
+              configs={{
+                dateFormat: "dd-MM-yyyy",
+              }}
+            />
+          </FormControl>
+        </GridItem>
 
-      <FormControl marginBottom="1rem">
-        <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
-        <Checkbox
-          id="workRef"
-          name="workRef"
-          isChecked={isWorkRef}
-          onChange={() => setIsWorkRef((prev) => !prev)}
-        >
-          เลือกอ้างอิงงาน
-        </Checkbox>
-        {isWorkRef ? (
-          <Select
-            placeholder="เลือกงาน"
-            name="workRef"
-            value={formData.workRef}
-            onChange={handleChange}
-          >
-            {projects.map((project, index) => (
-              <option key={`projects${index}`} value={project.id}>
-                {project.title}
-              </option>
-            ))}
-          </Select>
-        ) : (
-          <Input
-            type="text"
+        <FormControl marginBottom="1rem">
+          <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
+          <Checkbox
             id="workRef"
             name="workRef"
-            placeholder="ชื่ออ้างอิงงาน"
-            value={formData.workRef}
-            onChange={handleChange}
-          />
-        )}
-      </FormControl>
-
+            isChecked={isWorkRef}
+            onChange={() => setIsWorkRef((prev) => !prev)}
+          >
+            เลือกอ้างอิงงาน
+          </Checkbox>
+          {isWorkRef ? (                                                                                          
+            <Select
+              placeholder="เลือกงาน"
+              name="workRef"
+              defaultValue={""}
+              onChange={(e) =>
+                handleChange({ target: { name: "workRef", value: e } })
+              }
+              options={projects.map((project) => ({
+                value: project.id,
+                label: project.title,
+              }))}
+            />
+          ) : (
+            <Input
+              type="text"
+              id="workRef"
+              name="workRef"
+              placeholder="ชื่ออ้างอิงงาน"
+              value={formData.workRef}
+              onChange={handleChange}
+            />
+          )}
+        </FormControl>
+      </Grid>
       <Grid>
         <GridItem>
           <FormControl marginBottom="1rem">

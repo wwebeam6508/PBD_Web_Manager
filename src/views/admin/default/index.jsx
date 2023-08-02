@@ -1,4 +1,4 @@
-/*!
+                                                                                                          /*!
   _   _  ___  ____  ___ ________  _   _   _   _ ___   
  | | | |/ _ \|  _ \|_ _|__  / _ \| \ | | | | | |_ _| 
  | |_| | | | | |_) || |  / / | | |  \| | | | | || | 
@@ -14,7 +14,7 @@
 
 * Designed and Coded by Simmmple
 
-=========================================================
+=========================================================                                                                                                                                                                                           
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
@@ -31,13 +31,14 @@ import {
   SimpleGrid,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { getEarnAndSpendEachYearData } from "api/dashboard";
 // Assets
 import Usa from "assets/img/dashboards/usa.png";
 // Custom components
 import MiniCalendar from "components/calendar/MiniCalendar";
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdAddTask,
   MdAttachMoney,
@@ -49,7 +50,7 @@ import ComplexTable from "views/admin/default/components/ComplexTable";
 import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import PieCard from "views/admin/default/components/PieCard";
 import Tasks from "views/admin/default/components/Tasks";
-import TotalSpent from "views/admin/default/components/TotalSpent";
+import EarnAndSpendEachYear from "views/admin/default/components/EarnAndSpendEachYear";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
 import {
   columnsDataCheck,
@@ -62,6 +63,14 @@ export default function UserReports() {
   // Chakra Color Mode
   const brandColor = useColorModeValue("brand.500", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
+
+  useEffect(() => {
+    getEarnAndSpendEachYear(new Date().getFullYear());
+  }, []);
+
+  const [earnAndSpendEachYear, setEarnAndSpendEachYear] = useState({});
+
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid
@@ -98,25 +107,8 @@ export default function UserReports() {
         />
         <MiniStatistics growth='+23%' name='Sales' value='$574.34' />
         <MiniStatistics
-          endContent={
-            <Flex me='-16px' mt='10px'>
-              <FormLabel htmlFor='balance'>
-                <Avatar src={Usa} />
-              </FormLabel>
-              <Select
-                id='balance'
-                variant='mini'
-                mt='5px'
-                me='0px'
-                defaultValue='usd'>
-                <option value='usd'>USD</option>
-                <option value='eur'>EUR</option>
-                <option value='gba'>GBA</option>
-              </Select>
-            </Flex>
-          }
-          name='Your balance'
-          value='$1,000'
+          name='หักลบแล้ว'
+          value='1,000 บาท'
         />
         <MiniStatistics
           startContent={
@@ -127,7 +119,7 @@ export default function UserReports() {
               icon={<Icon w='28px' h='28px' as={MdAddTask} color='white' />}
             />
           }
-          name='New Tasks'
+          name='งานที่กำลังดำเนินการ'
           value='154'
         />
         <MiniStatistics
@@ -141,13 +133,13 @@ export default function UserReports() {
               }
             />
           }
-          name='Total Projects'
+          name='งานทั้งหมด'
           value='2935'
         />
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        <TotalSpent />
+        <EarnAndSpendEachYear data={earnAndSpendEachYear} selectActiveYear={getEarnAndSpendEachYear} />
         <WeeklyRevenue />
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
@@ -169,4 +161,11 @@ export default function UserReports() {
       </SimpleGrid>
     </Box>
   );
+
+  async function getEarnAndSpendEachYear(year) {
+    const res = await getEarnAndSpendEachYearData(year);
+    if ( res) {
+      setEarnAndSpendEachYear(res.data);
+    }
+  }
 }

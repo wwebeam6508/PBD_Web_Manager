@@ -1,78 +1,93 @@
 // Chakra Imports
 import {
-	Avatar,
-	Button,
-	Flex,
-	Icon,
-	Image,
-	Link,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	Text,
-	useColorModeValue
-} from '@chakra-ui/react';
+  Avatar,
+  Button,
+  Flex,
+  Icon,
+  Image,
+  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 // Custom Components
-import { SidebarResponsive } from 'components/sidebar/Sidebar';
-import PropTypes from 'prop-types';
-import React from 'react';
+import { SidebarResponsive } from "components/sidebar/Sidebar";
+import PropTypes from "prop-types";
+import React from "react";
 // Assets
-import { FaEthereum } from 'react-icons/fa';
-import routes from 'routes.js';
-import { store } from 'redux/store';
-import { logout } from 'redux/auth/authAction';
-import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { FaEthereum } from "react-icons/fa";
+import routes from "routes.js";
+import { store } from "redux/store";
+import { logout } from "redux/auth/authAction";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 export default function HeaderLinks(props) {
-	const { secondary } = props;
-	// Chakra Color Mode
-	let menuBg = useColorModeValue('white', 'navy.800');
-	const textColor = useColorModeValue('secondaryGray.900', 'white');
-	const ethColor = useColorModeValue('gray.700', 'white');
-	const borderColor = useColorModeValue('#E6ECFA', 'rgba(135, 140, 189, 0.3)');
-	const ethBg = useColorModeValue('secondaryGray.300', 'navy.900');
-	const ethBox = useColorModeValue('white', 'navy.800');
-	const shadow = useColorModeValue(
-		'14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
-		'14px 17px 40px 4px rgba(112, 144, 176, 0.06)'
-	);
+  const { secondary } = props;
+  // Chakra Color Mode
+  let menuBg = useColorModeValue("white", "navy.800");
+  const textColor = useColorModeValue("secondaryGray.900", "white");
+  const ethColor = useColorModeValue("gray.700", "white");
+  const borderColor = useColorModeValue("#E6ECFA", "rgba(135, 140, 189, 0.3)");
+  const ethBg = useColorModeValue("secondaryGray.300", "navy.900");
+  const ethBox = useColorModeValue("white", "navy.800");
+  const shadow = useColorModeValue(
+    "14px 17px 40px 4px rgba(112, 144, 176, 0.18)",
+    "14px 17px 40px 4px rgba(112, 144, 176, 0.06)"
+  );
 
-
-	const stateAuth = useSelector(state => state.auth)
-	return (
-		<Flex
-			w={{ sm: '100%', md: 'auto' }}
-			alignItems="center"
-			flexDirection="row"
-			bg={menuBg}
-			flexWrap={secondary ? { base: 'wrap', md: 'nowrap' } : 'unset'}
-			p="10px"
-			borderRadius="30px"
-			boxShadow={shadow}>
-			{/* <SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" /> */}
-			<Flex
-				bg={ethBg}
-				display={secondary ? 'flex' : 'none'}
-				borderRadius="30px"
-				ms="auto"
-				p="6px"
-				align="center"
-				me="6px">
-				<Flex align="center" justify="center" bg={ethBox} h="29px" w="29px" borderRadius="30px" me="7px">
-					<Icon color={ethColor} w="9px" h="14px" as={FaEthereum} />
-				</Flex>
-				<Text w="max-content" color={ethColor} fontSize="sm" fontWeight="700" me="6px">
-					1,924
-					<Text as="span" display={{ base: 'none', md: 'unset' }}>
-						{' '}
-						ETH
-					</Text>
-				</Text>
-			</Flex>
-			<SidebarResponsive routes={routes} />
-			{/* <Menu>
+  const stateAuth = useSelector((state) => state.auth);
+  return (
+    <Flex
+      w={{ sm: "100%", md: "auto" }}
+      alignItems="center"
+      flexDirection="row"
+      bg={menuBg}
+      flexWrap={secondary ? { base: "wrap", md: "nowrap" } : "unset"}
+      p="10px"
+      borderRadius="30px"
+      boxShadow={shadow}
+    >
+      {/* <SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" /> */}
+      <Flex
+        bg={ethBg}
+        display={secondary ? "flex" : "none"}
+        borderRadius="30px"
+        ms="auto"
+        p="6px"
+        align="center"
+        me="6px"
+      >
+        <Flex
+          align="center"
+          justify="center"
+          bg={ethBox}
+          h="29px"
+          w="29px"
+          borderRadius="30px"
+          me="7px"
+        >
+          <Icon color={ethColor} w="9px" h="14px" as={FaEthereum} />
+        </Flex>
+        <Text
+          w="max-content"
+          color={ethColor}
+          fontSize="sm"
+          fontWeight="700"
+          me="6px"
+        >
+          1,924
+          <Text as="span" display={{ base: "none", md: "unset" }}>
+            {" "}
+            ETH
+          </Text>
+        </Text>
+      </Flex>
+      <SidebarResponsive routes={routes} />
+      {/* <Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdNotificationsNone} color={navbarIcon} w="18px" h="18px" me="10px" />
 				</MenuButton>
@@ -105,7 +120,7 @@ export default function HeaderLinks(props) {
 				</MenuList>
 			</Menu> */}
 
-			{/* <Menu>
+      {/* <Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdInfoOutline} color={navbarIcon} w="18px" h="18px" me="10px" />
 				</MenuButton>
@@ -146,69 +161,85 @@ export default function HeaderLinks(props) {
 				</MenuList>
 			</Menu> */}
 
-			{/* <ThemeEditor navbarIcon={navbarIcon} /> */}
+      {/* <ThemeEditor navbarIcon={navbarIcon} /> */}
 
-			<Menu>
-				<MenuButton p="0px">
-					<Avatar
-						_hover={{ cursor: 'pointer' }}
-						color="white"
-						name={`${stateAuth.user ? stateAuth.user.userProfile.username : ""}`}
-						bg="#11047A"
-						size="sm"
-						w="40px"
-						h="40px"
-					/>
-				</MenuButton>
-				<MenuList boxShadow={shadow} p="0px" mt="10px" borderRadius="20px" bg={menuBg} border="none">
-					<Flex w="100%" mb="0px">
-						<Text
-							ps="20px"
-							pt="16px"
-							pb="10px"
-							w="100%"
-							borderBottom="1px solid"
-							borderColor={borderColor}
-							fontSize="sm"
-							fontWeight="700"
-							color={textColor}>
-							👋&nbsp; Hey, Adela
-						</Text>
-					</Flex>
-					<Flex flexDirection="column" p="10px">
-						<NavLink to="/admin/profile" >
-							<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
-								<Text fontSize="sm">Profile Settings</Text>
-							</MenuItem>
-						</NavLink>
-						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+      <Menu>
+        <MenuButton p="0px">
+          <Avatar
+            _hover={{ cursor: "pointer" }}
+            color="white"
+            name={`${
+              stateAuth.user ? stateAuth.user.userProfile.username : ""
+            }`}
+            bg="#11047A"
+            size="sm"
+            w="40px"
+            h="40px"
+          />
+        </MenuButton>
+        <MenuList
+          boxShadow={shadow}
+          p="0px"
+          mt="10px"
+          borderRadius="20px"
+          bg={menuBg}
+          border="none"
+        >
+          <Flex w="100%" mb="0px">
+            <Text
+              ps="20px"
+              pt="16px"
+              pb="10px"
+              w="100%"
+              borderBottom="1px solid"
+              borderColor={borderColor}
+              fontSize="sm"
+              fontWeight="700"
+              color={textColor}
+            >
+              👋&nbsp; Hey, Adela
+            </Text>
+          </Flex>
+          <Flex flexDirection="column" p="10px">
+            <NavLink to="/admin/profile">
+              <MenuItem
+                _hover={{ bg: "none" }}
+                _focus={{ bg: "none" }}
+                borderRadius="8px"
+                px="14px"
+              >
+                <Text fontSize="sm">Profile Settings</Text>
+              </MenuItem>
+            </NavLink>
+            {/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 							<Text fontSize="sm">Newsletter Settings</Text>
 						</MenuItem> */}
-						<MenuItem
-							_hover={{ bg: 'none' }}
-							_focus={{ bg: 'none' }}
-							color="red.400"
-							borderRadius="8px"
-							px="14px">
-							<Text fontSize="sm" onClick={logoutSubmit}>Log out</Text>
-						</MenuItem>
-					</Flex>
-				</MenuList>
-			</Menu>
-		</Flex>
-	);
+            <MenuItem
+              _hover={{ bg: "none" }}
+              _focus={{ bg: "none" }}
+              color="red.400"
+              borderRadius="8px"
+              px="14px"
+            >
+              <Text fontSize="sm" onClick={logoutSubmit}>
+                Log out
+              </Text>
+            </MenuItem>
+          </Flex>
+        </MenuList>
+      </Menu>
+    </Flex>
+  );
 
-	function logoutSubmit(e) {
-		e.preventDefault();
-		store.dispatch(logout({ userID: stateAuth.user.userProfile.userID }));
-	}
+  function logoutSubmit(e) {
+    e.preventDefault();
+    store.dispatch(logout({ userID: stateAuth.user.userProfile.userID }));
+  }
 }
 
-
-
 HeaderLinks.propTypes = {
-	variant: PropTypes.string,
-	fixed: PropTypes.bool,
-	secondary: PropTypes.bool,
-	onOpen: PropTypes.func
+  variant: PropTypes.string,
+  fixed: PropTypes.bool,
+  secondary: PropTypes.bool,
+  onOpen: PropTypes.func,
 };
