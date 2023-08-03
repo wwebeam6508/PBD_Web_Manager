@@ -51,7 +51,7 @@ export default function EarnAndSpendEachYear(props) {
         color: "#4318FF",
       },
     },
-    colors: ["#4ED23F", "#FF5A5A"],
+    colors: ["#0942FF", "#FF5A5A"],
     markers: {
       size: 0,
       colors: "white",
@@ -159,7 +159,7 @@ export default function EarnAndSpendEachYear(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          รายงานรายเดือน
+          รายงานรายปี
         </Text>
       </Flex>
       <Flex justify="space-between" ps="0px" pe="20px" pt="5px">
@@ -216,7 +216,7 @@ export default function EarnAndSpendEachYear(props) {
               รายได้ทั้งหมด
             </Text>
             <Flex align="center">
-              <Text color="green.500" fontSize="sm" fontWeight="700">
+              <Text color="blue.500" fontSize="sm" fontWeight="700">
                 {totalEarn}
               </Text>
             </Flex>
@@ -227,7 +227,9 @@ export default function EarnAndSpendEachYear(props) {
             key={`area-earn-spend-month`}
             series={lineChartData}
             options={lineChartOptions}
-            type="area"
+            type="bar"
+            width="100%"
+            height="100%"
           />
         </Box>
       </Flex>

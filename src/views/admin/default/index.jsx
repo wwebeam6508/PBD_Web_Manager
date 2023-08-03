@@ -22,18 +22,13 @@
 
 // Chakra imports
 import {
-  Avatar,
   Box,
-  Flex,
-  FormLabel,
   Icon,
-  Select,
   SimpleGrid,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { getEarnAndSpendEachYearData } from "api/dashboard";
 // Assets
-import Usa from "assets/img/dashboards/usa.png";
 // Custom components
 import MiniCalendar from "components/calendar/MiniCalendar";
 import MiniStatistics from "components/card/MiniStatistics";
@@ -42,8 +37,8 @@ import React, { useEffect, useState } from "react";
 import {
   MdAddTask,
   MdAttachMoney,
-  MdBarChart,
   MdFileCopy,
+  MdMoneyOff,
 } from "react-icons/md";
 import CheckTable from "views/admin/default/components/CheckTable";
 import ComplexTable from "views/admin/default/components/ComplexTable";
@@ -51,13 +46,17 @@ import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import PieCard from "views/admin/default/components/PieCard";
 import Tasks from "views/admin/default/components/Tasks";
 import EarnAndSpendEachYear from "views/admin/default/components/EarnAndSpendEachYear";
-import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
+import YearReport from "views/admin/default/components/YearReport";
 import {
   columnsDataCheck,
   columnsDataComplex,
 } from "views/admin/default/variables/columnsData";
 import tableDataCheck from "views/admin/default/variables/tableDataCheck.json";
 import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
+import { getTotalEarnData } from "api/dashboard";
+import { getTotalExpenseData } from "api/dashboard";
+import { FaMoneyBill } from "react-icons/fa";
+import { getYearsReportData } from "api/dashboard";
 
 export default function UserReports() {
   // Chakra Color Mode
@@ -66,9 +65,15 @@ export default function UserReports() {
 
   useEffect(() => {
     getEarnAndSpendEachYear(new Date().getFullYear());
+    getTotalEarn();
+    getTotalExpense();
+    getYearsReport();
   }, []);
 
   const [earnAndSpendEachYear, setEarnAndSpendEachYear] = useState({});
+  const [totalEarn, setTotalEarn] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [yearsReport, setYearsReport] = useState([]);
 
 
   return (
@@ -84,12 +89,14 @@ export default function UserReports() {
               h='56px'
               bg={boxBg}
               icon={
-                <Icon w='32px' h='32px' as={MdBarChart} color={brandColor} />
+                <Icon w='32px' h='32px' as={MdAttachMoney} color={brandColor} />
               }
             />
           }
-          name='Earnings'
-          value='$350.4'
+          name='รายได้ทั้งหมด'
+          textColor={useColorModeValue("blue.500", "blue.200")}
+          // show value of totalEarn as localstring
+          value={totalEarn.toLocaleString() + ' บาท'}
         />
         <MiniStatistics
           startContent={
@@ -98,18 +105,28 @@ export default function UserReports() {
               h='56px'
               bg={boxBg}
               icon={
-                <Icon w='32px' h='32px' as={MdAttachMoney} color={brandColor} />
+                <Icon w='32px' h='32px' as={MdMoneyOff} color={brandColor} />
               }
             />
           }
-          name='Spend this month'
-          value='$642.39'
+          textColor={useColorModeValue("red.500", "red.200")}
+          name='รายจ่ายทั้งหมด'
+          value={totalExpense.toLocaleString() + ' บาท'}
         />
-        <MiniStatistics growth='+23%' name='Sales' value='$574.34' />
         <MiniStatistics
-          name='หักลบแล้ว'
-          value='1,000 บาท'
-        />
+          startContent={
+            <IconBox
+              w='56px'
+              h='56px'
+              bg={boxBg}
+              icon={
+                <Icon w='32px' h='32px' as={FaMoneyBill} color={brandColor} />
+              }
+            />
+          }
+        textColor={totalEarn - totalExpense > 0 ? "green.500" : "red.500"}
+          growth={((totalEarn - totalExpense) / totalEarn).toFixed(2)*100 + '%'}
+        name='กำไร' value={((totalEarn - totalExpense)).toLocaleString() + ' บาท'} />
         <MiniStatistics
           startContent={
             <IconBox
@@ -140,7 +157,7 @@ export default function UserReports() {
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
         <EarnAndSpendEachYear data={earnAndSpendEachYear} selectActiveYear={getEarnAndSpendEachYear} />
-        <WeeklyRevenue />
+        <YearReport data={yearsReport} />
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
@@ -166,6 +183,27 @@ export default function UserReports() {
     const res = await getEarnAndSpendEachYearData(year);
     if ( res) {
       setEarnAndSpendEachYear(res.data);
+    }
+  }
+
+  async function getTotalEarn() {
+    const res = await getTotalEarnData();
+    if ( res) {
+      setTotalEarn(res.data);
+    }
+  }
+
+  async function getTotalExpense() {
+    const res = await getTotalExpenseData();
+    if ( res) {
+      setTotalExpense(res.data);
+    }
+  }
+
+  async function getYearsReport() {
+    const res = await getYearsReportData();
+    if ( res) {
+      setYearsReport(res.data);
     }
   }
 }

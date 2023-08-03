@@ -17,3 +17,44 @@ export const getEarnAndSpendEachYearData = async (year) => {
     return await errorHandle(error);
   }
 };
+
+//get total earn whole works
+export const getTotalEarnData = async (year) => {
+  try {
+    const response = await axios.get(`${APIURL}/getTotalEarn`, {
+      headers: headers(),
+      params: {
+        year,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};
+
+//get total expense whole expense
+export const getTotalExpenseData = async (year) => {
+  try {
+    const response = await axios.get(`${APIURL}/getTotalExpense`, {
+      headers: headers(),
+      params: {
+        year,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};
+
+export const getYearsReportData = async () => {
+  try {
+    const response = await axios.get(`${APIURL}/getYearsReport`, {
+      headers: headers(),
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};

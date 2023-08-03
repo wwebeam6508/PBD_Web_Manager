@@ -266,7 +266,7 @@ export default function FormExpenseModal({
           >
             เลือกอ้างอิงงาน
           </Checkbox>
-          {isWorkRef ? (                                                                                          
+          {isWorkRef ? (
             <Select
               placeholder="เลือกงาน"
               name="workRef"
@@ -512,7 +512,7 @@ export default function FormExpenseModal({
       lists: lists.map((list) => {
         return {
           title: list.title,
-          price: removeNonNumeric(list.price),
+          price: removeCommaParseFloat(list.price),
         };
       }),
       isWorkRef: isWorkRef,
@@ -535,16 +535,25 @@ export default function FormExpenseModal({
     const trueLists = lists.map((list) => {
       return {
         title: list.title,
-        price: removeNonNumeric(list.price),
+        price: removeCommaParseFloat(list.price),
       };
     });
-
-    const addLists = trueLists.filter(
-      (list) => !formOldData.lists.includes(list)
-    );
-    const removeLists = formOldData.lists.filter(
-      (list) => !trueLists.includes(list)
-    );
+    const trueOldData = formOldData.lists.map((list) => {
+      return {
+        title: list.title,
+        price: removeCommaParseFloat(list.price),
+      };
+    });
+    const addLists = trueLists.filter((list) => {
+      return !trueOldData.some((oldList) => {
+        return oldList.title === list.title && oldList.price === list.price;
+      });
+    });
+    const removeLists = trueOldData.filter((oldList) => {
+      return !trueLists.some((list) => {
+        return list.title === oldList.title && list.price === oldList.price;
+      });
+    });
 
     let passData;
     passData = {
@@ -567,6 +576,9 @@ export default function FormExpenseModal({
       });
   }
 
+  function removeCommaParseFloat(value) {
+    return parseFloat(value.replace(/,/g, ""));
+  }
   function closingModal() {
     setFormData(defaultForm);
     setFormOldData(defaultForm);
