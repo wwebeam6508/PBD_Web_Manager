@@ -270,10 +270,17 @@ export default function FormExpenseModal({
             <Select
               placeholder="เลือกงาน"
               name="workRef"
-              defaultValue={""}
-              onChange={(e) =>
-                handleChange({ target: { name: "workRef", value: e } })
-              }
+              value={{
+                label: projects.find(
+                  (project) => project.id === formData.workRef
+                )?.title,
+              }}
+              onChange={(e) => {
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  workRef: e.value,
+                }));
+              }}
               options={projects.map((project) => ({
                 value: project.id,
                 label: project.title,
@@ -519,12 +526,20 @@ export default function FormExpenseModal({
       currentVat: isVat ? formData.currentVat : 0,
     };
     try {
-      await addExpense(passData);
-      closingModal();
+      await addExpense(passData)
+        .then((res) => {
+          if (res.message === "success") {
+            closeModal();
+          }
+          setIsSubmitting(false);
+        })
+        .catch((err) => {
+          setIsSubmitting(false);
+          throw err;
+        });
     } catch (error) {
-      console.log(error);
+      
     }
-    setIsSubmitting(false);
   }
 
   async function editSubmit() {
@@ -557,23 +572,30 @@ export default function FormExpenseModal({
 
     let passData;
     passData = {
-      ...formData,
+      ..._.cloneDeep(formData),
       date: moment(formData.date).format("YYYY-MM-DD"),
       expenseID: expenseID,
       addLists: addLists,
       removeLists: removeLists,
       currentVat: isVat ? formData.currentVat : 0,
+      isWorkRef: isWorkRef,
     };
     delete passData.lists;
-    await updateExpense(passData)
-      .then(() => {
-        setIsSubmitting(false);
-        closingModal();
-      })
-      .catch((err) => {
-        setIsSubmitting(false);
-        console.log(err);
-      });
+    try {
+      await updateExpense(passData)
+        .then((res) => {
+          if (res.message === "success") {
+            closingModal();
+          }
+          setIsSubmitting(false);
+        })
+        .catch((err) => {
+          setIsSubmitting(false);
+          throw err;
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function removeCommaParseFloat(value) {

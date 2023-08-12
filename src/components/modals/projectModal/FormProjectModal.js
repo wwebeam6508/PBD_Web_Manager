@@ -67,10 +67,12 @@ export default function FormProjectModal({
 
   useEffect(() => {
     if (isEdit) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        dateEnd: formOldData.dateEnd,
-      }));
+      if (formOldData.dateEnd) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          dateEnd: new Date(formOldData.dateEnd),
+        }));
+      }
     } else {
       const dateEnd = new Date();
       dateEnd.setHours(0, 0, 0, 0);
@@ -128,6 +130,7 @@ export default function FormProjectModal({
         [name]: value,
       }));
     } else {
+      console.log(formData);
       e.value.setHours(0, 0, 0, 0);
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -185,9 +188,9 @@ export default function FormProjectModal({
 
   const editValidtion = () => {
     //check if form data is not change
-    const compareData = formData;
+    const compareData = _.cloneDeep(formData);
     delete compareData.dateEnd;
-    const compareDataOld = formOldData;
+    const compareDataOld = _.cloneDeep(formOldData);
     delete compareDataOld.dateEnd;
     if (
       isDateEnd === isDateEndOld &&
@@ -245,16 +248,21 @@ export default function FormProjectModal({
             id="customer"
             name="customer"
             placeholder="เลือกชื่อผู้ว่าจ้าง"
-            defaultValue={""}
+            value={{
+              label: customers.find(
+                (customer) => customer.id === formData.customer
+              )?.name,
+            }}
             onChange={(e) => {
               setFormData((prevFormData) => ({
                 ...prevFormData,
                 customer: e.value,
               }));
             }}
-            options={customers.map((customer) => ({
+            options={customers.map((customer, index) => ({
               value: customer.id,
               label: customer.name,
+              key: `${customer.id}-${index}`,
             }))}
           />
         ) : (
@@ -324,6 +332,7 @@ export default function FormProjectModal({
               dateFormat: "dd-MM-yyyy",
             }}
             disabled={!isDateEnd}
+            minDate={formData.date}
           />
         )}
       </FormControl>
@@ -421,23 +430,6 @@ export default function FormProjectModal({
     const res = await getProjectByID(projectID);
     const project = res.data;
 
-    const dateEnd = project.dateEnd
-      ? new Date(project.dateEnd._seconds * 1000)
-      : new Date();
-    const form = {
-      title: project.title,
-      detail: project.detail ? project.detail : "",
-      customer: project.customer,
-      profit: project.profit ? addCommas(removeNonNumeric(project.profit)) : "",
-      date: new Date(project.date._seconds * 1000),
-      dateEnd: project.dateEnd
-        ? new Date(project.dateEnd._seconds * 1000)
-        : dateEnd,
-      images: project.images ? project.images : [],
-    };
-    setFormData(_.cloneDeep(form));
-    setFormOldData(_.cloneDeep(form));
-
     if (project.dateEnd) {
       setIsDateEnd(true);
       setIsDateEndOld(true);
@@ -445,6 +437,20 @@ export default function FormProjectModal({
       setIsDateEnd(false);
       setIsDateEndOld(false);
     }
+    const form = {
+      title: project.title,
+      detail: project.detail ? project.detail : "",
+      customer: project.customer,
+      profit: project.profit ? addCommas(removeNonNumeric(project.profit)) : "",
+      date: new Date(project.date._seconds * 1000),
+      images: project.images ? project.images : [],
+      dateEnd: project.dateEnd
+        ? new Date(project.dateEnd._seconds * 1000)
+        : new Date(),
+    };
+    setFormData(form);
+    setFormOldData(form);
+
     if (project.isCustomerRef) {
       setIsCustomerRef(true);
       setIsCustomerRefOld(true);
@@ -492,7 +498,6 @@ export default function FormProjectModal({
       detail: formData.detail,
       isCustomerRef: isCustomerRef,
     };
-    delete passData.images;
     if (isDateEnd) {
       passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
     }

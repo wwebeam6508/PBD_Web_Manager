@@ -33,47 +33,45 @@ import { getEarnAndSpendEachYearData } from "api/dashboard";
 import MiniCalendar from "components/calendar/MiniCalendar";
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  MdAddTask,
   MdAttachMoney,
-  MdFileCopy,
   MdMoneyOff,
+  MdPlaylistAddCheck,
+  MdWorkOutline,
 } from "react-icons/md";
-import CheckTable from "views/admin/default/components/CheckTable";
 import ComplexTable from "views/admin/default/components/ComplexTable";
-import DailyTraffic from "views/admin/default/components/DailyTraffic";
-import PieCard from "views/admin/default/components/PieCard";
+import WorkPieCard from "views/admin/default/components/WorkPieCard";
+import ProfitPieCard from "views/admin/default/components/ProfitPieCard";
 import Tasks from "views/admin/default/components/Tasks";
 import EarnAndSpendEachYear from "views/admin/default/components/EarnAndSpendEachYear";
 import YearReport from "views/admin/default/components/YearReport";
 import {
-  columnsDataCheck,
   columnsDataComplex,
 } from "views/admin/default/variables/columnsData";
-import tableDataCheck from "views/admin/default/variables/tableDataCheck.json";
 import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
-import { getTotalEarnData } from "api/dashboard";
-import { getTotalExpenseData } from "api/dashboard";
 import { FaMoneyBill } from "react-icons/fa";
-import { getYearsReportData } from "api/dashboard";
+import { getDashboardData } from "api/dashboard";
+import { LoadingContext } from "contexts/LoadingContext";
 
 export default function UserReports() {
+  const { showLoading, hideLoading } = useContext(LoadingContext);
   // Chakra Color Mode
   const brandColor = useColorModeValue("brand.500", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
 
   useEffect(() => {
-    getEarnAndSpendEachYear(new Date().getFullYear());
-    getTotalEarn();
-    getTotalExpense();
-    getYearsReport();
+    getDashboard();
   }, []);
 
   const [earnAndSpendEachYear, setEarnAndSpendEachYear] = useState({});
   const [totalEarn, setTotalEarn] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [yearsReport, setYearsReport] = useState([]);
+  const [totalWork, setTotalWork] = useState(0);
+  const [totalWorkUnfinished, setTotalWorkUnfinished] = useState(0);
+  const [customerWorkRatio, setCustomerWorkRatio] = useState([]);
+  const [customerProfitRatio, setCustomerProfitRatio] = useState([]);
 
 
   return (
@@ -125,7 +123,7 @@ export default function UserReports() {
             />
           }
         textColor={totalEarn - totalExpense > 0 ? "green.500" : "red.500"}
-          growth={((totalEarn - totalExpense) / totalEarn).toFixed(2)*100 + '%'}
+          growth={(((totalEarn - totalExpense) / totalEarn)*100).toFixed(2) + '%'}
         name='กำไร' value={((totalEarn - totalExpense)).toLocaleString() + ' บาท'} />
         <MiniStatistics
           startContent={
@@ -133,40 +131,55 @@ export default function UserReports() {
               w='56px'
               h='56px'
               bg='linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)'
-              icon={<Icon w='28px' h='28px' as={MdAddTask} color='white' />}
+              icon={<Icon w='28px' h='28px' as={MdWorkOutline} color='white' />}
             />
           }
           name='งานที่กำลังดำเนินการ'
-          value='154'
+          value={totalWorkUnfinished}
         />
         <MiniStatistics
           startContent={
             <IconBox
               w='56px'
               h='56px'
-              bg={boxBg}
+              bg='linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)'
               icon={
-                <Icon w='32px' h='32px' as={MdFileCopy} color={brandColor} />
+                <Icon w='32px' h='32px' as={MdPlaylistAddCheck} color={'white'} />
               }
             />
           }
           name='งานทั้งหมด'
-          value='2935'
+          value={totalWork}
         />
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        <EarnAndSpendEachYear data={earnAndSpendEachYear} selectActiveYear={getEarnAndSpendEachYear} />
-        <YearReport data={yearsReport} />
+        {
+          earnAndSpendEachYear.month && (
+            <EarnAndSpendEachYear data={earnAndSpendEachYear} selectActiveYear={getEarnAndSpendEachYear} />
+          )
+        }
+        {
+          yearsReport.length > 0 && (
+            <YearReport data={yearsReport} />
+          )
+        }
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <DailyTraffic />
-          <PieCard />
+          {
+            customerProfitRatio.length > 0 && (
+              <ProfitPieCard customerProfitRatio={customerProfitRatio} />
+            )
+          }
+          {
+            customerWorkRatio.length > 0 && (
+            <WorkPieCard customerWorkRatio={customerWorkRatio} />
+            )
+          }
         </SimpleGrid>
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
+      {/* <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         <ComplexTable
           columnsData={columnsDataComplex}
           tableData={tableDataComplex}
@@ -175,35 +188,35 @@ export default function UserReports() {
           <Tasks />
           <MiniCalendar h='100%' minW='100%' selectRange={false} />
         </SimpleGrid>
-      </SimpleGrid>
+      </SimpleGrid> */}
     </Box>
   );
 
+  async function getDashboard() {
+
+    showLoading();
+    const res = await getDashboardData();
+    if ( res) {
+      const data = res.data;
+      
+      setEarnAndSpendEachYear(data.spentAndEarnEachMonth)
+      setTotalEarn(data.totalEarn)
+      setTotalExpense(data.totalExpense)
+      setYearsReport(data.yearsReport)
+      setTotalWork(data.totalWork)
+      setTotalWorkUnfinished(data.totalWorkUnfinished)
+      setCustomerWorkRatio(data.customerWorkRatio)
+      setCustomerProfitRatio(data.customerProfitRatio)
+    }
+    hideLoading();
+  }
+
   async function getEarnAndSpendEachYear(year) {
+    showLoading();
     const res = await getEarnAndSpendEachYearData(year);
     if ( res) {
       setEarnAndSpendEachYear(res.data);
     }
-  }
-
-  async function getTotalEarn() {
-    const res = await getTotalEarnData();
-    if ( res) {
-      setTotalEarn(res.data);
-    }
-  }
-
-  async function getTotalExpense() {
-    const res = await getTotalExpenseData();
-    if ( res) {
-      setTotalExpense(res.data);
-    }
-  }
-
-  async function getYearsReport() {
-    const res = await getYearsReportData();
-    if ( res) {
-      setYearsReport(res.data);
-    }
+    hideLoading();
   }
 }

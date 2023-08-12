@@ -13,7 +13,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import ReactLoading from "react-loading";
 import { LoadingProvider } from "contexts/LoadingContext.js";
 import LoadingOverlay from "components/loading/LoadingOverlay.js";
-
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 root.render(

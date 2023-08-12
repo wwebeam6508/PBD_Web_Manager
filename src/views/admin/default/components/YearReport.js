@@ -15,16 +15,24 @@ import ReactApexChart from "react-apexcharts";
 export default function YearReport(props) {
   const { ...rest } = props;
 
-  // Chakra Color Mode
-  const textColor = useColorModeValue("secondaryGray.900", "white");
-
   const [ChartData, setChartData] = useState([]);
   const [ChartOptions, setChartOptions] = useState({
+    title: {
+      text: "รายงานผลประกอบการ",
+      align: "left",
+      margin: 10,
+      offsetX: 0,
+      offsetY: 0,
+      floating: false,
+      style: {
+        fontSize: "20px",
+        fontWeight: "bold",
+        fontFamily: undefined,
+        color: "#263238",
+      },
+    },
     chart: {
       id: "years-report",
-      toolbar: {
-        show: false,
-      },
       stacked: true,
       dropShadow: {
         enabled: true,
@@ -35,7 +43,7 @@ export default function YearReport(props) {
         color: "#4318FF",
       },
     },
-    colors: ["#0942FF", "#FF5A5A"],
+    colors: ["#00FF7F", "#FF5A5A"],
     markers: {
       size: 0,
       colors: "white",
@@ -54,8 +62,28 @@ export default function YearReport(props) {
     tooltip: {
       theme: "dark",
     },
+    plotOptions: {
+      bar: {
+        borderRadius: 10,
+        dataLabels: {
+          position: "top", // top, center, bottom
+        },
+      },
+    },
     dataLabels: {
       enabled: true,
+      formatter: function (val) {
+        return (
+          //make number format
+          val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        );
+      },
+      offsetY: -20,
+      style: {
+        fontSize: "12px",
+        colors: ["#304758", "	#8B0000"],
+      },
+      distributed: false,
     },
     stroke: {
       curve: "smooth",
@@ -71,27 +99,24 @@ export default function YearReport(props) {
           fontWeight: "500",
         },
       },
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
     },
     yaxis: {
       show: false,
+      labels: {
+        formatter: function (value) {
+          return (
+            //make number format
+            value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " บาท"
+          );
+        },
+      },
     },
     legend: {
       show: false,
     },
     grid: {
       show: false,
-      column: {
-        color: ["#f20f22", "#39B8FF"],
-        opacity: 0.5,
-      },
     },
-    color: ["#f20f22", "#39B8FF"],
   });
 
   useEffect(() => {
@@ -101,27 +126,13 @@ export default function YearReport(props) {
   }, [rest.data]);
   return (
     <Card align="center" direction="column" w="100%" {...rest}>
-      <Flex align="center" w="100%" px="15px" py="10px">
-        <Text
-          me="auto"
-          color={textColor}
-          fontSize="xl"
-          fontWeight="700"
-          lineHeight="100%"
-        >
-          รายงานผลประกอบการ
-        </Text>
-      </Flex>
-
-      <Box h="240px" mt="auto">
-        <ReactApexChart
-          series={ChartData}
-          options={ChartOptions}
-          type="bar"
-          width="100%"
-          height="100%"
-        />
-      </Box>
+      <ReactApexChart
+        series={ChartData}
+        options={ChartOptions}
+        type="bar"
+        width="100%"
+        height="100%"
+      />
     </Card>
   );
 
@@ -145,7 +156,7 @@ export default function YearReport(props) {
       },
     ];
     const category = rest.data.map((item) => {
-      return item.year;
+      return String(Number(item.year) + 543);
     });
     setChartOptions({
       ...ChartOptions,

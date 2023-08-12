@@ -58,3 +58,28 @@ export const getYearsReportData = async () => {
     return await errorHandle(error);
   }
 };
+
+export const getTotalWorkData = async (year) => {
+  try {
+    const response = await axios.get(`${APIURL}/getTotalWork`, {
+      headers: headers(),
+      params: {
+        year,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};
+
+export const getDashboardData = async () => {
+  try {
+    const response = await axios.get(`${APIURL}/getDashboard`, {
+      headers: headers(),
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};

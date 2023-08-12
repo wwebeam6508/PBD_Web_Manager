@@ -10,25 +10,14 @@ import {
 } from "@chakra-ui/react";
 // Custom components
 import Card from "components/card/Card.js";
-import LineChart from "components/charts/LineChart";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
 // Assets
 export default function EarnAndSpendEachYear(props) {
   const { selectActiveYear, ...rest } = props;
   // Chakra Color Mode
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
-  const textColorSecondary = useColorModeValue("secondaryGray.600", "white");
-  const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
-  const iconColor = useColorModeValue("brand.500", "white");
-  const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
-  const bgHover = useColorModeValue(
-    { bg: "secondaryGray.400" },
-    { bg: "whiteAlpha.50" }
-  );
   const bgFocus = useColorModeValue(
     { bg: "secondaryGray.300" },
     { bg: "whiteAlpha.100" }
@@ -37,10 +26,25 @@ export default function EarnAndSpendEachYear(props) {
   const [totalEarn, setTotalEarn] = useState(0);
   const [lineChartData, setLineChartData] = useState([]);
   const [lineChartOptions, setLineChartOptions] = useState({
+    title: {
+      text: "รายงานรายปี",
+      align: "left",
+      margin: 10,
+      offsetX: 0,
+      offsetY: 0,
+      floating: false,
+      style: {
+        fontSize: "20px",
+        fontWeight: "bold",
+        fontFamily: undefined,
+        color: "#263238",
+      },
+    },
     chart: {
       id: "earn-and-spend-each-year",
       toolbar: {
-        show: false,
+        show: true,
+        theme: "dark",
       },
       dropShadow: {
         enabled: true,
@@ -50,6 +54,7 @@ export default function EarnAndSpendEachYear(props) {
         opacity: 0.1,
         color: "#4318FF",
       },
+      stacked: false,
     },
     colors: ["#0942FF", "#FF5A5A"],
     markers: {
@@ -67,11 +72,27 @@ export default function EarnAndSpendEachYear(props) {
       offsetY: 0,
       showNullDataPoints: true,
     },
-    tooltip: {
-      theme: "dark",
+    plotOptions: {
+      bar: {
+        borderRadius: 10,
+        dataLabels: {
+          position: "top", // top, center, bottom
+        },
+      },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      formatter: function (val) {
+        return val > 0
+          ? //make number format
+            val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          : "";
+      },
+      offsetY: -20,
+      style: {
+        fontSize: "12px",
+        colors: ["#304758", "#FF5A5A"],
+      },
     },
     stroke: {
       curve: "smooth",
@@ -96,16 +117,22 @@ export default function EarnAndSpendEachYear(props) {
     },
     yaxis: {
       show: false,
+      labels: {
+        formatter: function (value) {
+          return (
+            value.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }) + " บาท"
+          );
+        },
+      },
     },
     legend: {
       show: false,
     },
     grid: {
       show: false,
-      column: {
-        color: ["#7551FF", "#39B8FF"],
-        opacity: 0.5,
-      },
     },
     color: ["#7551FF", "#39B8FF"],
   });
@@ -151,35 +178,6 @@ export default function EarnAndSpendEachYear(props) {
       mb="0px"
       {...rest}
     >
-      <Flex align="center">
-        <Text
-          me="auto"
-          color={textColor}
-          fontSize="xl"
-          fontWeight="700"
-          lineHeight="100%"
-        >
-          รายงานรายปี
-        </Text>
-      </Flex>
-      <Flex justify="space-between" ps="0px" pe="20px" pt="5px">
-        <Flex align="center" w="100%">
-          <Select
-            w="15%"
-            value={rest.data.activeYear}
-            onChange={(event) => {
-              selectActiveYear(event.target.value);
-            }}
-          >
-            {rest.data.years &&
-              rest.data.years.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-          </Select>
-        </Flex>
-      </Flex>
       <Flex w="100%" flexDirection={{ base: "column", lg: "row" }}>
         <Flex flexDirection="column" me="20px" mt="28px">
           <Text
@@ -189,6 +187,25 @@ export default function EarnAndSpendEachYear(props) {
             fontWeight="700"
             lineHeight="100%"
           ></Text>
+
+          <Flex align="center" w="100%">
+            <Select
+              width="unset"
+              fontSize="sm"
+              variant="subtle"
+              value={rest.data.activeYear}
+              onChange={(event) => {
+                selectActiveYear(event.target.value);
+              }}
+            >
+              {rest.data.years &&
+                rest.data.years.map((item, index) => (
+                  <option key={index} value={item}>
+                    {String(item + 543)}
+                  </option>
+                ))}
+            </Select>
+          </Flex>
           <Flex align="center" mb="20px">
             <Text
               color="secondaryGray.600"
@@ -222,7 +239,7 @@ export default function EarnAndSpendEachYear(props) {
             </Flex>
           </Flex>
         </Flex>
-        <Box minH="260px" minW="75%" mt="auto">
+        <Box minH="360px" minW="75%" mt="auto">
           <ReactApexChart
             key={`area-earn-spend-month`}
             series={lineChartData}
