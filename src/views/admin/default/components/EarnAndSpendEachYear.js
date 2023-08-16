@@ -82,11 +82,19 @@ export default function EarnAndSpendEachYear(props) {
     },
     dataLabels: {
       enabled: true,
-      formatter: function (val) {
-        return val > 0
-          ? //make number format
-            val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          : "";
+      formatter: function (val, opt) {
+        const localVal =
+          val > 0
+            ? //make number format
+              val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            : "";
+        let mapSeries = opt.w.config.series.map((item) => {
+          return item.data[opt.dataPointIndex];
+        });
+        //find index of max value
+        let maxIndex = mapSeries.indexOf(Math.max(...mapSeries));
+        //check if maxIndex is same as current index
+        return maxIndex === opt.seriesIndex ? localVal : "";
       },
       offsetY: -20,
       style: {
@@ -119,12 +127,12 @@ export default function EarnAndSpendEachYear(props) {
       show: false,
       labels: {
         formatter: function (value) {
-          return (
+          const localValue =
             value.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            }) + " บาท"
-          );
+            }) + " บาท";
+          return localValue;
         },
       },
     },

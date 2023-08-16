@@ -67,6 +67,9 @@ export default function Settings() {
 
   const [ editProjectID, setEditProjectID ] = useState(null);
 
+  const [searchBar, setSearchBar] = useState("");
+  const [searchFilterBar, setSearchFilterBar] = useState("title");
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <FormProjectModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customers={customers} projectID={editProjectID}/>
@@ -82,6 +85,11 @@ export default function Settings() {
           setAddFormOpen={setAddFormOpen}
           setDeleteProjectData={deleteProjectData}
           selectEdit={selectEditData}
+
+          searchBar={searchBar}
+          setSearchBar={setSearchBar}
+          searchFilterBar={searchFilterBar}
+          setSearchFilter={setSearchFilterBar}
         />
       </SimpleGrid>
       {
@@ -94,7 +102,7 @@ export default function Settings() {
 
   async function getProjectsData(selectPage = 1, sortTitle = "", sortType = "") {
     showLoading();
-    const result = await getProjects({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
+    const result = await getProjects({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType, search:searchBar, searchFilter:searchFilterBar });
     if (result) {
       const resultData = result.data.map((item) => {
         let returnData = item

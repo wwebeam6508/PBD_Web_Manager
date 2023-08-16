@@ -51,6 +51,13 @@ export default function Conversion(props) {
     fill: {
       colors: [],
     },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + " งาน";
+        },
+      },
+    },
     tooltip: {
       enabled: true,
       theme: "dark",
@@ -58,8 +65,8 @@ export default function Conversion(props) {
   });
 
   useEffect(() => {
-    if (rest.customerWorkRatio.length > 0) getChartData();
-  }, [rest.customerWorkRatio]);
+    if (rest.data && rest.data.length > 0) getChartData();
+  }, [rest.data]);
   return (
     <Card p="20px" align="center" direction="column" w="100%" {...rest}>
       <Flex
@@ -74,7 +81,7 @@ export default function Conversion(props) {
         </Text>
       </Flex>
 
-      {pieChartData.length > 0 && (
+      {pieChartOptions.labels.length > 0 && pieChartData.length > 0 && (
         <PieChart
           h="100%"
           w="100%"
@@ -93,37 +100,42 @@ export default function Conversion(props) {
         mt="15px"
         mx="auto"
       >
-        {rest.customerWorkRatio.map((work, index) => {
-          return (
-            <Flex key={work.id}>
-              <Flex direction="column" py="5px">
-                <Flex align="center">
-                  <Box
-                    h="8px"
-                    w="8px"
-                    bg={
-                      pieChartOptions.colors.length > 0
-                        ? pieChartOptions.colors[index]
-                        : "white"
-                    }
-                    borderRadius="50%"
-                    me="4px"
-                  />
-                  <Text fontSize="xs" fontWeight="700" mb="5px">
-                    {work.name}
+        {rest.data &&
+          rest.data.map((work, index) => {
+            // show only top 3
+            if (index > 2) return null;
+            return (
+              <Flex key={work.id}>
+                <Flex direction="column" py="5px">
+                  <Flex align="center">
+                    <Box
+                      h="8px"
+                      w="8px"
+                      bg={
+                        pieChartOptions.colors.length > 0
+                          ? pieChartOptions.colors[index]
+                          : "white"
+                      }
+                      borderRadius="50%"
+                      me="4px"
+                    />
+                    <Text fontSize="xs" fontWeight="700" mb="5px">
+                      {work.name}
+                    </Text>
+                  </Flex>
+                  <Text fontSize="lg" color={textColor} fontWeight="700">
+                    {work.workCount}
                   </Text>
+                  <Text fontSize="xs">{work.ratio}%</Text>
                 </Flex>
-                <Text fontSize="lg" color={textColor} fontWeight="700">
-                  {work.workCount}
-                </Text>
-                <Text fontSize="xs">{work.ratio}%</Text>
+                {index < rest.data.length - 1 && (
+                  <VSeparator
+                    mx={{ base: "60px", xl: "60px", "2xl": "60px" }}
+                  />
+                )}
               </Flex>
-              {index < rest.customerWorkRatio.length - 1 && (
-                <VSeparator mx={{ base: "60px", xl: "60px", "2xl": "60px" }} />
-              )}
-            </Flex>
-          );
-        })}
+            );
+          })}
       </Card>
     </Card>
   );
@@ -132,9 +144,9 @@ export default function Conversion(props) {
     const chartData = [];
     const chartLabels = [];
     const chartColorLabels = [];
-    if (rest.customerWorkRatio) {
-      if (pieChartData.length !== rest.customerWorkRatio.length) {
-        rest.customerWorkRatio.map((cusWorkRatio) => {
+    if (rest.data) {
+      if (pieChartData.length !== rest.data.length) {
+        rest.data.map((cusWorkRatio) => {
           chartData.push(cusWorkRatio.workCount);
           chartLabels.push(cusWorkRatio.name);
 

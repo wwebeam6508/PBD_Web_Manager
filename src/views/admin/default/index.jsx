@@ -169,12 +169,12 @@ export default function UserReports() {
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           {
             customerProfitRatio.length > 0 && (
-              <ProfitPieCard customerProfitRatio={customerProfitRatio} />
+              <ProfitPieCard data={customerProfitRatio} />
             )
           }
           {
             customerWorkRatio.length > 0 && (
-            <WorkPieCard customerWorkRatio={customerWorkRatio} />
+              <WorkPieCard data={customerWorkRatio} />
             )
           }
         </SimpleGrid>
@@ -198,7 +198,6 @@ export default function UserReports() {
     const res = await getDashboardData();
     if ( res) {
       const data = res.data;
-      
       setEarnAndSpendEachYear(data.spentAndEarnEachMonth)
       setTotalEarn(data.totalEarn)
       setTotalExpense(data.totalExpense)

@@ -3,6 +3,8 @@ import {
   Flex,
   Icon,
   IconButton,
+  Input,
+  Select,
   Table,
   Tbody,
   Td,
@@ -25,6 +27,7 @@ import Card from "components/card/Card";
 import {
   DeleteIcon,
   EditIcon,
+  SearchIcon,
   TriangleDownIcon,
   TriangleUpIcon,
 } from "@chakra-ui/icons";
@@ -39,7 +42,6 @@ export default function ColumnsTable(props) {
     setDeleteProjectData,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
-
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
   useEffect(() => {
@@ -106,6 +108,44 @@ export default function ColumnsTable(props) {
         >
           งาน
         </Text>
+        <Flex w="30%" align="center">
+          <Input
+            w="80%"
+            name="search"
+            placeholder="ค้นหา"
+            borderRadius="10px"
+            borderColor="gray.200"
+            fontSize="sm"
+            _placeholder={{
+              color: "gray.400",
+            }}
+            _focus={{
+              borderColor: "gray.200",
+            }}
+            value={props.searchBar}
+            onChange={(e) => props.setSearchBar(e.target.value)}
+          />
+          <Select
+            name="searchfilter"
+            fontSize="sm"
+            width="unset"
+            variant="subtle"
+            value={props.searchFilter}
+            onChange={(e) => props.setSearchFilterBar(e.target.value)}
+          >
+            <option value="title">ชื่องาน</option>
+            <option value="customer">ชื่อผู้ว่าจ้าง</option>
+          </Select>
+          <Button marginLeft="10px">
+            <Icon
+              as={SearchIcon}
+              color="gray.400"
+              fontSize="20px"
+              cursor="pointer"
+            />
+          </Button>
+        </Flex>
+
         <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
