@@ -59,7 +59,7 @@ export default function Default(props) {
                 </Text>
               ) : (
                 <Text
-                  color="red.500"
+                  color={textColor}
                   fontSize="sm"
                   fontWeight="500"
                   mt="4px"

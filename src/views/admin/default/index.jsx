@@ -1,4 +1,4 @@
-                                                                                                          /*!
+/*!
   _   _  ___  ____  ___ ________  _   _   _   _ ___   
  | | | |/ _ \|  _ \|_ _|__  / _ \| \ | | | | | |_ _| 
  | |_| | | | | |_) || |  / / | | |  \| | | | | || | 
@@ -21,12 +21,7 @@
 */
 
 // Chakra imports
-import {
-  Box,
-  Icon,
-  SimpleGrid,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Icon, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 import { getEarnAndSpendEachYearData } from "api/dashboard";
 // Assets
 // Custom components
@@ -46,9 +41,7 @@ import ProfitPieCard from "views/admin/default/components/ProfitPieCard";
 import Tasks from "views/admin/default/components/Tasks";
 import EarnAndSpendEachYear from "views/admin/default/components/EarnAndSpendEachYear";
 import YearReport from "views/admin/default/components/YearReport";
-import {
-  columnsDataComplex,
-} from "views/admin/default/variables/columnsData";
+import { columnsDataComplex } from "views/admin/default/variables/columnsData";
 import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
 import { FaMoneyBill } from "react-icons/fa";
 import { getDashboardData } from "api/dashboard";
@@ -73,110 +66,112 @@ export default function UserReports() {
   const [customerWorkRatio, setCustomerWorkRatio] = useState([]);
   const [customerProfitRatio, setCustomerProfitRatio] = useState([]);
 
-
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid
         columns={{ base: 1, md: 2, lg: 3, "2xl": 6 }}
-        gap='20px'
-        mb='20px'>
+        gap="20px"
+        mb="20px"
+      >
         <MiniStatistics
           startContent={
             <IconBox
-              w='56px'
-              h='56px'
+              w="56px"
+              h="56px"
               bg={boxBg}
               icon={
-                <Icon w='32px' h='32px' as={MdAttachMoney} color={brandColor} />
+                <Icon w="32px" h="32px" as={MdAttachMoney} color={brandColor} />
               }
             />
           }
-          name='รายได้ทั้งหมด'
+          name={`รายได้`}
           textColor={useColorModeValue("blue.500", "blue.200")}
           // show value of totalEarn as localstring
-          value={totalEarn.toLocaleString() + ' บาท'}
+          value={totalEarn.toLocaleString() + " บาท"}
         />
         <MiniStatistics
           startContent={
             <IconBox
-              w='56px'
-              h='56px'
+              w="56px"
+              h="56px"
               bg={boxBg}
               icon={
-                <Icon w='32px' h='32px' as={MdMoneyOff} color={brandColor} />
+                <Icon w="32px" h="32px" as={MdMoneyOff} color={brandColor} />
               }
             />
           }
           textColor={useColorModeValue("red.500", "red.200")}
-          name='รายจ่ายทั้งหมด'
-          value={totalExpense.toLocaleString() + ' บาท'}
+          name={`รายจ่าย `}
+          value={totalExpense.toLocaleString() + " บาท"}
         />
         <MiniStatistics
           startContent={
             <IconBox
-              w='56px'
-              h='56px'
+              w="56px"
+              h="56px"
               bg={boxBg}
               icon={
-                <Icon w='32px' h='32px' as={FaMoneyBill} color={brandColor} />
+                <Icon w="32px" h="32px" as={FaMoneyBill} color={brandColor} />
               }
             />
           }
-        textColor={totalEarn - totalExpense > 0 ? "green.500" : "red.500"}
-          growth={(((totalEarn - totalExpense) / totalEarn)*100).toFixed(2) + '%'}
-        name='กำไร' value={((totalEarn - totalExpense)).toLocaleString() + ' บาท'} />
+          textColor={totalEarn - totalExpense > 0 ? "green.500" : "red.500"}
+          growth={
+            (((totalEarn - totalExpense) / totalEarn) * 100).toFixed(2) + "%"
+          }
+          name={`กำไร`}
+          value={(totalEarn - totalExpense).toLocaleString() + " บาท"}
+        />
         <MiniStatistics
           startContent={
             <IconBox
-              w='56px'
-              h='56px'
-              bg='linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)'
-              icon={<Icon w='28px' h='28px' as={MdWorkOutline} color='white' />}
+              w="56px"
+              h="56px"
+              bg="linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)"
+              icon={<Icon w="28px" h="28px" as={MdWorkOutline} color="white" />}
             />
           }
-          name='งานที่กำลังดำเนินการ'
+          name="งานที่กำลังดำเนินการ"
           value={totalWorkUnfinished}
         />
         <MiniStatistics
           startContent={
             <IconBox
-              w='56px'
-              h='56px'
-              bg='linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)'
+              w="56px"
+              h="56px"
+              bg="linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)"
               icon={
-                <Icon w='32px' h='32px' as={MdPlaylistAddCheck} color={'white'} />
+                <Icon
+                  w="32px"
+                  h="32px"
+                  as={MdPlaylistAddCheck}
+                  color={"white"}
+                />
               }
             />
           }
-          name='งานทั้งหมด'
+          name="งานทั้งหมด"
           value={totalWork}
         />
       </SimpleGrid>
 
-      <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        {
-          earnAndSpendEachYear.month && (
-            <EarnAndSpendEachYear data={earnAndSpendEachYear} selectActiveYear={getEarnAndSpendEachYear} />
-          )
-        }
-        {
-          yearsReport.length > 0 && (
-            <YearReport data={yearsReport} />
-          )
-        }
+      <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px" mb="20px">
+        {earnAndSpendEachYear.month && (
+          <EarnAndSpendEachYear
+            data={earnAndSpendEachYear}
+            selectActiveYear={getEarnAndSpendEachYear}
+          />
+        )}
+        {yearsReport.length > 0 && <YearReport data={yearsReport} />}
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          {
-            customerProfitRatio.length > 0 && (
-              <ProfitPieCard data={customerProfitRatio} />
-            )
-          }
-          {
-            customerWorkRatio.length > 0 && (
-              <WorkPieCard data={customerWorkRatio} />
-            )
-          }
+      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap="20px" mb="20px">
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px">
+          {customerProfitRatio.length > 0 && (
+            <ProfitPieCard data={customerProfitRatio} />
+          )}
+          {customerWorkRatio.length > 0 && (
+            <WorkPieCard data={customerWorkRatio} />
+          )}
         </SimpleGrid>
       </SimpleGrid>
       {/* <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
@@ -193,19 +188,18 @@ export default function UserReports() {
   );
 
   async function getDashboard() {
-
     showLoading();
     const res = await getDashboardData();
-    if ( res) {
+    if (res) {
       const data = res.data;
-      setEarnAndSpendEachYear(data.spentAndEarnEachMonth)
-      setTotalEarn(data.totalEarn)
-      setTotalExpense(data.totalExpense)
-      setYearsReport(data.yearsReport)
-      setTotalWork(data.totalWork)
-      setTotalWorkUnfinished(data.totalWorkUnfinished)
-      setCustomerWorkRatio(data.customerWorkRatio)
-      setCustomerProfitRatio(data.customerProfitRatio)
+      setEarnAndSpendEachYear(data.spentAndEarnEachMonth);
+      setTotalEarn(data.totalEarn);
+      setTotalExpense(data.totalExpense);
+      setYearsReport(data.yearsReport);
+      setTotalWork(data.totalWork);
+      setTotalWorkUnfinished(data.totalWorkUnfinished);
+      setCustomerWorkRatio(data.customerWorkRatio);
+      setCustomerProfitRatio(data.customerProfitRatio);
     }
     hideLoading();
   }
@@ -213,7 +207,7 @@ export default function UserReports() {
   async function getEarnAndSpendEachYear(year) {
     showLoading();
     const res = await getEarnAndSpendEachYearData(year);
-    if ( res) {
+    if (res) {
       setEarnAndSpendEachYear(res.data);
     }
     hideLoading();
