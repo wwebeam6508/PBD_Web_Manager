@@ -23,7 +23,7 @@
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import ColumnsTable from "views/admin/expenses/components/ColumnsTable";
-import React, {useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { getExpenses } from "api/expenses";
 import { expenseDataColumns } from "./variables/columnsData";
 import moment from "moment";
@@ -37,27 +37,31 @@ import { getProjectTitle } from "api/expenses";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
-
   const { showLoading, hideLoading } = useContext(LoadingContext);
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [ isEdit , setEdit ] = useState(false);
-  const [ projects, setProjects ] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isEdit, setEdit] = useState(false);
+  const [projects, setProjects] = useState([]);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
     pageSize: 10,
     firstSort: "date",
-    orderBy: "desc"
+    orderBy: "desc",
   });
 
   useEffect(() => {
-    getExpensesData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
+    getExpensesData(
+      defaultSetting.page,
+      defaultSetting.firstSort,
+      defaultSetting.orderBy
+    );
     getProjectTitle().then((res) => {
-        if ( res) {
-          setProjects(res.data)
-        }
+      if (res) {
+        let projectData = res.data;
+        projectData.unshift({ id: "", title: "ไม่มี" });
+        setProjects(projectData);
       }
-    )
+    });
   }, []);
 
   const [expenses, setExpenses] = React.useState([]);
@@ -65,15 +69,22 @@ export default function Settings() {
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
-  const [ editExpenseID, setEditExpenseID ] = useState(null);
+  const [editExpenseID, setEditExpenseID] = useState(null);
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <FormExpenseModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} projects={projects} expenseID={editExpenseID}/>
+      <FormExpenseModal
+        closeModal={onCloseModal}
+        stateOpen={isOpen}
+        isEdit={isEdit}
+        projects={projects}
+        expenseID={editExpenseID}
+      />
       <SimpleGrid
-        mb='20px'
+        mb="20px"
         columns={{ sm: 1, md: 1 }}
-        spacing={{ base: "20px", xl: "20px" }}>
+        spacing={{ base: "20px", xl: "20px" }}
+      >
         <ColumnsTable
           columnsData={expenseDataColumns}
           tableData={expenses}
@@ -84,47 +95,64 @@ export default function Settings() {
           selectEdit={selectEditData}
         />
       </SimpleGrid>
-      {
-        expenses.length > 0 && (
-          <PaginationButton setPage={getExpensesData} pages={pages} currentPage={currentPage} lastPage={lastPage} />
-        )
-      }
+      {expenses.length > 0 && (
+        <PaginationButton
+          setPage={(pageNum) => {
+            getExpensesData(
+              pageNum,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
+          }}
+          pages={pages}
+          currentPage={currentPage}
+          lastPage={lastPage}
+        />
+      )}
     </Box>
   );
 
-  async function getExpensesData(selectPage = 1, sortTitle = "", sortType = "") {
+  async function getExpensesData(
+    selectPage = 1,
+    sortTitle = "",
+    sortType = ""
+  ) {
     showLoading();
-    const result = await getExpenses({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
+    const result = await getExpenses({
+      page: selectPage,
+      pageSize: defaultSetting.pageSize,
+      sortTitle: sortTitle,
+      sortType: sortType,
+    });
     if (result) {
       const resultData = result.data.map((item) => {
-        let returnData = item
+        let returnData = item;
         if (returnData.date) {
-          returnData.date = moment(returnData.date).format('DD.MM.YYYY')
+          returnData.date = moment(returnData.date).format("DD.MM.YYYY");
         }
         if (returnData.dateEnd) {
-          returnData.dateEnd = moment(returnData.dateEnd).format('DD.MM.YYYY')
+          returnData.dateEnd = moment(returnData.dateEnd).format("DD.MM.YYYY");
         }
-        return returnData
+        return returnData;
       });
       setLastPage(result.lastPage);
       setCurrentPage(result.currentPage);
       setPages(result.pages);
       setExpenses(resultData);
-      
     }
     hideLoading();
   }
 
-  function selectSortData (sortTitle, sortType) {
+  function selectSortData(sortTitle, sortType) {
     setDefaultSetting({
       ...defaultSetting,
       firstSort: sortTitle,
-      orderBy: sortType
-    })
-    getExpensesData(currentPage, sortTitle, sortType)
+      orderBy: sortType,
+    });
+    getExpensesData(currentPage, sortTitle, sortType);
   }
 
-  function deleteExpenseData (expenseID) {
+  function deleteExpenseData(expenseID) {
     MySwal.fire({
       title: "คุณแน่ใจหรือว่าจะลบ?",
       text: "คุณจะไม่สามารถย้อนกลับได้!",
@@ -133,40 +161,45 @@ export default function Settings() {
       confirmButtonText: "ใช่, ลบเลย!",
       cancelButtonText: "ไม่, ยกเลิก!",
       confirmButtonColor: "red",
-      reverseButtons: true
+      reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         showLoading();
-        const res = await deleteExpense(expenseID)
+        const res = await deleteExpense(expenseID);
         if (res) {
           if (res.message === "success") {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
-            await getExpensesData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
+            await getExpensesData(
+              currentPage,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
           }
-            
         }
         hideLoading();
       }
-    }
+    });
+  }
+
+  function setAddFormOpen() {
+    onOpen();
+    setEdit(false);
+  }
+
+  function selectEditData(expenseID) {
+    setEditExpenseID(expenseID);
+    setEdit(true);
+    onOpen();
+  }
+
+  function onCloseModal() {
+    setEditExpenseID(null);
+    setEdit(false);
+    getExpensesData(
+      currentPage,
+      defaultSetting.firstSort,
+      defaultSetting.orderBy
     );
-  }
-
-
-  function setAddFormOpen () {
-    onOpen()
-    setEdit(false)
-  }
-
-  function selectEditData (expenseID) {
-    setEditExpenseID(expenseID)
-    setEdit(true)
-    onOpen()
-  }
-  
-  function onCloseModal () {
-    setEditExpenseID(null)
-    setEdit(false)
-    getExpensesData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
-    onClose()
+    onClose();
   }
 }

@@ -55,8 +55,6 @@ export default function FormExpenseModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
-  const [isWorkRef, setIsWorkRef] = useState(false);
-  const [isWorkRefOld, setIsWorkRefOld] = useState(false);
   const [isVat, setIsVat] = useState(false);
 
   useEffect(() => {
@@ -67,41 +65,6 @@ export default function FormExpenseModal({
       setFormOldData(defaultForm);
     }
   }, [isEdit]);
-
-  useEffect(() => {
-    if (isEdit) {
-      if (isWorkRef) {
-        if (isWorkRefOld) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            workRef: formOldData.workRef,
-          }));
-        } else {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            workRef: "",
-          }));
-        }
-      } else {
-        if (isWorkRefOld) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            workRef: "",
-          }));
-        } else {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            workRef: formOldData.workRef,
-          }));
-        }
-      }
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        workRef: "",
-      }));
-    }
-  }, [isWorkRef]);
 
   useEffect(() => {
     if (isVat) {
@@ -175,10 +138,7 @@ export default function FormExpenseModal({
     //check if form data is not change
     const compareData = formData;
     const compareDataOld = formOldData;
-    if (
-      isWorkRef === isWorkRefOld &&
-      JSON.stringify(compareData) === JSON.stringify(compareDataOld)
-    ) {
+    if (JSON.stringify(compareData) === JSON.stringify(compareDataOld)) {
       return true;
     }
     return false;
@@ -258,44 +218,26 @@ export default function FormExpenseModal({
 
         <FormControl marginBottom="1rem">
           <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
-          <Checkbox
-            id="workRef"
+          <Select
+            placeholder="เลือกงาน"
             name="workRef"
-            isChecked={isWorkRef}
-            onChange={() => setIsWorkRef((prev) => !prev)}
-          >
-            เลือกอ้างอิงงาน
-          </Checkbox>
-          {isWorkRef ? (
-            <Select
-              placeholder="เลือกงาน"
-              name="workRef"
-              value={{
-                label: projects.find(
-                  (project) => project.id === formData.workRef
-                )?.title,
-              }}
-              onChange={(e) => {
-                setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  workRef: e.value,
-                }));
-              }}
-              options={projects.map((project) => ({
+            value={{
+              label: projects.find((project) => project.id === formData.workRef)
+                ?.title,
+            }}
+            onChange={(e) => {
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                workRef: e.value,
+              }));
+            }}
+            options={projects.map((project) => {
+              return {
                 value: project.id,
                 label: project.title,
-              }))}
-            />
-          ) : (
-            <Input
-              type="text"
-              id="workRef"
-              name="workRef"
-              placeholder="ชื่ออ้างอิงงาน"
-              value={formData.workRef}
-              onChange={handleChange}
-            />
-          )}
+              };
+            })}
+          />
         </FormControl>
       </Grid>
       <Grid>
@@ -484,7 +426,7 @@ export default function FormExpenseModal({
     const form = {
       ...expense,
       detail: expense.detail ? expense.detail : "",
-      date: new Date(expense.date._seconds * 1000),
+      date: new Date(expense.date),
       lists: expense.lists
         ? expense.lists.map((list) => {
             return {
@@ -497,10 +439,6 @@ export default function FormExpenseModal({
     };
     setFormData(_.cloneDeep(form));
     setFormOldData(_.cloneDeep(form));
-    if (expense.workRef) {
-      setIsWorkRef(true);
-      setIsWorkRefOld(true);
-    }
     if (expense.currentVat > 0) {
       setIsVat(true);
     }
@@ -522,7 +460,6 @@ export default function FormExpenseModal({
           price: removeCommaParseFloat(list.price),
         };
       }),
-      isWorkRef: isWorkRef,
       currentVat: isVat ? formData.currentVat : 0,
     };
     try {
@@ -537,9 +474,7 @@ export default function FormExpenseModal({
           setIsSubmitting(false);
           throw err;
         });
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   async function editSubmit() {
@@ -578,9 +513,9 @@ export default function FormExpenseModal({
       addLists: addLists,
       removeLists: removeLists,
       currentVat: isVat ? formData.currentVat : 0,
-      isWorkRef: isWorkRef,
     };
     delete passData.lists;
+    delete passData._id;
     try {
       await updateExpense(passData)
         .then((res) => {
