@@ -20,6 +20,7 @@ import {
   Spinner,
   NumberInput,
   NumberInputField,
+  Container,
 } from "@chakra-ui/react";
 import Select from "react-select";
 import React, { useEffect, useState } from "react";
@@ -168,220 +169,228 @@ export default function FormExpenseModal({
 
   const formAddExpense = (
     <form>
-      <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-        <GridItem>
-          <FormControl marginBottom="1rem">
-            <FormLabel htmlFor="title">ชื่อรายการ</FormLabel>
-            <Input
-              type="text"
-              id="title"
-              name="title"
-              placeholder="ชื่อรายการ"
-              value={formData.title}
-              onChange={handleChange}
-            />
-            {isEmpty(formData.title) && (
-              <Text color="red.500" marginBottom="1rem">
-                กรุณากรอกชื่อรายการใช้จ่าย
-              </Text>
-            )}
-          </FormControl>
-        </GridItem>
-        <GridItem>
-          <FormControl marginBottom="1rem">
-            <FormLabel htmlFor="expense">รายละเอียด</FormLabel>
-            <Textarea
-              type="text"
-              id="detail"
-              name="detail"
-              placeholder="รายละเอียด"
-              value={formData.detail}
-              onChange={handleChange}
-            />
-          </FormControl>
-        </GridItem>
+      <Container maxW="container.xl">
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel htmlFor="title">ชื่อรายการ</FormLabel>
+              <Input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="ชื่อรายการ"
+                value={formData.title}
+                onChange={handleChange}
+              />
+              {isEmpty(formData.title) && (
+                <Text color="red.500" marginBottom="1rem">
+                  กรุณากรอกชื่อรายการใช้จ่าย
+                </Text>
+              )}
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel htmlFor="expense">รายละเอียด</FormLabel>
+              <Textarea
+                type="text"
+                id="detail"
+                name="detail"
+                rows={10}
+                placeholder="รายละเอียด"
+                value={formData.detail}
+                onChange={handleChange}
+              />
+            </FormControl>
+          </GridItem>
 
-        <GridItem>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel htmlFor="date">วันที่</FormLabel>
+              <SingleDatepicker
+                name="date"
+                id="date"
+                date={formData.date}
+                onDateChange={(e) => handleChange({ name: "date", value: e })}
+                configs={{
+                  dateFormat: "dd-MM-yyyy",
+                }}
+              />
+            </FormControl>
+          </GridItem>
+
           <FormControl marginBottom="1rem">
-            <FormLabel htmlFor="date">วันที่</FormLabel>
-            <SingleDatepicker
-              name="date"
-              id="date"
-              date={formData.date}
-              onDateChange={(e) => handleChange({ name: "date", value: e })}
-              configs={{
-                dateFormat: "dd-MM-yyyy",
+            <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
+            <Select
+              placeholder="เลือกงาน"
+              name="workRef"
+              value={{
+                label: projects.find(
+                  (project) => project.id === formData.workRef
+                )?.title,
               }}
+              onChange={(e) => {
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  workRef: e.value,
+                }));
+              }}
+              options={projects.map((project) => {
+                return {
+                  value: project.id,
+                  label: project.title,
+                };
+              })}
             />
           </FormControl>
-        </GridItem>
+        </Grid>
+        <Grid>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel htmlFor="lists">รายการ</FormLabel>
+              {
+                <Grid templateColumns="repeat(12, 1fr)" gap={1}>
+                  {formData.lists.map((list, index) => (
+                    <GridItem colSpan={12} key={`list${index}`}>
+                      <Grid templateColumns="repeat(12, 1fr)" gap={1}>
+                        <GridItem colSpan={9}>
+                          <Input
+                            type="text"
+                            id="lists_title"
+                            name="lists_title"
+                            placeholder="รายการใช้จ่าย"
+                            value={list.title}
+                            onChange={(e) => handleListChange(e, index)}
+                          />
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <Input
+                            type="text"
+                            id="lists_price"
+                            name="lists_price"
+                            placeholder="ราคา"
+                            value={list.price}
+                            onChange={(e) => handleListChange(e, index)}
+                          />
+                        </GridItem>
+                        <GridItem colSpan={1}>
+                          <IoRemoveCircleOutline
+                            size={20}
+                            color="red"
+                            onClick={() => handleRemoveList(index)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </GridItem>
+                      </Grid>
+                    </GridItem>
+                  ))}
+                </Grid>
+              }
+              <Button
+                marginTop={"1rem"}
+                left={"50%"}
+                type="button"
+                onClick={onAddLists}
+              >
+                <AddIcon />
+              </Button>
 
-        <FormControl marginBottom="1rem">
-          <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
-          <Select
-            placeholder="เลือกงาน"
-            name="workRef"
-            value={{
-              label: projects.find((project) => project.id === formData.workRef)
-                ?.title,
-            }}
-            onChange={(e) => {
-              setFormData((prevFormData) => ({
-                ...prevFormData,
-                workRef: e.value,
-              }));
-            }}
-            options={projects.map((project) => {
-              return {
-                value: project.id,
-                label: project.title,
-              };
-            })}
-          />
-        </FormControl>
-      </Grid>
-      <Grid>
-        <GridItem>
-          <FormControl marginBottom="1rem">
-            <FormLabel htmlFor="lists">รายการ</FormLabel>
-            {
-              <Grid templateColumns="repeat(12, 1fr)" gap={1}>
-                {formData.lists.map((list, index) => (
-                  <GridItem colSpan={12} key={`list${index}`}>
-                    <Grid templateColumns="repeat(12, 1fr)" gap={1}>
-                      <GridItem colSpan={9}>
-                        <Input
-                          type="text"
-                          id="lists_title"
-                          name="lists_title"
-                          placeholder="รายการใช้จ่าย"
-                          value={list.title}
-                          onChange={(e) => handleListChange(e, index)}
-                        />
-                      </GridItem>
-                      <GridItem colSpan={2}>
-                        <Input
-                          type="text"
-                          id="lists_price"
-                          name="lists_price"
-                          placeholder="ราคา"
-                          value={list.price}
-                          onChange={(e) => handleListChange(e, index)}
-                        />
-                      </GridItem>
-                      <GridItem colSpan={1}>
-                        <IoRemoveCircleOutline
-                          size={20}
-                          color="red"
-                          onClick={() => handleRemoveList(index)}
-                          style={{ cursor: "pointer" }}
-                        />
-                      </GridItem>
-                    </Grid>
+              <GridItem colSpan={12}>
+                <Grid templateColumns="repeat(12, 1fr)" gap={1}>
+                  <GridItem colStart={10} colSpan={1}>
+                    <Text fontSize="sm" fontWeight="700">
+                      ราคารวม
+                    </Text>
                   </GridItem>
-                ))}
-              </Grid>
-            }
+                  <GridItem colStart={11} colSpan={1}>
+                    <Text fontSize="sm" color={`red.400`} fontWeight="700">
+                      {formData.lists
+                        .reduce((sum, list) => {
+                          return sum + Number(removeNonNumeric(list.price));
+                        }, 0)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </Text>
+                  </GridItem>
+                  <GridItem colStart={10} colSpan={2}>
+                    <Checkbox
+                      id="isVat"
+                      name="isVat"
+                      isChecked={isVat}
+                      onChange={() => {
+                        setIsVat((prevIsVat) => !prevIsVat);
+                      }}
+                    >
+                      บิลภาษี
+                    </Checkbox>
+                  </GridItem>
+                  {isVat && (
+                    <>
+                      <GridItem colStart={10} colSpan={1}>
+                        <Text fontWeight="700">ภาษีมูลค่าเพิ่ม</Text>
+                        <NumberInput
+                          defaultValue={7}
+                          id="currentVat"
+                          name="currentVat"
+                          value={formData.currentVat}
+                          onChange={(e) => {
+                            handleChange({
+                              target: {
+                                name: "currentVat",
+                                value: e,
+                              },
+                            });
+                          }}
+                        >
+                          <NumberInputField />
+                        </NumberInput>
+                        %
+                      </GridItem>
+                      <GridItem colStart={11} colSpan={1}>
+                        <Text
+                          fontSize="sm"
+                          color={`green.400`}
+                          fontWeight="700"
+                        >
+                          {(
+                            formData.lists.reduce((sum, list) => {
+                              return sum + Number(removeNonNumeric(list.price));
+                            }, 0) *
+                            (formData.currentVat / 100)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          ).toFixed(2)}
+                        </Text>
+                      </GridItem>
+                    </>
+                  )}
+                </Grid>
+              </GridItem>
+            </FormControl>
+          </GridItem>
+        </Grid>
+        <div style={{ textAlign: "center" }}>
+          {!isEdit ? (
             <Button
-              marginTop={"1rem"}
-              left={"50%"}
+              onClick={addSubmit}
+              disabled={validation()}
               type="button"
-              onClick={onAddLists}
+              color="green.500"
             >
-              <AddIcon />
+              เพิ่ม
             </Button>
-
-            <GridItem colSpan={12}>
-              <Grid templateColumns="repeat(12, 1fr)" gap={1}>
-                <GridItem colStart={10} colSpan={1}>
-                  <Text fontSize="sm" fontWeight="700">
-                    ราคารวม
-                  </Text>
-                </GridItem>
-                <GridItem colStart={11} colSpan={1}>
-                  <Text fontSize="sm" color={`red.400`} fontWeight="700">
-                    {formData.lists
-                      .reduce((sum, list) => {
-                        return sum + Number(removeNonNumeric(list.price));
-                      }, 0)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </Text>
-                </GridItem>
-                <GridItem colStart={10} colSpan={2}>
-                  <Checkbox
-                    id="isVat"
-                    name="isVat"
-                    isChecked={isVat}
-                    onChange={() => {
-                      setIsVat((prevIsVat) => !prevIsVat);
-                    }}
-                  >
-                    บิลภาษี
-                  </Checkbox>
-                </GridItem>
-                {isVat && (
-                  <>
-                    <GridItem colStart={10} colSpan={1}>
-                      <Text fontWeight="700">ภาษีมูลค่าเพิ่ม</Text>
-                      <NumberInput
-                        defaultValue={7}
-                        id="currentVat"
-                        name="currentVat"
-                        value={formData.currentVat}
-                        onChange={(e) => {
-                          handleChange({
-                            target: {
-                              name: "currentVat",
-                              value: e,
-                            },
-                          });
-                        }}
-                      >
-                        <NumberInputField />
-                      </NumberInput>
-                      %
-                    </GridItem>
-                    <GridItem colStart={11} colSpan={1}>
-                      <Text fontSize="sm" color={`green.400`} fontWeight="700">
-                        {(
-                          formData.lists.reduce((sum, list) => {
-                            return sum + Number(removeNonNumeric(list.price));
-                          }, 0) *
-                          (formData.currentVat / 100)
-                            .toString()
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        ).toFixed(2)}
-                      </Text>
-                    </GridItem>
-                  </>
-                )}
-              </Grid>
-            </GridItem>
-          </FormControl>
-        </GridItem>
-      </Grid>
-      <div style={{ textAlign: "center" }}>
-        {!isEdit ? (
-          <Button
-            onClick={addSubmit}
-            disabled={validation()}
-            type="button"
-            color="green.500"
-          >
-            เพิ่ม
-          </Button>
-        ) : (
-          <Button
-            onClick={editSubmit}
-            disabled={editValidtion() || validation()}
-            type="button"
-            color="yellow.500"
-          >
-            แก้ไข
-          </Button>
-        )}
-      </div>
+          ) : (
+            <Button
+              onClick={editSubmit}
+              disabled={editValidtion() || validation()}
+              type="button"
+              color="yellow.500"
+            >
+              แก้ไข
+            </Button>
+          )}
+        </div>
+      </Container>
     </form>
   );
 
