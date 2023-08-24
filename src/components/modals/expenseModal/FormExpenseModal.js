@@ -173,7 +173,9 @@ export default function FormExpenseModal({
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           <GridItem>
             <FormControl marginBottom="1rem">
-              <FormLabel htmlFor="title">ชื่อรายการ</FormLabel>
+              <FormLabel fontSize={20} htmlFor="title">
+                ชื่อรายการ
+              </FormLabel>
               <Input
                 type="text"
                 id="title"
@@ -191,7 +193,9 @@ export default function FormExpenseModal({
           </GridItem>
           <GridItem>
             <FormControl marginBottom="1rem">
-              <FormLabel htmlFor="expense">รายละเอียด</FormLabel>
+              <FormLabel fontSize={20} htmlFor="expense">
+                รายละเอียด
+              </FormLabel>
               <Textarea
                 type="text"
                 id="detail"
@@ -206,7 +210,9 @@ export default function FormExpenseModal({
 
           <GridItem>
             <FormControl marginBottom="1rem">
-              <FormLabel htmlFor="date">วันที่</FormLabel>
+              <FormLabel fontSize={20} htmlFor="date">
+                วันที่
+              </FormLabel>
               <SingleDatepicker
                 name="date"
                 id="date"
@@ -220,7 +226,9 @@ export default function FormExpenseModal({
           </GridItem>
 
           <FormControl marginBottom="1rem">
-            <FormLabel htmlFor="workRef">อ้างอิงงาน</FormLabel>
+            <FormLabel fontSize={20} htmlFor="workRef">
+              อ้างอิงงาน
+            </FormLabel>
             <Select
               placeholder="เลือกงาน"
               name="workRef"
@@ -247,7 +255,9 @@ export default function FormExpenseModal({
         <Grid>
           <GridItem>
             <FormControl marginBottom="1rem">
-              <FormLabel htmlFor="lists">รายการ</FormLabel>
+              <FormLabel fontSize={20} htmlFor="lists">
+                รายการ
+              </FormLabel>
               {
                 <Grid templateColumns="repeat(12, 1fr)" gap={1}>
                   {formData.lists.map((list, index) => (

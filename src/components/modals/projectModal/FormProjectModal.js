@@ -18,6 +18,7 @@ import {
   GridItem,
   Spinner,
   Center,
+  Container,
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { getProjectByID } from "api/projects";
@@ -29,6 +30,10 @@ import { fileToUrl } from "util/helper";
 import { isEmpty } from "util/helper";
 import _ from "lodash";
 import { updateProject } from "api/projects";
+//import sweet alert
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 export default function FormProjectModal({
   stateOpen = false,
@@ -53,9 +58,6 @@ export default function FormProjectModal({
   const [isDateEnd, setIsDateEnd] = useState(false);
   const [isDateEndOld, setIsDateEndOld] = useState(false);
 
-  const [isCustomerRef, setIsCustomerRef] = useState(true);
-  const [isCustomerRefOld, setIsCustomerRefOld] = useState(true);
-
   useEffect(() => {
     if (isEdit) {
       getEditProjectData();
@@ -64,59 +66,6 @@ export default function FormProjectModal({
       setFormOldData(defaultForm);
     }
   }, [isEdit]);
-
-  useEffect(() => {
-    if (isEdit) {
-      if (formOldData.dateEnd) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          dateEnd: new Date(formOldData.dateEnd),
-        }));
-      }
-    } else {
-      const dateEnd = new Date();
-      dateEnd.setHours(0, 0, 0, 0);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        dateEnd: dateEnd,
-      }));
-    }
-  }, [isDateEnd]);
-
-  useEffect(() => {
-    if (isEdit) {
-      if (isCustomerRef) {
-        if (isCustomerRefOld) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            customer: formOldData.customer,
-          }));
-        } else {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            customer: "",
-          }));
-        }
-      } else {
-        if (isCustomerRefOld) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            customer: "",
-          }));
-        } else {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            customer: formOldData.customer,
-          }));
-        }
-      }
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        customer: "",
-      }));
-    }
-  }, [isCustomerRef]);
 
   const handleChange = (e) => {
     if (e.target) {
@@ -141,8 +90,6 @@ export default function FormProjectModal({
 
   const addCommas = (num) =>
     num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  // const addDot = (num) =>
-  // num.toString().replace(/\B(?=() /gm, ".");
   const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
 
   const handleFileChange = (e) => {
@@ -236,45 +183,26 @@ export default function FormProjectModal({
       </FormControl>
       <FormControl marginBottom="1rem">
         <FormLabel htmlFor="customer">ชื่อผู้ว่าจ้าง</FormLabel>
-        <Checkbox
-          name="isCustomerRef"
-          id="isCustomerRef"
-          isChecked={isCustomerRef}
-          value={isCustomerRef}
-          onChange={() => setIsCustomerRef((prev) => !prev)}
+        <Select
+          id="customer"
+          name="customer"
+          placeholder="เลือกชื่อผู้ว่าจ้าง"
+          value={{
+            label: customers.find(
+              (customer) => customer.id === formData.customer
+            )?.name,
+          }}
+          onChange={(e) => {
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              customer: e.value,
+            }));
+          }}
+          options={customers.map((customer, index) => ({
+            value: customer.id,
+            label: customer.name,
+          }))}
         />
-        {isCustomerRef ? (
-          <Select
-            id="customer"
-            name="customer"
-            placeholder="เลือกชื่อผู้ว่าจ้าง"
-            value={{
-              label: customers.find(
-                (customer) => customer.id === formData.customer
-              )?.name,
-            }}
-            onChange={(e) => {
-              setFormData((prevFormData) => ({
-                ...prevFormData,
-                customer: e.value,
-              }));
-            }}
-            options={customers.map((customer, index) => ({
-              value: customer.id,
-              label: customer.name,
-              key: `${customer.id}-${index}`,
-            }))}
-          />
-        ) : (
-          <Input
-            type="text"
-            id="customer"
-            name="customer"
-            placeholder="ชื่อผู้ว่าจ้าง"
-            value={formData.customer}
-            onChange={handleChange}
-          />
-        )}
         {isEmpty(formData.customer) && (
           <Text color="red.500" marginBottom="1rem">
             กรุณากรอกชื่อผู้ว่าจ้าง
@@ -392,10 +320,10 @@ export default function FormProjectModal({
   );
 
   return (
-    <>
-      <Modal isOpen={stateOpen} onClose={closeModal} size="full">
-        <ModalOverlay />
-        <ModalContent>
+    <Modal isOpen={stateOpen} onClose={closeModal} size="full">
+      <ModalOverlay />
+      <ModalContent>
+        <Container maxW="container.xl">
           {isSubmitting ? (
             <Center
               // make it middle of screen
@@ -420,9 +348,9 @@ export default function FormProjectModal({
               </ModalFooter>
             </>
           )}
-        </ModalContent>
-      </Modal>
-    </>
+        </Container>
+      </ModalContent>
+    </Modal>
   );
 
   async function getEditProjectData() {
@@ -442,22 +370,12 @@ export default function FormProjectModal({
       detail: project.detail ? project.detail : "",
       customer: project.customer,
       profit: project.profit ? addCommas(removeNonNumeric(project.profit)) : "",
-      date: new Date(project.date._seconds * 1000),
+      date: new Date(project.date),
       images: project.images ? project.images : [],
-      dateEnd: project.dateEnd
-        ? new Date(project.dateEnd._seconds * 1000)
-        : new Date(),
+      dateEnd: project.dateEnd ? new Date(project.dateEnd) : new Date(),
     };
     setFormData(form);
     setFormOldData(form);
-
-    if (project.isCustomerRef) {
-      setIsCustomerRef(true);
-      setIsCustomerRefOld(true);
-    } else {
-      setIsCustomerRef(false);
-      setIsCustomerRefOld(false);
-    }
 
     setIsSubmitting(false);
   }
@@ -470,7 +388,6 @@ export default function FormProjectModal({
       customer: formData.customer,
       profit: removeCommaParseFloat(formData.profit),
       date: moment(formData.date).format("YYYY-MM-DD"),
-      isCustomerRef: isCustomerRef,
     };
     if (formData.images.length > 0) {
       passData.images = formData.images;
@@ -480,9 +397,17 @@ export default function FormProjectModal({
       passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
     }
 
-    await addProject(passData);
+    const res = await addProject(passData);
+    if (res && res.message === "success") {
+      closingModal();
+      MySwal.fire({
+        icon: "success",
+        title: "เพิ่มรายการงานสำเร็จ",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
     setIsSubmitting(false);
-    closingModal();
   }
 
   async function editSubmit() {
@@ -496,7 +421,6 @@ export default function FormProjectModal({
       date: moment(formData.date).format("YYYY-MM-DD"),
       customer: formData.customer,
       detail: formData.detail,
-      isCustomerRef: isCustomerRef,
     };
     if (isDateEnd) {
       passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
@@ -507,15 +431,18 @@ export default function FormProjectModal({
     if (imageUpdate.imagesAdd.length > 0) {
       passData.imagesAdd = imageUpdate.imagesAdd;
     }
-    await updateProject(passData)
-      .then(() => {
-        setIsSubmitting(false);
-      })
-      .catch((err) => {
-        setIsSubmitting(false);
-        console.log(err);
+    const res = await updateProject(passData);
+    if (res && res.message === "success") {
+      closingModal();
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขรายการงานสำเร็จ",
+        showConfirmButton: false,
+        timer: 1500,
       });
-    closingModal();
+    }
+
+    setIsSubmitting(false);
   }
 
   function removeCommaParseFloat(value) {
@@ -532,14 +459,14 @@ export default function FormProjectModal({
     //find image delete or add from old data
     let imagesDelete = [];
     let imagesAdd = [];
-    if (formData.images.length > 0) {
-      imagesDelete = formOldData.images.filter(
-        (image) => !formData.images.includes(image)
-      );
-      imagesAdd = formData.images.filter(
-        (image) => !formOldData.images.includes(image)
-      );
-    }
+    console.log(formData.images, formOldData.images);
+    imagesDelete = formOldData.images.filter(
+      (image) => !formData.images.includes(image)
+    );
+    imagesAdd = formData.images.filter(
+      (image) => !formOldData.images.includes(image)
+    );
+
     return {
       imagesDelete,
       imagesAdd,
