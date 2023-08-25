@@ -40,6 +40,9 @@ export default function ColumnsTable(props) {
     setAddFormOpen,
     selectEdit,
     setDeleteProjectData,
+    setSearchBar,
+    setSearchFilter,
+    searchTrigger,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -131,12 +134,12 @@ export default function ColumnsTable(props) {
             width="unset"
             variant="subtle"
             value={props.searchFilter}
-            onChange={(e) => props.setSearchFilterBar(e.target.value)}
+            onChange={(e) => props.setSearchFilter(e.target.value)}
           >
             <option value="title">ชื่องาน</option>
             <option value="customer">ชื่อผู้ว่าจ้าง</option>
           </Select>
-          <Button marginLeft="10px">
+          <Button onClick={searchTrigger} marginLeft="10px">
             <Icon
               as={SearchIcon}
               color="gray.400"

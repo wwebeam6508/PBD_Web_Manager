@@ -100,6 +100,13 @@ export default function Settings() {
           setSearchBar={setSearchBar}
           searchFilterBar={searchFilterBar}
           setSearchFilter={setSearchFilterBar}
+          searchTrigger={() => {
+            getProjectsData(
+              1,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
+          }}
         />
       </SimpleGrid>
       {projects.length > 0 && (
