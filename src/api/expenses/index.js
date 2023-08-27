@@ -5,7 +5,14 @@ import { errorHandle } from "util/helper";
 
 const APIURL = `${process.env.REACT_APP_API_URL}/expensemanagement`;
 
-export const getExpenses = async ({ page, pageSize, sortTitle, sortType }) => {
+export const getExpenses = async ({
+  page,
+  pageSize,
+  sortTitle,
+  sortType,
+  search,
+  searchFilter,
+}) => {
   let requestOption = {
     headers: headers(),
     params: {
@@ -16,6 +23,10 @@ export const getExpenses = async ({ page, pageSize, sortTitle, sortType }) => {
   if (!isEmpty(sortTitle) && !isEmpty(sortType)) {
     requestOption.params.sortTitle = sortTitle;
     requestOption.params.sortType = sortType;
+  }
+  if (!isEmpty(search) && !isEmpty(searchFilter)) {
+    requestOption.params.search = search;
+    requestOption.params.searchFilter = searchFilter;
   }
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);

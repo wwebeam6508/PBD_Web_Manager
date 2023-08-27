@@ -31,6 +31,8 @@ import {
   TriangleDownIcon,
   TriangleUpIcon,
 } from "@chakra-ui/icons";
+import { RangeDatepicker } from "chakra-dayzed-datepicker";
+import { isEmpty } from "util/helper";
 export default function ColumnsTable(props) {
   const {
     columnsData,
@@ -42,6 +44,8 @@ export default function ColumnsTable(props) {
     setDeleteProjectData,
     setSearchBar,
     setSearchFilter,
+    searchBar,
+    searchFilterBar,
     searchTrigger,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
@@ -95,12 +99,23 @@ export default function ColumnsTable(props) {
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+
+  const selectedDates = () => {
+    return searchBar.split(",").length === 2 &&
+      !isEmpty(searchBar.split(",")[1])
+      ? [new Date(searchBar.split(",")[0]), new Date(searchBar.split(",")[1])]
+      : !isEmpty(searchBar.split(",")[0]) && isEmpty(searchBar.split(",")[1])
+      ? [new Date(searchBar.split(",")[0])]
+      : [new Date()];
+  };
+
   return (
     <Card
       direction="column"
       w="100%"
       px="0px"
       overflowX={{ sm: "scroll", lg: "hidden" }}
+      style={{ minHeight: "50vh" }}
     >
       <Flex px="25px" justify="space-between" mb="20px" align="center">
         <Text
@@ -112,32 +127,113 @@ export default function ColumnsTable(props) {
           งาน
         </Text>
         <Flex w="30%" align="center">
-          <Input
-            w="80%"
-            name="search"
-            placeholder="ค้นหา"
-            borderRadius="10px"
-            borderColor="gray.200"
-            fontSize="sm"
-            _placeholder={{
-              color: "gray.400",
-            }}
-            _focus={{
-              borderColor: "gray.200",
-            }}
-            value={props.searchBar}
-            onChange={(e) => props.setSearchBar(e.target.value)}
-          />
+          {searchFilterBar === "profit" ? (
+            //create two input for profit range set in one input with [x, y]
+            <Flex w="80%" justify="space-between">
+              <Input
+                w="45%"
+                name="search"
+                placeholder="ค้นหา"
+                borderRadius="10px"
+                borderColor="gray.200"
+                fontSize="sm"
+                _placeholder={{
+                  color: "gray.400",
+                }}
+                _focus={{
+                  borderColor: "gray.200",
+                }}
+                value={searchBar ? searchBar.split(",")[0] : ""}
+                onChange={(e) => {
+                  const x = e.target.value;
+                  const y = searchBar ? searchBar.split(",")[1] : "";
+                  if (x === "" && y === "") {
+                    setSearchBar("");
+                    return;
+                  }
+                  setSearchBar(`${x},${y}`);
+                }}
+              />
+              <Input
+                w="45%"
+                name="search"
+                placeholder="ค้นหา"
+                borderRadius="10px"
+                borderColor="gray.200"
+                fontSize="sm"
+                _placeholder={{
+                  color: "gray.400",
+                }}
+                _focus={{
+                  borderColor: "gray.200",
+                }}
+                value={searchBar ? searchBar.split(",")[1] : ""}
+                onChange={(e) => {
+                  const x = searchBar ? searchBar.split(",")[0] : "";
+                  const y = e.target.value;
+                  if (x === "" && y === "") {
+                    setSearchBar("");
+                    return;
+                  }
+                  setSearchBar(`${x},${y}`);
+                }}
+              />
+            </Flex>
+          ) : searchFilterBar === "date" || searchFilterBar === "dateEnd" ? (
+            <RangeDatepicker
+              selectedDates={selectedDates()}
+              onDateChange={(date) => {
+                if (date.length === 0) {
+                  setSearchBar("");
+                  return;
+                }
+                if (date.length === 1) {
+                  setSearchBar(`${new Date(date[0]).toISOString()},`);
+                }
+                if (date.length === 2) {
+                  setSearchBar(
+                    `${new Date(date[0]).toISOString()},${new Date(
+                      date[1]
+                    ).toISOString()}`
+                  );
+                }
+              }}
+            />
+          ) : (
+            <Input
+              w="80%"
+              name="search"
+              placeholder="ค้นหา"
+              borderRadius="10px"
+              borderColor="gray.200"
+              fontSize="sm"
+              _placeholder={{
+                color: "gray.400",
+              }}
+              _focus={{
+                borderColor: "gray.200",
+              }}
+              value={searchBar}
+              onChange={(e) => setSearchBar(e.target.value)}
+            />
+          )}
+
           <Select
             name="searchfilter"
             fontSize="sm"
             width="unset"
             variant="subtle"
-            value={props.searchFilter}
-            onChange={(e) => props.setSearchFilter(e.target.value)}
+            value={searchFilterBar}
+            onChange={(e) => {
+              setSearchFilter(e.target.value);
+              setSearchBar("");
+            }}
           >
             <option value="title">ชื่องาน</option>
             <option value="customer">ชื่อผู้ว่าจ้าง</option>
+            <option value="profit">กำไร</option>
+            <option value="date">วันที่เริ่มงาน</option>
+            <option value="dateEnd">วันที่สิ้นสุดงาน</option>
           </Select>
           <Button onClick={searchTrigger} marginLeft="10px">
             <Icon

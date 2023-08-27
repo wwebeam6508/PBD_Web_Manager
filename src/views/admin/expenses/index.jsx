@@ -71,6 +71,8 @@ export default function Settings() {
 
   const [editExpenseID, setEditExpenseID] = useState(null);
 
+  const [searchBar, setSearchBar] = useState("");
+  const [searchFilterBar, setSearchFilterBar] = useState("title");
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <FormExpenseModal
@@ -93,6 +95,17 @@ export default function Settings() {
           setAddFormOpen={setAddFormOpen}
           setDelete={deleteExpenseData}
           selectEdit={selectEditData}
+          searchBar={searchBar}
+          setSearchBar={setSearchBar}
+          searchFilterBar={searchFilterBar}
+          setSearchFilter={setSearchFilterBar}
+          searchTrigger={() => {
+            getExpensesData(
+              1,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
+          }}
         />
       </SimpleGrid>
       {expenses.length > 0 && (
@@ -123,6 +136,8 @@ export default function Settings() {
       pageSize: defaultSetting.pageSize,
       sortTitle: sortTitle,
       sortType: sortType,
+      search: searchBar,
+      searchFilter: searchFilterBar,
     });
     if (result) {
       const resultData = result.data.map((item) => {
