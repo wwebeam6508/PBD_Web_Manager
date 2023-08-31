@@ -4,8 +4,6 @@ import { errorHandle } from "/util/helper";
 
 const APIURL = `${process.env.REACT_APP_API_URL}/dashboard`;
 
-console.log(process);
-
 export const getEarnAndSpendEachYearData = async (year) => {
   try {
     const response = await axios.get(`${APIURL}/getEarnAndSpendEachYear`, {
