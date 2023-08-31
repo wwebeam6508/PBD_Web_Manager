@@ -24,22 +24,20 @@
 import { Box, Grid } from "@chakra-ui/react";
 
 // Custom components
-import Banner from "views/admin/profile/components/Banner";
-import General from "views/admin/profile/components/General";
-import Notifications from "views/admin/profile/components/Notifications";
-import Projects from "views/admin/profile/components/Projects";
-import Storage from "views/admin/profile/components/Storage";
-import Upload from "views/admin/profile/components/Upload";
+import Banner from "/views/admin/profile/components/Banner";
+import General from "/views/admin/profile/components/General";
+import Notifications from "/views/admin/profile/components/Notifications";
+import Projects from "/views/admin/profile/components/Projects";
+import Storage from "/views/admin/profile/components/Storage";
+import Upload from "/views/admin/profile/components/Upload";
 
 // Assets
-import banner from "assets/img/auth/banner.png";
-import avatar from "assets/img/avatars/avatar4.png";
+import banner from "/assets/img/auth/banner.png";
+import avatar from "/assets/img/avatars/avatar4.png";
 import React from "react";
 import { useSelector } from "react-redux";
 
 export default function Overview() {
-
-
   const profileState = useSelector((state) => state.auth.user.userProfile);
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -53,9 +51,10 @@ export default function Overview() {
           base: "repeat(3, 1fr)",
           lg: "1fr",
         }}
-        gap={{ base: "20px", xl: "20px" }}>
+        gap={{ base: "20px", xl: "20px" }}
+      >
         <Banner
-          gridArea='1 / 1 / 1 / 1'
+          gridArea="1 / 1 / 1 / 1"
           banner={banner}
           username={profileState.username}
           userType={profileState.userType}

@@ -1,8 +1,10 @@
 import axios from "axios";
-import headers from "util/headers";
-import { errorHandle } from "util/helper";
+import headers from "/util/headers";
+import { errorHandle } from "/util/helper";
 
 const APIURL = `${process.env.REACT_APP_API_URL}/dashboard`;
+
+console.log(process);
 
 export const getEarnAndSpendEachYearData = async (year) => {
   try {

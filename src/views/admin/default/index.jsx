@@ -22,12 +22,12 @@
 
 // Chakra imports
 import { Box, Icon, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
-import { getEarnAndSpendEachYearData } from "api/dashboard";
+import { getEarnAndSpendEachYearData } from "/api/dashboard";
 // Assets
 // Custom components
-import MiniCalendar from "components/calendar/MiniCalendar";
-import MiniStatistics from "components/card/MiniStatistics";
-import IconBox from "components/icons/IconBox";
+import MiniCalendar from "/components/calendar/MiniCalendar";
+import MiniStatistics from "/components/card/MiniStatistics";
+import IconBox from "/components/icons/IconBox";
 import React, { useContext, useEffect, useState } from "react";
 import {
   MdAttachMoney,
@@ -35,17 +35,17 @@ import {
   MdPlaylistAddCheck,
   MdWorkOutline,
 } from "react-icons/md";
-import ComplexTable from "views/admin/default/components/ComplexTable";
-import WorkPieCard from "views/admin/default/components/WorkPieCard";
-import ProfitPieCard from "views/admin/default/components/ProfitPieCard";
-import Tasks from "views/admin/default/components/Tasks";
-import EarnAndSpendEachYear from "views/admin/default/components/EarnAndSpendEachYear";
-import YearReport from "views/admin/default/components/YearReport";
-import { columnsDataComplex } from "views/admin/default/variables/columnsData";
-import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
+import ComplexTable from "/views/admin/default/components/ComplexTable";
+import WorkPieCard from "/views/admin/default/components/WorkPieCard";
+import ProfitPieCard from "/views/admin/default/components/ProfitPieCard";
+import Tasks from "/views/admin/default/components/Tasks";
+import EarnAndSpendEachYear from "/views/admin/default/components/EarnAndSpendEachYear";
+import YearReport from "/views/admin/default/components/YearReport";
+import { columnsDataComplex } from "/views/admin/default/variables/columnsData";
+import tableDataComplex from "/views/admin/default/variables/tableDataComplex.json";
 import { FaMoneyBill } from "react-icons/fa";
-import { getDashboardData } from "api/dashboard";
-import { LoadingContext } from "contexts/LoadingContext";
+import { getDashboardData } from "/api/dashboard";
+import { LoadingContext } from "/contexts/LoadingContext";
 
 export default function UserReports() {
   const { showLoading, hideLoading } = useContext(LoadingContext);

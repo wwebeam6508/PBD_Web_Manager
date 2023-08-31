@@ -3,16 +3,8 @@ import headers from "/util/headers";
 import { isEmpty } from "/util/helper";
 import { errorHandle } from "/util/helper";
 
-const APIURL = `${process.env.REACT_APP_API_URL}/expensemanagement`;
-
-export const getExpenses = async ({
-  page,
-  pageSize,
-  sortTitle,
-  sortType,
-  search,
-  searchFilter,
-}) => {
+const APIURL = `${process.env.REACT_APP_API_URL}/customermanagement`;
+export const getCustomers = async ({ page, pageSize, sortTitle, sortType }) => {
   let requestOption = {
     headers: headers(),
     params: {
@@ -24,10 +16,6 @@ export const getExpenses = async ({
     requestOption.params.sortTitle = sortTitle;
     requestOption.params.sortType = sortType;
   }
-  if (!isEmpty(search) && !isEmpty(searchFilter)) {
-    requestOption.params.search = search;
-    requestOption.params.searchFilter = searchFilter;
-  }
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);
     return response.data;
@@ -36,12 +24,12 @@ export const getExpenses = async ({
   }
 };
 
-export const getExpenseByID = async (id) => {
+export const getCustomerByID = async (id) => {
   try {
     const response = await axios.get(`${APIURL}/getByID`, {
       headers: headers(),
       params: {
-        expenseID: id,
+        customerID: id,
       },
     });
     return response.data;
@@ -50,7 +38,7 @@ export const getExpenseByID = async (id) => {
   }
 };
 
-export const addExpense = async (formData) => {
+export const addCustomer = async (formData) => {
   try {
     const response = await axios.post(`${APIURL}/add`, formData, {
       headers: headers(),
@@ -61,7 +49,7 @@ export const addExpense = async (formData) => {
   }
 };
 
-export const updateExpense = async (formData) => {
+export const updateCustomer = async (formData) => {
   try {
     const response = await axios.post(`${APIURL}/update`, formData, {
       headers: headers(),
@@ -72,24 +60,13 @@ export const updateExpense = async (formData) => {
   }
 };
 
-export const deleteExpense = async (id) => {
+export const deleteCustomer = async (id) => {
   try {
     const response = await axios.delete(`${APIURL}/delete`, {
       headers: headers(),
       params: {
-        expenseID: id,
+        customerID: id,
       },
-    });
-    return response.data;
-  } catch (error) {
-    return await errorHandle(error);
-  }
-};
-
-export const getProjectTitle = async () => {
-  try {
-    const response = await axios.get(`${APIURL}/getProjectTitle`, {
-      headers: headers(),
     });
     return response.data;
   } catch (error) {

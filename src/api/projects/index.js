@@ -1,8 +1,8 @@
 //import axois
 import axios from "axios";
-import headers from "util/headers";
-import { isEmpty } from "util/helper";
-import { errorHandle } from "util/helper";
+import headers from "/util/headers";
+import { isEmpty } from "/util/helper";
+import { errorHandle } from "/util/helper";
 
 const APIURL = `${process.env.REACT_APP_API_URL}/projectmanagement`;
 

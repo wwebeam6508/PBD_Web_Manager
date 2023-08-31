@@ -22,18 +22,18 @@
 
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
-import ColumnsTable from "views/admin/projects/components/ColumnsTable";
+import ColumnsTable from "/views/admin/projects/components/ColumnsTable";
 import React, { useState, useContext, useEffect } from "react";
-import { getProjects } from "api/projects";
+import { getProjects } from "/api/projects";
 import { projectDataColumns } from "./variables/columnsData";
 import moment from "moment";
-import PaginationButton from "components/pagination/PaginationButton";
-import { LoadingContext } from "contexts/LoadingContext";
-import FormProjectModal from "components/modals/projectModal/FormProjectModal";
-import { getCustomerName } from "api/projects";
+import PaginationButton from "/components/pagination/PaginationButton";
+import { LoadingContext } from "/contexts/LoadingContext";
+import FormProjectModal from "/components/modals/projectModal/FormProjectModal";
+import { getCustomerName } from "/api/projects";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { deleteProject } from "api/projects";
+import { deleteProject } from "/api/projects";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {

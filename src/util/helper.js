@@ -3,7 +3,7 @@ import errorHandler from "./errorHandler";
 import headers from "./headers";
 import imageCompression from "browser-image-compression";
 import { store } from "../redux/store";
-import { setUserToken } from "redux/auth/authSlice";
+import { setUserToken } from "/redux/auth/authSlice";
 export function isEmpty(str) {
   if (typeof str == "string" || typeof str == "number") {
     return !str || /^\s*$/.test(str);

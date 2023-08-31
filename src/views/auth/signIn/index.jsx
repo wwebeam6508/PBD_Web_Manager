@@ -40,15 +40,15 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 // Custom components
-// import { HSeparator } from "components/separator/Separator";
-import DefaultAuth from "layouts/auth/Default";
+// import { HSeparator } from "/components/separator/Separator";
+import DefaultAuth from "/layouts/auth/Default";
 // Assets
-import illustration from "assets/img/auth/auth.png";
+import illustration from "/assets/img/auth/auth.png";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { isEmpty } from "util/helper";
-import { login } from "redux/auth/authAction";
-import { store } from "redux/store";
+import { isEmpty } from "/util/helper";
+import { login } from "/redux/auth/authAction";
+import { store } from "/redux/store";
 
 function SignIn() {
   // Chakra color mode
@@ -65,75 +65,79 @@ function SignIn() {
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
       <Flex
         maxW={{ base: "100%", md: "max-content" }}
-        w='100%'
+        w="100%"
         mx={{ base: "auto", lg: "0px" }}
-        me='auto'
-        h='100%'
-        alignItems='start'
-        justifyContent='center'
+        me="auto"
+        h="100%"
+        alignItems="start"
+        justifyContent="center"
         mb={{ base: "30px", md: "60px" }}
         px={{ base: "25px", md: "0px" }}
         mt={{ base: "40px", md: "14vh" }}
-        flexDirection='column'>
-        <Box me='auto'>
-          <Heading color={textColor} fontSize='36px' mb='10px'>
+        flexDirection="column"
+      >
+        <Box me="auto">
+          <Heading color={textColor} fontSize="36px" mb="10px">
             Sign In
           </Heading>
         </Box>
         <Flex
-          zIndex='2'
-          direction='column'
+          zIndex="2"
+          direction="column"
           w={{ base: "100%", md: "420px" }}
-          maxW='100%'
-          background='transparent'
-          borderRadius='15px'
+          maxW="100%"
+          background="transparent"
+          borderRadius="15px"
           mx={{ base: "auto", lg: "unset" }}
-          me='auto'
-          mb={{ base: "20px", md: "auto" }}>
+          me="auto"
+          mb={{ base: "20px", md: "auto" }}
+        >
           <FormControl>
             <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
+              display="flex"
+              ms="4px"
+              fontSize="sm"
+              fontWeight="500"
               color={textColor}
-              mb='8px'>
+              mb="8px"
+            >
               Username<Text color={brandStars}>*</Text>
             </FormLabel>
             <Input
               isRequired={true}
-              variant='auth'
-              fontSize='sm'
+              variant="auth"
+              fontSize="sm"
               ms={{ base: "0px", md: "0px" }}
-              type='text'
-              placeholder='username'
-              mb='24px'
-              fontWeight='500'
-              size='lg'
+              type="text"
+              placeholder="username"
+              mb="24px"
+              fontWeight="500"
+              size="lg"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
             <FormLabel
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
+              ms="4px"
+              fontSize="sm"
+              fontWeight="500"
               color={textColor}
-              display='flex'>
+              display="flex"
+            >
               Password<Text color={brandStars}>*</Text>
             </FormLabel>
-            <InputGroup size='md'>
+            <InputGroup size="md">
               <Input
                 isRequired={true}
-                fontSize='sm'
-                placeholder='Min. 8 characters'
-                mb='24px'
-                size='lg'
+                fontSize="sm"
+                placeholder="Min. 8 characters"
+                mb="24px"
+                size="lg"
                 type={show ? "text" : "password"}
-                variant='auth'
+                variant="auth"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <InputRightElement display='flex' alignItems='center' mt='4px'>
+              <InputRightElement display="flex" alignItems="center" mt="4px">
                 <Icon
                   color={textColorSecondary}
                   _hover={{ cursor: "pointer" }}
@@ -143,12 +147,12 @@ function SignIn() {
               </InputRightElement>
             </InputGroup>
             <Button
-              fontSize='sm'
-              variant='brand'
-              fontWeight='500'
-              w='100%'
-              h='50'
-              mb='24px'
+              fontSize="sm"
+              variant="brand"
+              fontWeight="500"
+              w="100%"
+              h="50"
+              mb="24px"
               disabled={isEmpty(username) || isEmpty(password)}
               onClick={loginSubmit}
             >
@@ -161,7 +165,7 @@ function SignIn() {
   );
 
   function loginSubmit() {
-    store.dispatch(login(username, password))
+    store.dispatch(login(username, password));
   }
 }
 

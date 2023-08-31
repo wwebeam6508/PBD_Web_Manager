@@ -22,33 +22,36 @@
 
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
-import ColumnsTable from "views/admin/customers/components/ColumnsTable";
-import React, {useState, useContext, useEffect } from "react";
+import ColumnsTable from "/views/admin/customers/components/ColumnsTable";
+import React, { useState, useContext, useEffect } from "react";
 import { customerDataColumns } from "./variables/columnsData";
 import moment from "moment";
-import PaginationButton from "components/pagination/PaginationButton";
-import { LoadingContext } from "contexts/LoadingContext";
-import FormCustomerModal from "components/modals/customerModal/FormCustomerModal";
+import PaginationButton from "/components/pagination/PaginationButton";
+import { LoadingContext } from "/contexts/LoadingContext";
+import FormCustomerModal from "/components/modals/customerModal/FormCustomerModal";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { getCustomers, deleteCustomer } from "api/customers";
+import { getCustomers, deleteCustomer } from "/api/customers";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
-
   const { showLoading, hideLoading } = useContext(LoadingContext);
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [ isEdit , setEdit ] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isEdit, setEdit] = useState(false);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
     pageSize: 10,
     firstSort: "",
-    orderBy: ""
+    orderBy: "",
   });
 
   useEffect(() => {
-    getCustomersData(defaultSetting.page, defaultSetting.firstSort, defaultSetting.orderBy);
+    getCustomersData(
+      defaultSetting.page,
+      defaultSetting.firstSort,
+      defaultSetting.orderBy
+    );
   }, []);
 
   const [customers, setCustomers] = React.useState([]);
@@ -56,15 +59,21 @@ export default function Settings() {
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
-  const [ editCustomerID, setEditCustomerID ] = useState(null);
+  const [editCustomerID, setEditCustomerID] = useState(null);
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <FormCustomerModal closeModal={onCloseModal} stateOpen={isOpen} isEdit={isEdit} customerID={editCustomerID}/>
+      <FormCustomerModal
+        closeModal={onCloseModal}
+        stateOpen={isOpen}
+        isEdit={isEdit}
+        customerID={editCustomerID}
+      />
       <SimpleGrid
-        mb='20px'
+        mb="20px"
         columns={{ sm: 1, md: 1 }}
-        spacing={{ base: "20px", xl: "20px" }}>
+        spacing={{ base: "20px", xl: "20px" }}
+      >
         <ColumnsTable
           columnsData={customerDataColumns}
           tableData={customers}
@@ -75,38 +84,55 @@ export default function Settings() {
           selectEdit={selectEditData}
         />
       </SimpleGrid>
-      {
-        customers.length > 0 && (
-          <PaginationButton setPage={(pageNum)=>{getCustomersData(pageNum, defaultSetting.firstSort, defaultSetting.orderBy)}} pages={pages} currentPage={currentPage} lastPage={lastPage} />
-        )
-      }
+      {customers.length > 0 && (
+        <PaginationButton
+          setPage={(pageNum) => {
+            getCustomersData(
+              pageNum,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
+          }}
+          pages={pages}
+          currentPage={currentPage}
+          lastPage={lastPage}
+        />
+      )}
     </Box>
   );
 
-  async function getCustomersData(selectPage = 1, sortTitle = "", sortType = "") {
+  async function getCustomersData(
+    selectPage = 1,
+    sortTitle = "",
+    sortType = ""
+  ) {
     showLoading();
-    const result = await getCustomers({ page: selectPage, pageSize: defaultSetting.pageSize, sortTitle:sortTitle, sortType:sortType });
+    const result = await getCustomers({
+      page: selectPage,
+      pageSize: defaultSetting.pageSize,
+      sortTitle: sortTitle,
+      sortType: sortType,
+    });
     if (result) {
-      const resultData = result.data
+      const resultData = result.data;
       setLastPage(result.lastPage);
       setCurrentPage(result.currentPage);
       setPages(result.pages);
       setCustomers(resultData);
-      
     }
     hideLoading();
   }
 
-  function selectSortData (sortTitle, sortType) {
+  function selectSortData(sortTitle, sortType) {
     setDefaultSetting({
       ...defaultSetting,
       firstSort: sortTitle,
-      orderBy: sortType
-    })
-    getCustomersData(currentPage, sortTitle, sortType)
+      orderBy: sortType,
+    });
+    getCustomersData(currentPage, sortTitle, sortType);
   }
 
-  function deleteCustomerData (customerID) {
+  function deleteCustomerData(customerID) {
     MySwal.fire({
       title: "คุณแน่ใจหรือว่าจะลบ?",
       text: "คุณจะไม่สามารถย้อนกลับได้!",
@@ -115,39 +141,49 @@ export default function Settings() {
       confirmButtonText: "ใช่, ลบเลย!",
       cancelButtonText: "ไม่, ยกเลิก!",
       confirmButtonColor: "red",
-      reverseButtons: true
+      reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         showLoading();
-        const res = await deleteCustomer(customerID)
+        const res = await deleteCustomer(customerID);
         if (res) {
-            if (res.message === "success") {
-              MySwal.fire("ลบเรียบร้อย!", "บริษัทหรือลูกค้าถูกลบเรียบร้อยแล้ว", "success");
-              await getCustomersData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
-            }
+          if (res.message === "success") {
+            MySwal.fire(
+              "ลบเรียบร้อย!",
+              "บริษัทหรือลูกค้าถูกลบเรียบร้อยแล้ว",
+              "success"
+            );
+            await getCustomersData(
+              currentPage,
+              defaultSetting.firstSort,
+              defaultSetting.orderBy
+            );
+          }
         }
         hideLoading();
       }
-    }
+    });
+  }
+
+  function setAddFormOpen() {
+    onOpen();
+    setEdit(false);
+  }
+
+  function selectEditData(customerID) {
+    setEditCustomerID(customerID);
+    setEdit(true);
+    onOpen();
+  }
+
+  function onCloseModal() {
+    setEditCustomerID(null);
+    setEdit(false);
+    getCustomersData(
+      currentPage,
+      defaultSetting.firstSort,
+      defaultSetting.orderBy
     );
-  }
-
-
-  function setAddFormOpen () {
-    onOpen()
-    setEdit(false)
-  }
-
-  function selectEditData (customerID) {
-    setEditCustomerID(customerID)
-    setEdit(true)
-    onOpen()
-  }
-  
-  function onCloseModal () {
-    setEditCustomerID(null)
-    setEdit(false)
-    getCustomersData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy)
-    onClose()
+    onClose();
   }
 }
