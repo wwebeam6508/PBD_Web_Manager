@@ -449,6 +449,7 @@ export default function FormExpenseModal({
       lists: expense.lists
         ? expense.lists.map((list) => {
             return {
+              _id: list._id,
               title: list.title,
               price: addCommas(removeNonNumeric(list.price)),
             };
@@ -503,12 +504,14 @@ export default function FormExpenseModal({
     });
     const trueLists = lists.map((list) => {
       return {
+        _id: list._id,
         title: list.title,
         price: removeCommaParseFloat(list.price),
       };
     });
     const trueOldData = formOldData.lists.map((list) => {
       return {
+        _id: list._id,
         title: list.title,
         price: removeCommaParseFloat(list.price),
       };
@@ -518,10 +521,14 @@ export default function FormExpenseModal({
         return oldList.title === list.title && oldList.price === list.price;
       });
     });
-    const removeLists = trueOldData.filter((oldList) => {
+    let removeLists = trueOldData.filter((oldList) => {
       return !trueLists.some((list) => {
         return list.title === oldList.title && list.price === oldList.price;
       });
+    });
+    // removeLists get only _id
+    removeLists = removeLists.map((list) => {
+      return list._id;
     });
 
     let passData;
