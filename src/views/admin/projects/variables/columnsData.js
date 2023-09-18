@@ -2,6 +2,8 @@ export const projectDataColumns = [
   {
     Header: "ชื่อโครงการ",
     accessor: "title",
+    sort: "desc",
+    isSort: false,
   },
   {
     Header: "ผู้ว่าจ้าง",

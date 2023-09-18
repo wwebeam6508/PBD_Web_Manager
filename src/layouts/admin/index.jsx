@@ -13,7 +13,9 @@ import routes from "/routes";
 // Custom Chakra theme
 export default function Dashboard(props) {
   const { isAuthenticated } = useSelector((state) => state.auth);
-
+  const permissions = useSelector((state) => state.auth.user)
+    ? useSelector((state) => state.auth.user).userProfile.userType.permission
+    : null;
   const { ...rest } = props;
   // states and functions
   const [fixed] = useState(false);
@@ -94,13 +96,41 @@ export default function Dashboard(props) {
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
+        if (prop.permission && permissions) {
+          // for loop permissions object
+          for (const [key, value] of Object.entries(permissions)) {
+            for (const [key2, value2] of Object.entries(value)) {
+              if (key2 === prop.permission) {
+                if (value2) {
+                  if (prop.collapse) {
+                    return getRoutes(prop.items);
+                  }
+                  if (prop.category) {
+                    return getRoutes(prop.items);
+                  } else {
+                    return (
+                      <Route
+                        path={prop.layout + prop.path}
+                        component={prop.component}
+                        key={key}
+                      />
+                    );
+                  }
+                } else {
+                  return null;
+                }
+              }
+            }
+          }
+        } else {
+          return (
+            <Route
+              path={prop.layout + prop.path}
+              component={prop.component}
+              key={key}
+            />
+          );
+        }
       }
       if (prop.collapse) {
         return getRoutes(prop.items);

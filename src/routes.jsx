@@ -52,7 +52,7 @@ const routes = [
   // },
   {
     category: "accounting",
-    name: "จัดการค่าใช้จ่ายรายได้",
+    name: "จัดการค่าใช้จ่ายรายได้",  
     items: [
       {
         name: "ค่าใช้จ่าย",
@@ -63,6 +63,7 @@ const routes = [
         ),
         component: Expenses,
         isShow: true,
+        permission: "canViewExpense",
       },
       {
         name: "รายได้จากงาน",
@@ -73,6 +74,7 @@ const routes = [
         ),
         component: Projects,
         isShow: true,
+        permission: "canViewProject",
       },
     ],
   },

@@ -3,9 +3,12 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 // chakra imports
 import { Box, Flex, HStack, Text, useColorModeValue } from "@chakra-ui/react";
-import { is } from "date-fns/locale";
+import { useSelector } from "react-redux";
 
 export function SidebarLinks(props) {
+  const permissions = useSelector((state) => state.auth.user)
+    ? useSelector((state) => state.auth.user).userProfile.userType.permission
+    : null;
   //   Chakra color mode
   let location = useLocation();
   let activeColor = useColorModeValue("gray.700", "white");
@@ -22,6 +25,23 @@ export function SidebarLinks(props) {
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return location.pathname.includes(routeName);
+  };
+
+  const checkPermission = (route) => {
+    if (route.permission && permissions) {
+      //for loop in object of permission
+      for (const [key, value] of Object.entries(permissions)) {
+        for (const [key2, value2] of Object.entries(value)) {
+          if (key2 === route.permission) {
+            if (value2 === true) {
+              return true;
+            }
+          }
+        }
+      }
+    } else {
+      return true;
+    }
   };
 
   // this function creates the links from the secondary accordions (for example auth -> sign-in -> default)
@@ -52,7 +72,8 @@ export function SidebarLinks(props) {
         );
       } else if (
         (route.layout === "/admin" || route.layout === "/auth") &&
-        route.isShow
+        route.isShow &&
+        checkPermission(route)
       ) {
         return (
           <NavLink key={`link-${route.name}`} to={route.layout + route.path}>

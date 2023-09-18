@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 // Custom Chakra theme
 export default function Auth() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+
   // states and functions
   const [toggleSidebar, setToggleSidebar] = useState(false);
   // functions for changing the states from components

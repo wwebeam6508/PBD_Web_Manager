@@ -111,7 +111,7 @@ export default function Conversion(props) {
           rest.data.map((work, index) => {
             if (index > 1) return null;
             return (
-              <Flex key={work.id}>
+              <Flex key={`profitpiecard-${index}`}>
                 <Flex direction="column" py="5px">
                   <Flex align="center">
                     <Box

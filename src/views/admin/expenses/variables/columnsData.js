@@ -2,6 +2,8 @@ export const expenseDataColumns = [
   {
     Header: "ชื่อรายการ",
     accessor: "title",
+    sort: "desc",
+    isSort: false,
   },
   {
     Header: "รายจ่าย(บาท)",
