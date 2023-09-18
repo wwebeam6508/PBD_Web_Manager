@@ -142,6 +142,9 @@ export default function FormExpenseModal({
     if (JSON.stringify(compareData) === JSON.stringify(compareDataOld)) {
       return true;
     }
+    if (formData.lists.length === 0) {
+      return true;
+    }
     return false;
   };
 
@@ -367,9 +370,10 @@ export default function FormExpenseModal({
                               return sum + Number(removeNonNumeric(list.price));
                             }, 0) *
                             (formData.currentVat / 100)
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                          ).toFixed(2)}
+                          )
+                            .toFixed(2)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                         </Text>
                       </GridItem>
                     </>

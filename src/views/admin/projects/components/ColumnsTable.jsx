@@ -128,7 +128,6 @@ export default function ColumnsTable(props) {
         </Text>
         <Flex w="30%" align="center">
           {searchFilterBar === "profit" ? (
-            //create two input for profit range set in one input with [x, y]
             <Flex w="80%" justify="space-between">
               <Input
                 w="45%"
@@ -277,16 +276,7 @@ export default function ColumnsTable(props) {
                       }}
                     >
                       {column.render("Header")}
-                      {column.id === "profit" &&
-                        columnsDataE[index].isSort &&
-                        (columnsDataE[index].sort === "desc" ? (
-                          <TriangleDownIcon />
-                        ) : (
-                          <TriangleUpIcon />
-                        ))}
-
-                      {column.id === "date" &&
-                        columnsDataE[index].isSort &&
+                      {columnsDataE[index].isSort &&
                         (columnsDataE[index].sort === "desc" ? (
                           <TriangleDownIcon />
                         ) : (

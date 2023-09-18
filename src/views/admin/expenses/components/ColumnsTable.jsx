@@ -127,7 +127,6 @@ export default function ColumnsTable(props) {
         >
           งาน
         </Text>
-
         <Flex w="30%" align="center">
           {searchFilterBar === "expense" ? (
             //create two input for profit range set in one input with [x, y]

@@ -109,7 +109,7 @@ export default function Conversion(props) {
       >
         {rest.data &&
           rest.data.map((work, index) => {
-            if (index > 2) return null;
+            if (index > 1) return null;
             return (
               <Flex key={work.id}>
                 <Flex direction="column" py="5px">
