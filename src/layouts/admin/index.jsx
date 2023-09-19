@@ -5,10 +5,11 @@ import Footer from "/components/footer/FooterAdmin.jsx";
 import Navbar from "/components/navbar/NavbarAdmin.jsx";
 import Sidebar from "/components/sidebar/Sidebar.jsx";
 import { SidebarContext } from "/contexts/SidebarContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "/routes";
+import { fetchUserData } from "/api/auth";
 
 // Custom Chakra theme
 export default function Dashboard(props) {
@@ -145,6 +146,10 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   const { onOpen } = useDisclosure();
 
+  const user = useSelector((state) => state.auth.user);
+  useEffect(() => {
+    fetchUserData(user);
+  }, []);
   return (
     <Box>
       <SidebarContext.Provider
