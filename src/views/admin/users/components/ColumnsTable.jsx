@@ -4,6 +4,7 @@ import {
   Icon,
   IconButton,
   Input,
+  Select,
   Table,
   Tbody,
   Td,
@@ -20,20 +21,17 @@ import {
   useSortBy,
   useTable,
 } from "react-table";
-import { SearchIcon } from "@chakra-ui/icons";
 
 // Custom components
 import Card from "/components/card/Card";
 import {
-  CheckCircleIcon,
   DeleteIcon,
   EditIcon,
+  SearchIcon,
   TriangleDownIcon,
   TriangleUpIcon,
 } from "@chakra-ui/icons";
-import { IoCloseCircle } from "react-icons/io5";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import { Select } from "@chakra-ui/react";
 import { isEmpty } from "/util/helper";
 export default function ColumnsTable(props) {
   const {
@@ -43,15 +41,14 @@ export default function ColumnsTable(props) {
     selectSort,
     setAddFormOpen,
     selectEdit,
-    setDelete,
-    searchTrigger,
-    searchBar,
+    setDeleteProjectData,
     setSearchBar,
-    searchFilterBar,
     setSearchFilter,
+    searchBar,
+    searchFilterBar,
+    searchTrigger,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
-
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
   useEffect(() => {
@@ -111,6 +108,7 @@ export default function ColumnsTable(props) {
       ? [new Date(searchBar.split(",")[0])]
       : [new Date()];
   };
+
   return (
     <Card
       direction="column"
@@ -126,11 +124,10 @@ export default function ColumnsTable(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          งาน
+          ผู้ใช้งาน
         </Text>
         <Flex w="30%" align="center">
-          {searchFilterBar === "expense" ? (
-            //create two input for profit range set in one input with [x, y]
+          {searchFilterBar === "profit" ? (
             <Flex w="80%" justify="space-between">
               <Input
                 w="45%"
@@ -231,10 +228,9 @@ export default function ColumnsTable(props) {
               setSearchBar("");
             }}
           >
-            <option value="title">ชื่อรายการ</option>
-            <option value="work">ชื่องานที่เกี่ยวข้อง</option>
-            <option value="expense">รายจ่าย</option>
-            <option value="date">วันที่</option>
+            <option value="username">ชื่อผู้ใช้</option>
+            <option value="userType">ประเภทผู้ใช้</option>
+            <option value="date">วันที่สร้าง</option>
           </Select>
           <Button onClick={searchTrigger} marginLeft="10px">
             <Icon
@@ -245,6 +241,7 @@ export default function ColumnsTable(props) {
             />
           </Button>
         </Flex>
+
         <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
@@ -277,7 +274,6 @@ export default function ColumnsTable(props) {
                       }}
                     >
                       {column.render("Header")}
-
                       {columnsDataE[index].isSort &&
                         (columnsDataE[index].sort === "desc" ? (
                           <TriangleDownIcon />
@@ -309,7 +305,7 @@ export default function ColumnsTable(props) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data = "";
-                  if (cell.column.id === "title") {
+                  if (cell.column.id === "username") {
                     data = (
                       <Flex align="center">
                         <Text color={textColor} fontSize="sm" fontWeight="700">
@@ -317,41 +313,20 @@ export default function ColumnsTable(props) {
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.id === "totalPrice") {
+                  } else if (cell.column.id === "userType") {
                     data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {cell.value
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      </Text>
+                      <Flex align="center">
+                        <Text
+                          me="10px"
+                          color={textColor}
+                          fontSize="sm"
+                          fontWeight="700"
+                        >
+                          {cell.value}
+                        </Text>
+                      </Flex>
                     );
                   } else if (cell.column.id === "date") {
-                    data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {cell.value}
-                      </Text>
-                    );
-                  } else if (cell.column.id === "isVat") {
-                    data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
-                        {cell.value ? (
-                          <Icon
-                            as={CheckCircleIcon}
-                            color="green.500"
-                            w="20px"
-                            h="20px"
-                          />
-                        ) : (
-                          <Icon
-                            as={IoCloseCircle}
-                            color="red.500"
-                            w="21px"
-                            h="21px"
-                          />
-                        )}
-                      </Text>
-                    );
-                  } else if (cell.column.id === "workRef") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">
                         {cell.value}
@@ -381,14 +356,14 @@ export default function ColumnsTable(props) {
                       icon={<EditIcon />}
                       size="sm"
                       colorScheme="blue"
-                      onClick={() => selectEdit(row.original.expenseID)}
+                      onClick={() => selectEdit(row.original.userID)}
                     />
                     <IconButton
                       aria-label="delete"
                       icon={<DeleteIcon />}
                       size="sm"
                       colorScheme="red"
-                      onClick={() => setDelete(row.original.expenseID)}
+                      onClick={() => setDeleteData(row.original.userID)}
                     />
                   </Flex>
                 </Td>

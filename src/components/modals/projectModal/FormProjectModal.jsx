@@ -238,6 +238,7 @@ export default function FormProjectModal({
           configs={{
             dateFormat: "dd-MM-yyyy",
           }}
+          
         />
       </FormControl>
 

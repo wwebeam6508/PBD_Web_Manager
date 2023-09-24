@@ -21,6 +21,7 @@ import Profile from "/views/admin/profile";
 import Projects from "/views/admin/projects";
 import Customers from "/views/admin/customers";
 import Expenses from "/views/admin/expenses";
+import Users from "/views/admin/users";
 
 // Auth Imports
 import SignInCentered from "/views/auth/signIn";
@@ -52,7 +53,7 @@ const routes = [
   // },
   {
     category: "accounting",
-    name: "จัดการค่าใช้จ่ายรายได้",  
+    name: "จัดการค่าใช้จ่ายรายได้",
     items: [
       {
         name: "ค่าใช้จ่าย",
@@ -90,6 +91,20 @@ const routes = [
           <Icon as={MdCellTower} width="20px" height="20px" color="inherit" />
         ),
         component: Customers,
+        isShow: true,
+      },
+    ],
+  },
+  {
+    category: "system",
+    name: "จัดการระบบ",
+    items: [
+      {
+        name: "ผู้ใช้งาน",
+        layout: "/admin",
+        path: "/users",
+        icon: <Icon as={MdPeople} width="20px" height="20px" color="inherit" />,
+        component: Users,
         isShow: true,
       },
     ],

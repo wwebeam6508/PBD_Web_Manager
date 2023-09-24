@@ -2,7 +2,7 @@ import axios from "axios";
 import headers from "/util/headers";
 import { errorHandle } from "/util/helper";
 import { store } from "/redux/store";
-import { setUserToken } from "/redux/auth/authSlice";
+import { setUserProfile } from "/redux/auth/authSlice";
 
 const APIURL = `${process.env.REACT_APP_API_URL}/auth`;
 export async function fetchUserData(user) {
@@ -17,11 +17,7 @@ export async function fetchUserData(user) {
   };
   try {
     const res = await axios.get(`${APIURL}/fetchuser`, requestOption);
-    const passToken = {
-      accessToken: res.data.data.accessToken,
-      refreshToken: res.data.data.refreshToken,
-    };
-    await store.dispatch(setUserToken(passToken));
+    await store.dispatch(setUserProfile(res.data.data));
     return true;
   } catch (error) {
     return await errorHandle(error);

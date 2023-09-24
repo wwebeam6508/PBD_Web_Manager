@@ -22,25 +22,25 @@
 
 // Chakra imports
 import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
-import ColumnsTable from "/views/admin/projects/components/ColumnsTable";
+import ColumnsTable from "/views/admin/users/components/ColumnsTable";
 import React, { useState, useContext, useEffect } from "react";
-import { getProjects } from "/api/projects";
-import { projectDataColumns } from "./variables/columnsData";
-import moment from "moment-timezone";
+import { getUser } from "/api/users";
+import { userDataColumns } from "./variables/columnsData";
+import moment from "moment";
 import PaginationButton from "/components/pagination/PaginationButton";
 import { LoadingContext } from "/contexts/LoadingContext";
-import FormProjectModal from "/components/modals/projectModal/FormProjectModal";
-import { getCustomerName } from "/api/projects";
+import FormUserModal from "/components/modals/userModal/FormUserModal";
+import { getUserType } from "/api/users";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { deleteProject } from "/api/projects";
+import { deleteUser } from "/api/users";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEdit, setEdit] = useState(false);
-  const [customers, setCustomers] = useState([]);
+  const [userTypes, setUserTypes] = useState([]);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
@@ -50,38 +50,38 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    getProjectsData(
+    getUserData(
       defaultSetting.page,
       defaultSetting.firstSort,
       defaultSetting.orderBy
     );
-    getCustomerName().then((res) => {
+    getUserType().then((res) => {
       if (res) {
-        let cuistomerData = res.data;
-        cuistomerData.unshift({ id: "", name: "ไม่มี" });
-        setCustomers(cuistomerData);
+        let userTypeData = res.data;
+        //remove name as SuperAdmin from array
+        setUserTypes(userTypeData);
       }
     });
   }, []);
 
-  const [projects, setProjects] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const [pages, setPages] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState("1");
   const [lastPage, setLastPage] = React.useState("1");
 
-  const [editProjectID, setEditProjectID] = useState(null);
+  const [editUserID, setEditUserID] = useState(null);
 
   const [searchBar, setSearchBar] = useState("");
-  const [searchFilterBar, setSearchFilterBar] = useState("title");
+  const [searchFilterBar, setSearchFilterBar] = useState("username");
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <FormProjectModal
+      <FormUserModal
         closeModal={onCloseModal}
         stateOpen={isOpen}
         isEdit={isEdit}
-        customers={customers}
-        projectID={editProjectID}
+        userTypes={userTypes}
+        userID={editUserID}
       />
       <SimpleGrid
         mb="20px"
@@ -89,30 +89,26 @@ export default function Settings() {
         spacing={{ base: "20px", xl: "20px" }}
       >
         <ColumnsTable
-          columnsData={projectDataColumns}
-          tableData={projects}
+          columnsData={userDataColumns}
+          tableData={users}
           setting={defaultSetting}
           selectSort={selectSortData}
           setAddFormOpen={setAddFormOpen}
-          setDeleteProjectData={deleteProjectData}
+          setDeleteUserData={deleteUserData}
           selectEdit={selectEditData}
           searchBar={searchBar}
           setSearchBar={setSearchBar}
           searchFilterBar={searchFilterBar}
           setSearchFilter={setSearchFilterBar}
           searchTrigger={() => {
-            getProjectsData(
-              1,
-              defaultSetting.firstSort,
-              defaultSetting.orderBy
-            );
+            getUserData(1, defaultSetting.firstSort, defaultSetting.orderBy);
           }}
         />
       </SimpleGrid>
-      {projects.length > 0 && (
+      {users.length > 0 && (
         <PaginationButton
           setPage={(pageNum) => {
-            getProjectsData(
+            getUserData(
               pageNum,
               defaultSetting.firstSort,
               defaultSetting.orderBy
@@ -126,13 +122,9 @@ export default function Settings() {
     </Box>
   );
 
-  async function getProjectsData(
-    selectPage = 1,
-    sortTitle = "",
-    sortType = ""
-  ) {
+  async function getUserData(selectPage = 1, sortTitle = "", sortType = "") {
     showLoading();
-    const result = await getProjects({
+    const result = await getUser({
       page: selectPage,
       pageSize: defaultSetting.pageSize,
       sortTitle: sortTitle,
@@ -144,21 +136,14 @@ export default function Settings() {
       const resultData = result.data.map((item) => {
         let returnData = item;
         if (returnData.date) {
-          returnData.date = moment(returnData.date)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
-        }
-        if (returnData.dateEnd) {
-          returnData.dateEnd = moment(returnData.dateEnd)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
+          returnData.date = moment(returnData.date).format("DD.MM.YYYY");
         }
         return returnData;
       });
       setLastPage(result.lastPage);
       setCurrentPage(result.currentPage);
       setPages(result.pages);
-      setProjects(resultData);
+      setUsers(resultData);
     }
     hideLoading();
   }
@@ -169,10 +154,10 @@ export default function Settings() {
       firstSort: sortTitle,
       orderBy: sortType,
     });
-    getProjectsData(currentPage, sortTitle, sortType);
+    getUserData(currentPage, sortTitle, sortType);
   }
 
-  function deleteProjectData(projectID) {
+  function deleteUserData(userID) {
     MySwal.fire({
       title: "คุณแน่ใจหรือว่าจะลบ?",
       text: "คุณจะไม่สามารถย้อนกลับได้!",
@@ -185,11 +170,11 @@ export default function Settings() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         showLoading();
-        const res = await deleteProject(projectID);
+        const res = await deleteUser(userID);
         if (res) {
           if (res.message === "success") {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
-            await getProjectsData(
+            await getUserData(
               currentPage,
               defaultSetting.firstSort,
               defaultSetting.orderBy
@@ -208,20 +193,16 @@ export default function Settings() {
     setEdit(false);
   }
 
-  function selectEditData(projectID) {
-    setEditProjectID(projectID);
+  function selectEditData(userID) {
+    setEditUserID(userID);
     setEdit(true);
     onOpen();
   }
 
   function onCloseModal() {
-    setEditProjectID(null);
+    setEditUserID(null);
     setEdit(false);
-    getProjectsData(
-      currentPage,
-      defaultSetting.firstSort,
-      defaultSetting.orderBy
-    );
+    getUserData(currentPage, defaultSetting.firstSort, defaultSetting.orderBy);
     onClose();
   }
 }
