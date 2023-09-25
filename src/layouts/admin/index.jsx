@@ -13,10 +13,6 @@ import { fetchUserData } from "/api/auth";
 
 // Custom Chakra theme
 export default function Dashboard(props) {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const permissions = useSelector((state) => state.auth.user)
-    ? useSelector((state) => state.auth.user).userProfile.userType.permission
-    : null;
   const { ...rest } = props;
   // states and functions
   const [fixed] = useState(false);
@@ -146,10 +142,10 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   const { onOpen } = useDisclosure();
 
-  const user = useSelector((state) => state.auth.user);
-  useEffect(() => {
-    fetchUserData(user);
-  }, []);
+  const auth = useSelector((state) => state.auth);
+  const permissions = auth.user
+    ? auth.user.userProfile.userType.permission
+    : null;
   return (
     <Box>
       <SidebarContext.Provider
@@ -195,7 +191,7 @@ export default function Dashboard(props) {
               minH="100vh"
               pt="50px"
             >
-              {isAuthenticated ? (
+              {auth.isAuthenticated ? (
                 <>
                   <Switch>
                     {getRoutes(routes)}

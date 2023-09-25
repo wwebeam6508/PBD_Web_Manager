@@ -79,7 +79,6 @@ export default function FormProjectModal({
         [name]: value,
       }));
     } else {
-      console.log(formData);
       e.value.setHours(0, 0, 0, 0);
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -238,7 +237,6 @@ export default function FormProjectModal({
           configs={{
             dateFormat: "dd-MM-yyyy",
           }}
-          
         />
       </FormControl>
 
@@ -460,7 +458,6 @@ export default function FormProjectModal({
     //find image delete or add from old data
     let imagesDelete = [];
     let imagesAdd = [];
-    console.log(formData.images, formOldData.images);
     imagesDelete = formOldData.images.filter(
       (image) => !formData.images.includes(image)
     );

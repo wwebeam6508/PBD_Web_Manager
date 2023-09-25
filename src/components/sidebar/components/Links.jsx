@@ -6,8 +6,9 @@ import { Box, Flex, HStack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 
 export function SidebarLinks(props) {
-  const permissions = useSelector((state) => state.auth.user)
-    ? useSelector((state) => state.auth.user).userProfile.userType.permission
+  const auth = useSelector((state) => state.auth);
+  const permissions = auth.user
+    ? auth.user.userProfile.userType.permission
     : null;
   //   Chakra color mode
   let location = useLocation();

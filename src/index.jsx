@@ -1,9 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./assets/css/App.css";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import AuthLayout from "/layouts/auth";
-import AdminLayout from "/layouts/admin";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "/theme/theme";
 import { ThemeEditorProvider } from "@hypertheme-editor/chakra-ui";
@@ -13,6 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import ReactLoading from "react-loading";
 import { LoadingProvider } from "/contexts/LoadingContext";
 import LoadingOverlay from "/components/loading/LoadingOverlay";
+import App from "./App.jsx";
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 root.render(
@@ -32,13 +30,7 @@ root.render(
             persistor={persistor}
           >
             <ThemeEditorProvider>
-              <HashRouter>
-                <Switch>
-                  <Route path={`/auth`} component={AuthLayout} />
-                  <Route path={`/admin`} component={AdminLayout} />
-                  <Redirect from="/" to="/admin" />
-                </Switch>
-              </HashRouter>
+              <App />
             </ThemeEditorProvider>
           </PersistGate>
           <LoadingOverlay />

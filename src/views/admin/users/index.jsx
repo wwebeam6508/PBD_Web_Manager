@@ -136,7 +136,9 @@ export default function Settings() {
       const resultData = result.data.map((item) => {
         let returnData = item;
         if (returnData.date) {
-          returnData.date = moment(returnData.date).format("DD.MM.YYYY");
+          returnData.date = moment(returnData.date)
+            .add(543, "year")
+            .format("DD.MM.YYYY");
         }
         return returnData;
       });

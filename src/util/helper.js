@@ -172,7 +172,6 @@ async function requestAgain(config) {
 
 async function refreshTokenRequest() {
   const user = store.getState().auth.user;
-
   if (user == null) {
     return false;
   } else if (user.refreshToken == null) {
@@ -191,7 +190,6 @@ async function refreshTokenRequest() {
     );
     const passToken = {
       accessToken: res.data.data.accessToken,
-      refreshToken: res.data.data.refreshToken,
     };
     await store.dispatch(setUserToken(passToken));
     return true;
