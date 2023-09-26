@@ -96,3 +96,14 @@ export const getProjectTitle = async () => {
     return await errorHandle(error);
   }
 };
+
+export const getSellerName = async () => {
+  try {
+    const response = await axios.get(`${APIURL}/getSellerName`, {
+      headers: headers(),
+    });
+    return response.data;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+};

@@ -351,6 +351,12 @@ export default function ColumnsTable(props) {
                         )}
                       </Text>
                     );
+                  } else if (cell.column.id === "customerRef") {
+                    data = (
+                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                        {cell.value}
+                      </Text>
+                    );
                   } else if (cell.column.id === "workRef") {
                     data = (
                       <Text color={textColor} fontSize="sm" fontWeight="700">

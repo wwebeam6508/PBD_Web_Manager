@@ -319,7 +319,7 @@ export default function FormProjectModal({
   );
 
   return (
-    <Modal isOpen={stateOpen} onClose={closeModal} size="full">
+    <Modal isOpen={stateOpen} onClose={closeModal} size="6xl">
       <ModalOverlay />
       <ModalContent>
         <Container maxW="container.xl">

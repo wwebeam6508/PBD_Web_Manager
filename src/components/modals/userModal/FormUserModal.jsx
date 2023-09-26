@@ -12,14 +12,10 @@ import {
   FormLabel,
   Input,
   Text,
-  Checkbox,
-  Textarea,
   Grid,
   GridItem,
   Center,
   Spinner,
-  NumberInput,
-  NumberInputField,
   Container,
 } from "@chakra-ui/react";
 import Select from "react-select";
@@ -39,8 +35,9 @@ export default function FormUserModal({
   userTypes = [],
 }) {
   const defaultForm = {
-    name: "",
+    username: "",
     date: new Date(),
+    password: "",
     userType: "",
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +70,7 @@ export default function FormUserModal({
   };
 
   const validation = () => {
-    const requried = ["name", "userType"];
+    const requried = ["username", "userType", "password"];
     for (let i = 0; i < requried.length; i++) {
       const req = requried[i];
       if (isEmpty(formData[req])) {
@@ -84,6 +81,13 @@ export default function FormUserModal({
   };
 
   const editValidtion = () => {
+    const requried = ["username", "userType"];
+    for (let i = 0; i < requried.length; i++) {
+      const req = requried[i];
+      if (isEmpty(formData[req])) {
+        return true;
+      }
+    }
     //check if form data is not change
     const compareData = formData;
     const compareDataOld = formOldData;
@@ -107,15 +111,35 @@ export default function FormUserModal({
               </FormLabel>
               <Input
                 type="text"
-                id="name"
-                name="name"
-                placeholder="ชื่อรายการ"
-                value={formData.name}
+                id="username"
+                name="username"
+                placeholder="ชื่อผู้ใช้"
+                value={formData.username}
                 onChange={handleChange}
               />
-              {isEmpty(formData.name) && (
+              {isEmpty(formData.username) && (
                 <Text color="red.500" marginBottom="1rem">
                   กรุณากรอก Username
+                </Text>
+              )}
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel fontSize={20} htmlFor="password">
+                Password
+              </FormLabel>
+              <Input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              {isEmpty(formData.password) && !isEdit && (
+                <Text color="red.500" marginBottom="1rem">
+                  กรุณากรอก Password
                 </Text>
               )}
             </FormControl>
@@ -161,7 +185,7 @@ export default function FormUserModal({
           ) : (
             <Button
               onClick={editSubmit}
-              disabled={editValidtion() || validation()}
+              disabled={editValidtion()}
               type="button"
               color="yellow.500"
             >
@@ -175,7 +199,12 @@ export default function FormUserModal({
 
   return (
     <>
-      <Modal isOpen={stateOpen} onClose={closeModal} size="full">
+      <Modal
+        autoFocus={true}
+        isOpen={stateOpen}
+        onClose={closeModal}
+        size="6xl"
+      >
         <ModalOverlay />
         <ModalContent>
           {isSubmitting ? (

@@ -34,6 +34,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteExpense } from "/api/expenses";
 import { getProjectTitle } from "/api/expenses";
+import { getSellerName } from "/api/expenses";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
@@ -41,6 +42,7 @@ export default function Settings() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEdit, setEdit] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   const [defaultSetting, setDefaultSetting] = useState({
     page: 1,
@@ -62,6 +64,13 @@ export default function Settings() {
         setProjects(projectData);
       }
     });
+    getSellerName().then((res) => {
+      if (res) {
+        let customerData = res.data;
+        customerData.unshift({ id: "", name: "ไม่มี" });
+        setCustomers(customerData);
+      }
+    });
   }, []);
 
   const [expenses, setExpenses] = React.useState([]);
@@ -80,6 +89,7 @@ export default function Settings() {
         stateOpen={isOpen}
         isEdit={isEdit}
         projects={projects}
+        customers={customers}
         expenseID={editExpenseID}
       />
       <SimpleGrid

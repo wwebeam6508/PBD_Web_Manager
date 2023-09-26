@@ -58,6 +58,7 @@ export default function Settings() {
     getUserType().then((res) => {
       if (res) {
         let userTypeData = res.data;
+        userTypeData.unshift({ id: "", name: "กรุณาเลือกประเภทผู้ใช้" });
         setUserTypes(userTypeData);
       }
     });
@@ -93,7 +94,7 @@ export default function Settings() {
           setting={defaultSetting}
           selectSort={selectSortData}
           setAddFormOpen={setAddFormOpen}
-          setDeleteUserData={deleteUserData}
+          setDeleteData={deleteUserData}
           selectEdit={selectEditData}
           searchBar={searchBar}
           setSearchBar={setSearchBar}

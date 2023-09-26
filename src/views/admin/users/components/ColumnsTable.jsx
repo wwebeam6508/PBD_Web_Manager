@@ -41,7 +41,7 @@ export default function ColumnsTable(props) {
     selectSort,
     setAddFormOpen,
     selectEdit,
-    setDeleteProjectData,
+    setDeleteData,
     setSearchBar,
     setSearchFilter,
     searchBar,

@@ -39,6 +39,7 @@ export default function FormExpenseModal({
   closeModal,
   expenseID = null,
   projects = [],
+  customers = [],
 }) {
   const defaultForm = {
     title: "",
@@ -52,6 +53,7 @@ export default function FormExpenseModal({
     ],
     currentVat: 0,
     workRef: "",
+    customerRef: "",
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(defaultForm);
@@ -254,6 +256,33 @@ export default function FormExpenseModal({
               })}
             />
           </FormControl>
+
+          <FormControl marginBottom="1rem">
+            <FormLabel fontSize={20} htmlFor="customerRef">
+              ชื่อผู้ขาย
+            </FormLabel>
+            <Select
+              placeholder="เลือกผู้ขาย"
+              name="customerRef"
+              value={{
+                label: customers.find(
+                  (customer) => customer.id === formData.customerRef
+                )?.name,
+              }}
+              onChange={(e) => {
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  customerRef: e.value,
+                }));
+              }}
+              options={customers.map((customer) => {
+                return {
+                  value: customer.id,
+                  label: customer.name,
+                };
+              })}
+            />
+          </FormControl>
         </Grid>
         <Grid>
           <GridItem>
@@ -410,7 +439,7 @@ export default function FormExpenseModal({
 
   return (
     <>
-      <Modal isOpen={stateOpen} onClose={closeModal} size="full">
+      <Modal isOpen={stateOpen} onClose={closeModal} size="6xl">
         <ModalOverlay />
         <ModalContent>
           {isSubmitting ? (
@@ -460,6 +489,7 @@ export default function FormExpenseModal({
           })
         : [],
       workRef: expense.workRef ? expense.workRef : "",
+      customerRef: expense.customerRef ? expense.customerRef : "",
     };
     setFormData(_.cloneDeep(form));
     setFormOldData(_.cloneDeep(form));

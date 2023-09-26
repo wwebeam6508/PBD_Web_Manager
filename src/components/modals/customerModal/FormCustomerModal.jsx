@@ -297,7 +297,7 @@ export default function FormCustomerModal({
 
   return (
     <>
-      <Modal isOpen={stateOpen} onClose={closeModal} size="full">
+      <Modal isOpen={stateOpen} onClose={closeModal} size="6xl">
         <ModalOverlay />
         <ModalContent>
           {isSubmitting ? (
