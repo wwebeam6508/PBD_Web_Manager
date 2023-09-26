@@ -58,7 +58,6 @@ export default function Settings() {
     getUserType().then((res) => {
       if (res) {
         let userTypeData = res.data;
-        //remove name as SuperAdmin from array
         setUserTypes(userTypeData);
       }
     });
