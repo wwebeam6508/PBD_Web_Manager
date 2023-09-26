@@ -1,4 +1,3 @@
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Modal,
   ModalOverlay,
@@ -25,8 +24,11 @@ import _ from "lodash";
 import { addUser } from "/api/users";
 import { updateUser } from "/api/users";
 import { getUserByID } from "/api/users";
-import moment from "moment";
 
+//import sweet alert
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 export default function FormUserModal({
   stateOpen = false,
   isEdit = false,
@@ -36,7 +38,6 @@ export default function FormUserModal({
 }) {
   const defaultForm = {
     username: "",
-    date: new Date(),
     password: "",
     userType: "",
   };
@@ -92,9 +93,6 @@ export default function FormUserModal({
     const compareData = formData;
     const compareDataOld = formOldData;
     if (JSON.stringify(compareData) === JSON.stringify(compareDataOld)) {
-      return true;
-    }
-    if (formData.lists.length === 0) {
       return true;
     }
     return false;
@@ -257,21 +255,18 @@ export default function FormUserModal({
     setIsSubmitting(true);
     let passData = {
       ...formData,
-      date: moment(new Date()).format("YYYY-MM-DD"),
     };
-    try {
-      await addUser(passData)
-        .then((res) => {
-          if (res.message === "success") {
-            closeModal();
-          }
-          setIsSubmitting(false);
-        })
-        .catch((err) => {
-          setIsSubmitting(false);
-          throw err;
-        });
-    } catch (error) {}
+    const res = await addUser(passData);
+    if (res && res.message === "success") {
+      closingModal();
+      MySwal.fire({
+        icon: "success",
+        title: "เพิ่มรายการงานสำเร็จ",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+    setIsSubmitting(false);
   }
 
   async function editSubmit() {
@@ -280,25 +275,20 @@ export default function FormUserModal({
     let passData;
     passData = {
       ..._.cloneDeep(formData),
-      date: moment(formData.date).format("YYYY-MM-DD"),
       userID: userID,
     };
     delete passData._id;
-    try {
-      await updateUser(passData)
-        .then((res) => {
-          if (res.message === "success") {
-            closingModal();
-          }
-          setIsSubmitting(false);
-        })
-        .catch((err) => {
-          setIsSubmitting(false);
-          throw err;
-        });
-    } catch (error) {
-      console.log(error);
+    const res = await updateUser(passData);
+    if (res && res.message === "success") {
+      closingModal();
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขรายการงานสำเร็จ",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
+    setIsSubmitting(false);
   }
   function closingModal() {
     setFormData(defaultForm);
