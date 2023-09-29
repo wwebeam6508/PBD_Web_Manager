@@ -5,11 +5,10 @@ import Footer from "/components/footer/FooterAdmin.jsx";
 import Navbar from "/components/navbar/NavbarAdmin.jsx";
 import Sidebar from "/components/sidebar/Sidebar.jsx";
 import { SidebarContext } from "/contexts/SidebarContext";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "/routes";
-import { fetchUserData } from "/api/auth";
 
 // Custom Chakra theme
 export default function Dashboard(props) {
@@ -94,7 +93,6 @@ export default function Dashboard(props) {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         if (prop.permission && permissions) {
-          // for loop permissions object
           for (const [key, value] of Object.entries(permissions)) {
             for (const [key2, value2] of Object.entries(value)) {
               if (key2 === prop.permission) {

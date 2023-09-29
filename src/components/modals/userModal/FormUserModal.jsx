@@ -240,8 +240,8 @@ export default function FormUserModal({
 
     const form = {
       ...user,
-      date: new Date(user.date),
       userType: user.userType,
+      password: "",
     };
     setFormData(_.cloneDeep(form));
     setFormOldData(_.cloneDeep(form));
