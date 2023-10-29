@@ -16,41 +16,46 @@ import {
   Center,
   Spinner,
   Container,
+  Checkbox,
 } from "@chakra-ui/react";
-import Select from "react-select";
 import React, { useEffect, useState } from "react";
 import { isEmpty } from "/util/helper";
 import _ from "lodash";
-import { addUser } from "/api/users";
-import { updateUser } from "/api/users";
-import { getUserByID } from "/api/users";
+import { addUserType } from "/api/userTypes";
+import { updateUserType } from "/api/userTypes";
+import { getUserTypeByID } from "/api/userTypes";
 
 //import sweet alert
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useSelector } from "react-redux";
 const MySwal = withReactContent(Swal);
-export default function FormUserModal({
+export default function FormUserTypeModal({
   stateOpen = false,
   isEdit = false,
   closeModal,
-  userID = null,
-  userTypes = [],
+  userTypeID = null,
 }) {
   const defaultForm = {
-    username: "",
-    password: "",
-    userType: "",
+    name: "",
+    permission: {},
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
+  const prePermission = useSelector((state) => state.auth.prePermission);
 
   useEffect(() => {
     if (isEdit) {
-      getEditUserData();
+      getEditUserTypeData();
     } else {
       setFormData(defaultForm);
       setFormOldData(defaultForm);
+      //prePermission as default permission
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        permission: prePermission,
+      }));
     }
   }, [isEdit]);
 
@@ -71,7 +76,7 @@ export default function FormUserModal({
   };
 
   const validation = () => {
-    const requried = ["username", "userType", "password"];
+    const requried = ["name"];
     for (let i = 0; i < requried.length; i++) {
       const req = requried[i];
       if (isEmpty(formData[req])) {
@@ -82,7 +87,7 @@ export default function FormUserModal({
   };
 
   const editValidtion = () => {
-    const requried = ["username", "userType"];
+    const requried = ["name"];
     for (let i = 0; i < requried.length; i++) {
       const req = requried[i];
       if (isEmpty(formData[req])) {
@@ -98,77 +103,69 @@ export default function FormUserModal({
     return false;
   };
 
-  const formAddUser = (
+  const formAddUserType = (
     <form>
       <Container maxW="container.xl">
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           <GridItem>
             <FormControl marginBottom="1rem">
               <FormLabel fontSize={20} htmlFor="name">
-                Username
+                ชื่อประเภทผู้ใช้
               </FormLabel>
               <Input
                 type="text"
-                id="username"
-                name="username"
-                placeholder="ชื่อผู้ใช้"
-                value={formData.username}
+                id="name"
+                name="name"
+                placeholder="ชื่อประเภทผู้ใช้"
+                value={formData.name}
                 onChange={handleChange}
               />
-              {isEmpty(formData.username) && (
+              {isEmpty(formData.name) && (
                 <Text color="red.500" marginBottom="1rem">
-                  กรุณากรอก Username
+                  กรุณากรอกชื่อประเภทผู้ใช้
                 </Text>
               )}
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl marginBottom="1rem">
-              <FormLabel fontSize={20} htmlFor="password">
-                Password
+              <FormLabel fontSize={20} htmlFor="name">
+                สิทธิ์การใช้งาน
               </FormLabel>
-              <Input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {isEmpty(formData.password) && !isEdit && (
-                <Text color="red.500" marginBottom="1rem">
-                  กรุณากรอก Password
-                </Text>
-              )}
+              {formData.permission &&
+                Object.entries(formData.permission).map(([key, value]) => {
+                  return (
+                    <GridItem key={key}>
+                      <FormLabel fontSize={20} htmlFor="name">
+                        {key}
+                      </FormLabel>
+                      {Object.entries(value).map(([key2, value2]) => {
+                        return (
+                          <Checkbox
+                            key={key2}
+                            isChecked={value2}
+                            onChange={(e) => {
+                              setFormData((prevFormData) => ({
+                                ...prevFormData,
+                                permission: {
+                                  ...prevFormData.permission,
+                                  [key]: {
+                                    ...prevFormData.permission[key],
+                                    [key2]: e.target.checked,
+                                  },
+                                },
+                              }));
+                            }}
+                          >
+                            {key2}
+                          </Checkbox>
+                        );
+                      })}
+                    </GridItem>
+                  );
+                })}
             </FormControl>
           </GridItem>
-
-          <FormControl marginBottom="1rem">
-            <FormLabel fontSize={20} htmlFor="userType">
-              ประเภทผู้ใช้งาน
-            </FormLabel>
-            <Select
-              placeholder="เลือกประเภทผู้ใช้"
-              name="userType"
-              value={{
-                label: userTypes.find(
-                  (userType) => userType.id === formData.userType
-                )?.name,
-              }}
-              onChange={(e) => {
-                setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  userType: e.value,
-                }));
-              }}
-              options={userTypes.map((userType) => {
-                return {
-                  value: userType.id,
-                  label: userType.name,
-                };
-              })}
-            />
-          </FormControl>
         </Grid>
         <div style={{ textAlign: "center" }}>
           {!isEdit ? (
@@ -220,7 +217,7 @@ export default function FormUserModal({
                 {!isEdit ? "เพิ่มผู้ใช้" : "แก้ไขผู้ใช้"}
               </ModalHeader>
               <ModalCloseButton />
-              <ModalBody>{formAddUser}</ModalBody>
+              <ModalBody>{formAddUserType}</ModalBody>
               <ModalFooter>
                 <Button colorScheme="red" mr={3} onClick={closeModal}>
                   ยกเลิก
@@ -233,15 +230,13 @@ export default function FormUserModal({
     </>
   );
 
-  async function getEditUserData() {
+  async function getEditUserTypeData() {
     setIsSubmitting(true);
-    const res = await getUserByID(userID);
-    const user = res.data;
+    const res = await getUserTypeByID(userTypeID);
+    const userType = res.data;
 
     const form = {
-      ...user,
-      userType: user.userType,
-      password: "",
+      ...userType,
     };
     setFormData(_.cloneDeep(form));
     setFormOldData(_.cloneDeep(form));
@@ -253,7 +248,7 @@ export default function FormUserModal({
     let passData = {
       ...formData,
     };
-    const res = await addUser(passData);
+    const res = await addUserType(passData);
     if (res && res.message === "success") {
       closingModal();
       MySwal.fire({
@@ -272,10 +267,10 @@ export default function FormUserModal({
     let passData;
     passData = {
       ..._.cloneDeep(formData),
-      userID: userID,
+      userTypeID: userTypeID,
     };
     delete passData._id;
-    const res = await updateUser(passData);
+    const res = await updateUserType(passData);
     if (res && res.message === "success") {
       closingModal();
       MySwal.fire({

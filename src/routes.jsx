@@ -12,6 +12,7 @@ import {
   MdBuild,
   MdCellTower,
   MdMoneyOff,
+  MdGroupWork,
 } from "react-icons/md";
 
 // Admin Imports
@@ -22,6 +23,7 @@ import Projects from "/views/admin/projects";
 import Customers from "/views/admin/customers";
 import Expenses from "/views/admin/expenses";
 import Users from "/views/admin/users";
+import UserTypes from "/views/admin/userTypes";
 
 // Auth Imports
 import SignInCentered from "/views/auth/signIn";
@@ -106,6 +108,18 @@ const routes = [
         icon: <Icon as={MdPeople} width="20px" height="20px" color="inherit" />,
         component: Users,
         isShow: true,
+        permission: "canViewUser",
+      },
+      {
+        name: "ประเภทผู้ใช้",
+        layout: "/admin",
+        path: "/userTypes",
+        icon: (
+          <Icon as={MdGroupWork} width="20px" height="20px" color="inherit" />
+        ),
+        component: UserTypes,
+        isShow: true,
+        permission: "canViewUserType",
       },
     ],
   },

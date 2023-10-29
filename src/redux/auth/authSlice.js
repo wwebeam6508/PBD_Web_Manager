@@ -5,6 +5,7 @@ export const authSlice = createSlice({
   initialState: {
     isAuthenticated: false,
     user: null,
+    prePermission: null,
   },
   reducers: {
     setAuth(state, action) {
@@ -12,7 +13,8 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     setUserProfile(state, action) {
-      state.user.userProfile = action.payload;
+      state.prePermission = action.payload.prePermission;
+      state.user.userProfile = action.payload.userData;
     },
     setLogout(state) {
       state.isAuthenticated = false;

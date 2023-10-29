@@ -52,7 +52,9 @@ export default function ColumnsTable(props) {
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
-  const userID = useSelector((state) => state.auth.user.userProfile.userID);
+  const userTypeID = useSelector(
+    (state) => state.auth.user.userProfile.userType.userTypeID
+  );
   useEffect(() => {
     if (setting) {
       columnsDataE.forEach((column) => {
@@ -126,7 +128,7 @@ export default function ColumnsTable(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          ผู้ใช้งาน
+          ประเภทผู้ใช้งาน
         </Text>
         <Flex w="30%" align="center">
           {searchFilterBar === "profit" ? (
@@ -230,8 +232,7 @@ export default function ColumnsTable(props) {
               setSearchBar("");
             }}
           >
-            <option value="username">ชื่อผู้ใช้</option>
-            <option value="userType">ประเภทผู้ใช้</option>
+            <option value="name">ชื่อประเภทผู้ใช้งาน</option>
             <option value="date">วันที่สร้าง</option>
           </Select>
           <Button onClick={searchTrigger} marginLeft="10px">
@@ -306,23 +307,10 @@ export default function ColumnsTable(props) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data = "";
-                  if (cell.column.id === "username") {
+                  if (cell.column.id === "name") {
                     data = (
                       <Flex align="center">
                         <Text color={textColor} fontSize="sm" fontWeight="700">
-                          {cell.value}
-                        </Text>
-                      </Flex>
-                    );
-                  } else if (cell.column.id === "userType") {
-                    data = (
-                      <Flex align="center">
-                        <Text
-                          me="10px"
-                          color={textColor}
-                          fontSize="sm"
-                          fontWeight="700"
-                        >
                           {cell.value}
                         </Text>
                       </Flex>
@@ -351,21 +339,21 @@ export default function ColumnsTable(props) {
                   fontSize={{ sm: "14px" }}
                   minW={{ sm: "150px", md: "200px", lg: "auto" }}
                 >
-                  {userID !== row.original.userID && (
+                  {userTypeID !== row.original.userTypeID && (
                     <Flex justify="space-around">
                       <IconButton
                         aria-label="edit"
                         icon={<EditIcon />}
                         size="sm"
                         colorScheme="blue"
-                        onClick={() => selectEdit(row.original.userID)}
+                        onClick={() => selectEdit(row.original.userTypeID)}
                       />
                       <IconButton
                         aria-label="delete"
                         icon={<DeleteIcon />}
                         size="sm"
                         colorScheme="red"
-                        onClick={() => setDeleteData(row.original.userID)}
+                        onClick={() => setDeleteData(row.original.userTypeID)}
                       />
                     </Flex>
                   )}
