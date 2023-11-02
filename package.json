@@ -55,7 +55,8 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "firebase deploy --only hosting"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
