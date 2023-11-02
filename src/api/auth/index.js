@@ -23,3 +23,15 @@ export async function fetchUserData(user) {
     return await errorHandle(error);
   }
 }
+
+export async function changePasswordData(data) {
+  const requestOption = {
+    headers: headers(),
+  };
+  try {
+    await axios.post(`${APIURL}/changepassword`, data, requestOption);
+    return true;
+  } catch (error) {
+    return await errorHandle(error);
+  }
+}
