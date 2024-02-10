@@ -147,7 +147,7 @@ export default function Settings() {
         showLoading();
         const res = await deleteCustomer(customerID);
         if (res) {
-          if (res.message === "success") {
+          if (res.code === 200) {
             MySwal.fire(
               "ลบเรียบร้อย!",
               "บริษัทหรือลูกค้าถูกลบเรียบร้อยแล้ว",

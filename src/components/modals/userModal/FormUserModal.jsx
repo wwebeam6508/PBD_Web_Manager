@@ -254,7 +254,7 @@ export default function FormUserModal({
       ...formData,
     };
     const res = await addUser(passData);
-    if (res && res.message === "success") {
+    if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
         icon: "success",
@@ -276,7 +276,7 @@ export default function FormUserModal({
     };
     delete passData._id;
     const res = await updateUser(passData);
-    if (res && res.message === "success") {
+    if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
         icon: "success",

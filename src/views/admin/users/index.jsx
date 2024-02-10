@@ -174,7 +174,7 @@ export default function Settings() {
         showLoading();
         const res = await deleteUser(userID);
         if (res) {
-          if (res.message === "success") {
+          if (res.code === 200) {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
             await getUserData(
               currentPage,

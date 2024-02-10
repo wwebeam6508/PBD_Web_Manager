@@ -514,7 +514,7 @@ export default function FormExpenseModal({
     try {
       await addExpense(passData)
         .then((res) => {
-          if (res.message === "success") {
+          if (res.code === 200) {
             closeModal();
           }
           setIsSubmitting(false);

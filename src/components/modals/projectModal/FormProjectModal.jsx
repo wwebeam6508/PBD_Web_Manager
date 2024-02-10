@@ -56,7 +56,7 @@ export default function FormProjectModal({
   const [formOldData, setFormOldData] = useState(defaultForm);
   const [isDateEnd, setIsDateEnd] = useState(false);
   const [isDateEndOld, setIsDateEndOld] = useState(false);
-  
+
   useEffect(() => {
     if (isEdit) {
       getEditProjectData();
@@ -396,7 +396,7 @@ export default function FormProjectModal({
     }
 
     const res = await addProject(passData);
-    if (res && res.message === "success") {
+    if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
         icon: "success",
@@ -430,7 +430,7 @@ export default function FormProjectModal({
       passData.imagesAdd = imageUpdate.imagesAdd;
     }
     const res = await updateProject(passData);
-    if (res && res.message === "success") {
+    if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
         icon: "success",

@@ -195,8 +195,9 @@ export default function Settings() {
       if (result.isConfirmed) {
         showLoading();
         const res = await deleteExpense(expenseID);
+        console.log(res);
         if (res) {
-          if (res.message === "success") {
+          if (res.code === 200) {
             MySwal.fire("ลบเรียบร้อย!", "โครงการถูกลบเรียบร้อยแล้ว", "success");
             await getExpensesData(
               currentPage,

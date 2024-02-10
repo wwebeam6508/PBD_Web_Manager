@@ -149,7 +149,7 @@ export default function Settings() {
         showLoading();
         const res = await deleteUserType(userTypeID);
         if (res) {
-          if (res.message === "success") {
+          if (res.code === 200) {
             MySwal.fire(
               "ลบเรียบร้อย!",
               "ประเภทผู้ใช้ถูกลบเรียบร้อยแล้ว",
