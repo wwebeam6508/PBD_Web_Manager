@@ -37,22 +37,6 @@ const routes = [
     component: MainDashboard,
     isShow: true,
   },
-  // {
-  //   name: "NFT Marketplace",
-  //   layout: "/admin",
-  //   path: "/nft-marketplace",
-  //   icon: (
-  //     <Icon
-  //       as={MdOutlineShoppingCart}
-  //       width="20px"
-  //       height="20px"
-  //       color="inherit"
-  //     />
-  //   ),
-  //   component: NFTMarketplace,
-  //   secondary: true,
-  //   isShow: true,
-  // },
   {
     category: "accounting",
     name: "จัดการค่าใช้จ่ายรายได้",
@@ -66,7 +50,7 @@ const routes = [
         ),
         component: Expenses,
         isShow: true,
-        permission: "canViewExpense",
+        permission: "canView",
       },
       {
         name: "รายได้จากงาน",
@@ -77,7 +61,7 @@ const routes = [
         ),
         component: Projects,
         isShow: true,
-        permission: "canViewProject",
+        permission: "canView",
       },
     ],
   },
@@ -108,7 +92,7 @@ const routes = [
         icon: <Icon as={MdPeople} width="20px" height="20px" color="inherit" />,
         component: Users,
         isShow: true,
-        permission: "canViewUser",
+        permission: "canView",
       },
       {
         name: "ประเภทผู้ใช้",
@@ -119,7 +103,7 @@ const routes = [
         ),
         component: UserTypes,
         isShow: true,
-        permission: "canViewUserType",
+        permission: "canView",
       },
     ],
   },

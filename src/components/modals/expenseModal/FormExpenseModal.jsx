@@ -212,7 +212,6 @@ export default function FormExpenseModal({
               />
             </FormControl>
           </GridItem>
-
           <GridItem>
             <FormControl marginBottom="1rem">
               <FormLabel fontSize={20} htmlFor="date">
@@ -229,7 +228,6 @@ export default function FormExpenseModal({
               />
             </FormControl>
           </GridItem>
-
           <FormControl marginBottom="1rem">
             <FormLabel fontSize={20} htmlFor="workRef">
               อ้างอิงงาน
@@ -256,7 +254,6 @@ export default function FormExpenseModal({
               })}
             />
           </FormControl>
-
           <FormControl marginBottom="1rem">
             <FormLabel fontSize={20} htmlFor="customerRef">
               ชื่อผู้ขาย
@@ -425,7 +422,7 @@ export default function FormExpenseModal({
           ) : (
             <Button
               onClick={editSubmit}
-              disabled={editValidtion() || validation()}
+              disabled={editValidtion()}
               type="button"
               color="yellow.500"
             >
@@ -469,7 +466,6 @@ export default function FormExpenseModal({
       </Modal>
     </>
   );
-
   async function getEditExpenseData() {
     setIsSubmitting(true);
     const res = await getExpenseByID(expenseID);
@@ -488,8 +484,8 @@ export default function FormExpenseModal({
             };
           })
         : [],
-      workRef: expense.workRef ? expense.workRef : "",
-      customerRef: expense.customerRef ? expense.customerRef : "",
+      workRef: expense.workRef ? expense.workRef : "none",
+      customerRef: expense.customerRef ? expense.customerRef : "none",
     };
     setFormData(_.cloneDeep(form));
     setFormOldData(_.cloneDeep(form));
@@ -498,7 +494,6 @@ export default function FormExpenseModal({
     }
     setIsSubmitting(false);
   }
-
   async function addSubmit() {
     setIsSubmitting(true);
     const lists = formData.lists.filter((list) => {
@@ -507,7 +502,7 @@ export default function FormExpenseModal({
 
     let passData = {
       ...formData,
-      date: moment(formData.date).format("YYYY-MM-DD"),
+      date: moment(formData.date),
       lists: lists.map((list) => {
         return {
           title: list.title,
@@ -530,7 +525,6 @@ export default function FormExpenseModal({
         });
     } catch (error) {}
   }
-
   async function editSubmit() {
     setIsSubmitting(true);
     const lists = formData.lists.filter((list) => {
@@ -568,31 +562,30 @@ export default function FormExpenseModal({
     let passData;
     passData = {
       ..._.cloneDeep(formData),
-      date: moment(formData.date).format("YYYY-MM-DD"),
-      expenseID: expenseID,
+      date: moment(formData.date),
       addLists: addLists,
       removeLists: removeLists,
       currentVat: isVat ? formData.currentVat : 0,
     };
     delete passData.lists;
     delete passData._id;
-    try {
-      await updateExpense(passData)
-        .then((res) => {
-          if (res.message === "success") {
-            closingModal();
-          }
-          setIsSubmitting(false);
-        })
-        .catch((err) => {
-          setIsSubmitting(false);
-          throw err;
-        });
-    } catch (error) {
-      console.log(error);
+    //remove passData that not change from oldData
+    for (let key in passData) {
+      if (passData[key] === formOldData[key]) {
+        delete passData[key];
+      }
     }
+    await updateExpense(expenseID, passData)
+      .then((res) => {
+        if (res.code === 200) {
+          closingModal();
+        }
+        setIsSubmitting(false);
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+      });
   }
-
   function removeCommaParseFloat(value) {
     return parseFloat(value.replace(/,/g, ""));
   }

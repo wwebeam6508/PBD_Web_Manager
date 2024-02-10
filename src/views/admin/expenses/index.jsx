@@ -60,14 +60,14 @@ export default function Settings() {
     getProjectTitle().then((res) => {
       if (res) {
         let projectData = res.data;
-        projectData.unshift({ id: "", title: "ไม่มี" });
+        projectData.unshift({ id: "none", title: "ไม่มี" });
         setProjects(projectData);
       }
     });
     getSellerName().then((res) => {
       if (res) {
         let customerData = res.data;
-        customerData.unshift({ id: "", name: "ไม่มี" });
+        customerData.unshift({ id: "none", name: "ไม่มี" });
         setCustomers(customerData);
       }
     });

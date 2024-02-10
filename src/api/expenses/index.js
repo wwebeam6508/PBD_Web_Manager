@@ -30,7 +30,7 @@ export const getExpenses = async ({
   }
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return await errorHandle(error);
   }
@@ -61,9 +61,13 @@ export const addExpense = async (formData) => {
   }
 };
 
-export const updateExpense = async (formData) => {
+export const updateExpense = async (id, formData) => {
   try {
+    //query
     const response = await axios.post(`${APIURL}/update`, formData, {
+      params: {
+        expenseID: id,
+      },
       headers: headers(),
     });
     return response.data;

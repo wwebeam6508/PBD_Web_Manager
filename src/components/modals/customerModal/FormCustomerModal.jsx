@@ -391,7 +391,6 @@ export default function FormCustomerModal({
       })
       .catch((err) => {
         setIsSubmitting(false);
-        console.log(err);
       });
     closingModal();
   }

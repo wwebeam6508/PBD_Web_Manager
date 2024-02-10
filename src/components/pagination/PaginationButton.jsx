@@ -53,23 +53,25 @@ export default function PaginationButton(props) {
                 </Button>
               );
             })}
-          {props.lastPage && !props.pages.includes(Number(props.lastPage)) && (
-            <Button
-              onClick={() => props.setPage(props.lastPage)}
-              style={{
-                backgroundColor:
-                  props.page == props.lastPage ? "#3182CE" : "#E2E8F0",
-                color: props.page == props.lastPage ? "#FFFFFF" : "#000000",
-                border: "none",
-                borderRadius: "5px",
-                padding: "10px",
-                margin: "5px",
-                cursor: "pointer",
-              }}
-            >
-              {props.lastPage}
-            </Button>
-          )}
+          {props.lastPage != null &&
+            !props.pages.includes(Number(props.lastPage)) &&
+            props.lastPage > 1 && (
+              <Button
+                onClick={() => props.setPage(props.lastPage)}
+                style={{
+                  backgroundColor:
+                    props.page == props.lastPage ? "#3182CE" : "#E2E8F0",
+                  color: props.page == props.lastPage ? "#FFFFFF" : "#000000",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px",
+                  margin: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                {props.lastPage}
+              </Button>
+            )}
         </>
       }
     </div>

@@ -54,10 +54,9 @@ export default function FormProjectModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
-
   const [isDateEnd, setIsDateEnd] = useState(false);
   const [isDateEndOld, setIsDateEndOld] = useState(false);
-
+  
   useEffect(() => {
     if (isEdit) {
       getEditProjectData();
@@ -386,14 +385,14 @@ export default function FormProjectModal({
       detail: formData.detail,
       customer: formData.customer,
       profit: removeCommaParseFloat(formData.profit),
-      date: moment(formData.date).format("YYYY-MM-DD"),
+      date: moment(formData.date),
     };
     if (formData.images.length > 0) {
       passData.images = formData.images;
     }
 
     if (isDateEnd) {
-      passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
+      passData.dateEnd = moment(formData.dateEnd);
     }
 
     const res = await addProject(passData);
@@ -417,12 +416,12 @@ export default function FormProjectModal({
       workID: projectID,
       title: formData.title,
       profit: removeCommaParseFloat(formData.profit),
-      date: moment(formData.date).format("YYYY-MM-DD"),
+      date: moment(formData.date),
       customer: formData.customer,
       detail: formData.detail,
     };
     if (isDateEnd) {
-      passData.dateEnd = moment(formData.dateEnd).format("YYYY-MM-DD");
+      passData.dateEnd = moment(formData.dateEnd);
     }
     if (imageUpdate.imagesDelete.length > 0) {
       passData.imagesDelete = imageUpdate.imagesDelete;

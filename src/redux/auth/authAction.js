@@ -9,7 +9,7 @@ export const login = (username, password) => async (dispatch) => {
     );
     dispatch(setAuth(response.data.data));
   } catch (error) {
-    errorHandle(error);
+    errorHandle(error.response.data);
   }
 };
 
@@ -22,6 +22,6 @@ export const logout =
       });
       dispatch(setLogout());
     } catch (error) {
-      errorHandle(error);
+      errorHandle(error.response.data);
     }
   };

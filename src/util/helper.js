@@ -13,28 +13,26 @@ export function isEmpty(str) {
 
 export async function errorHandle(error) {
   if (error.response) {
-    if (error.response.data.error) {
-      const errorRes = error.response.data.error;
-      if (errorRes.code === 401) {
-        if (await refreshTokenRequest()) {
-          return await requestAgain(error.config);
-        } else {
-          errorHandler({
-            errorCode: errorRes.code,
-            errorMessage: errorRes.message,
-          });
-        }
+    const errorRes = error.response.data;
+    if (errorRes.code === 401) {
+      if (await refreshTokenRequest()) {
+        return await requestAgain(error.config);
       } else {
         errorHandler({
           errorCode: errorRes.code,
-          errorMessage: errorRes.message,
+          errorMessage: errorRes.data,
         });
       }
+    } else {
+      errorHandler({
+        errorCode: errorRes.code,
+        errorMessage: errorRes.data,
+      });
     }
   } else {
     errorHandler({
       errorCode: error.code ? error.code : 500,
-      errorMessage: error.message ? error.message : "Unknown Error",
+      errorMessage: error.data ? error.data : "Unknown Error",
     });
   }
 }

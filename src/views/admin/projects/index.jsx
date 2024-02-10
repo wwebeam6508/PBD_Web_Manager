@@ -58,7 +58,7 @@ export default function Settings() {
     getCustomerName().then((res) => {
       if (res) {
         let cuistomerData = res.data;
-        cuistomerData.unshift({ id: "", name: "ไม่มี" });
+        cuistomerData.unshift({ id: "none", name: "ไม่มี" });
         setCustomers(cuistomerData);
       }
     });
