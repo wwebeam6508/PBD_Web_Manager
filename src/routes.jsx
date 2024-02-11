@@ -78,6 +78,7 @@ const routes = [
         ),
         component: Customers,
         isShow: true,
+        permission: "canView",
       },
     ],
   },

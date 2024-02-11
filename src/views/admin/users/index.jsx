@@ -123,31 +123,34 @@ export default function Settings() {
   );
 
   async function getUserData(selectPage = 1, sortTitle = "", sortType = "") {
-    showLoading();
-    const result = await getUser({
-      page: selectPage,
-      pageSize: defaultSetting.pageSize,
-      sortTitle: sortTitle,
-      sortType: sortType,
-      search: searchBar,
-      searchFilter: searchFilterBar,
-    });
-    if (result) {
-      const resultData = result.data.map((item) => {
-        let returnData = item;
-        if (returnData.date) {
-          returnData.date = moment(returnData.date)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
-        }
-        return returnData;
+    try {
+      showLoading();
+      const result = await getUser({
+        page: selectPage,
+        pageSize: defaultSetting.pageSize,
+        sortTitle: sortTitle,
+        sortType: sortType,
+        search: searchBar,
+        searchFilter: searchFilterBar,
       });
-      setLastPage(result.lastPage);
-      setCurrentPage(result.currentPage);
-      setPages(result.pages);
-      setUsers(resultData);
+      if (result) {
+        const resultData = result.data.map((item) => {
+          let returnData = item;
+          if (returnData.date) {
+            returnData.date = moment(returnData.date)
+              .add(543, "year")
+              .format("DD.MM.YYYY");
+          }
+          return returnData;
+        });
+        setLastPage(result.lastPage);
+        setCurrentPage(result.currentPage);
+        setPages(result.pages);
+        setUsers(resultData);
+      }
+    } finally {
+      hideLoading();
     }
-    hideLoading();
   }
 
   function selectSortData(sortTitle, sortType) {

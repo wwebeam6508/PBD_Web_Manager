@@ -108,7 +108,17 @@ export default function ColumnsTable(props) {
       ? [new Date(searchBar.split(",")[0])]
       : [new Date()];
   };
+  const auth = useSelector((state) => state.auth);
+  const permissions = auth.user
+    ? auth.user.userProfile.userType.permission
+    : null;
 
+  const permissionCheck = (permission) => {
+    if (permissions) {
+      return permissions.includes(permission);
+    }
+    return false;
+  };
   return (
     <Card
       direction="column"
@@ -243,8 +253,9 @@ export default function ColumnsTable(props) {
             />
           </Button>
         </Flex>
-
-        <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
+        {permissionCheck("canEdit") && (
+          <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
+        )}
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
         <Thead>
