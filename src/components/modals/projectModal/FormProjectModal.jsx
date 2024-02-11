@@ -413,7 +413,6 @@ export default function FormProjectModal({
     const imageUpdate = checkImageUpdate();
     let passData;
     passData = {
-      workID: projectID,
       title: formData.title,
       profit: removeCommaParseFloat(formData.profit),
       date: moment(formData.date),
@@ -429,7 +428,14 @@ export default function FormProjectModal({
     if (imageUpdate.imagesAdd.length > 0) {
       passData.imagesAdd = imageUpdate.imagesAdd;
     }
-    const res = await updateProject(passData);
+
+    //remove passData if not change from old data
+    for (let key in passData) {
+      if (passData[key] === formOldData[key]) {
+        delete passData[key];
+      }
+    }
+    const res = await updateProject(projectID, passData);
     if (res && res.code === 200) {
       closingModal();
       MySwal.fire({

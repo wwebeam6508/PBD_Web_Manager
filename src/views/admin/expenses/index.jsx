@@ -35,6 +35,7 @@ import withReactContent from "sweetalert2-react-content";
 import { deleteExpense } from "/api/expenses";
 import { getProjectTitle } from "/api/expenses";
 import { getSellerName } from "/api/expenses";
+import { fi } from "date-fns/locale";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
@@ -140,36 +141,43 @@ export default function Settings() {
     sortTitle = "",
     sortType = ""
   ) {
-    showLoading();
-    const result = await getExpenses({
-      page: selectPage,
-      pageSize: defaultSetting.pageSize,
-      sortTitle: sortTitle,
-      sortType: sortType,
-      search: searchBar,
-      searchFilter: searchFilterBar,
-    });
-    if (result) {
-      const resultData = result.data.map((item) => {
-        let returnData = item;
-        if (returnData.date) {
-          returnData.date = moment(returnData.date)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
-        }
-        if (returnData.dateEnd) {
-          returnData.dateEnd = moment(returnData.dateEnd)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
-        }
-        return returnData;
+    try {
+      showLoading();
+      const result = await getExpenses({
+        page: selectPage,
+        pageSize: defaultSetting.pageSize,
+        sortTitle: sortTitle,
+        sortType: sortType,
+        search: searchBar,
+        searchFilter: searchFilterBar,
       });
-      setLastPage(result.lastPage);
-      setCurrentPage(result.currentPage);
-      setPages(result.pages);
-      setExpenses(resultData);
+      if (result) {
+        if (result.data === null || result.data.length === 0) {
+          hideLoading();
+          return MySwal.fire("ไม่พบข้อมูล!", "ไม่พบข้อมูลโครงการ", "warning");
+        }
+        const resultData = result.data.map((item) => {
+          let returnData = item;
+          if (returnData.date) {
+            returnData.date = moment(returnData.date)
+              .add(543, "year")
+              .format("DD.MM.YYYY");
+          }
+          if (returnData.dateEnd) {
+            returnData.dateEnd = moment(returnData.dateEnd)
+              .add(543, "year")
+              .format("DD.MM.YYYY");
+          }
+          return returnData;
+        });
+        setLastPage(result.lastPage);
+        setCurrentPage(result.currentPage);
+        setPages(result.pages);
+        setExpenses(resultData);
+      }
+    } finally {
+      hideLoading();
     }
-    hideLoading();
   }
 
   function selectSortData(sortTitle, sortType) {

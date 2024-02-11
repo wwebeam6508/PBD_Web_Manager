@@ -31,7 +31,7 @@ export const getProjects = async ({
   }
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return await errorHandle(error);
   }
@@ -40,10 +40,10 @@ export const getProjects = async ({
 export const getProjectByID = async (id) => {
   try {
     const response = await axios.get(`${APIURL}/getByID`, {
-      headers: headers(),
       params: {
-        workID: id,
+        projectID: id,
       },
+      headers: headers(),
     });
     return response.data;
   } catch (error) {
@@ -62,9 +62,12 @@ export const addProject = async (formData) => {
   }
 };
 
-export const updateProject = async (formData) => {
+export const updateProject = async (id, formData) => {
   try {
     const response = await axios.post(`${APIURL}/update`, formData, {
+      params: {
+        projectID: id,
+      },
       headers: headers(),
     });
     return response.data;
@@ -78,7 +81,7 @@ export const deleteProject = async (id) => {
     const response = await axios.delete(`${APIURL}/delete`, {
       headers: headers(),
       params: {
-        workID: id,
+        projectID: id,
       },
     });
     return response.data;
