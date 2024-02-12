@@ -134,19 +134,23 @@ export default function Settings() {
         searchFilter: searchFilterBar,
       });
       if (result) {
-        const resultData = result.data.map((item) => {
-          let returnData = item;
-          if (returnData.date) {
-            returnData.date = moment(returnData.date)
-              .add(543, "year")
-              .format("DD.MM.YYYY");
-          }
-          return returnData;
-        });
+        if (result.data) {
+          const resultData = result.data.map((item) => {
+            let returnData = item;
+            if (returnData.date) {
+              returnData.date = moment(returnData.date)
+                .add(543, "year")
+                .format("DD.MM.YYYY");
+            }
+            return returnData;
+          });
+          setUsers(resultData);
+        } else {
+          setUsers([]);
+        }
         setLastPage(result.lastPage);
         setCurrentPage(result.currentPage);
         setPages(result.pages);
-        setUsers(resultData);
       }
     } finally {
       hideLoading();

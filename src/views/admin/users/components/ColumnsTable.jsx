@@ -111,6 +111,21 @@ export default function ColumnsTable(props) {
       : [new Date()];
   };
 
+  const auth = useSelector((state) => state.auth);
+  const permissions = auth.user
+    ? auth.user.userProfile.userType.permission.user
+    : null;
+
+  const permissionCheck = (permission) => {
+    if (permissions) {
+      //check permission include in object
+      if (permissions[permission]) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <Card
       direction="column"
@@ -243,7 +258,9 @@ export default function ColumnsTable(props) {
             />
           </Button>
         </Flex>
-        <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
+        {permissionCheck("canEdit") && (
+          <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
+        )}
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
         <Thead>
@@ -353,20 +370,24 @@ export default function ColumnsTable(props) {
                 >
                   {userID !== row.original.userID && (
                     <Flex justify="space-around">
-                      <IconButton
-                        aria-label="edit"
-                        icon={<EditIcon />}
-                        size="sm"
-                        colorScheme="blue"
-                        onClick={() => selectEdit(row.original.userID)}
-                      />
-                      <IconButton
-                        aria-label="delete"
-                        icon={<DeleteIcon />}
-                        size="sm"
-                        colorScheme="red"
-                        onClick={() => setDeleteData(row.original.userID)}
-                      />
+                      {permissionCheck("canEdit") && (
+                        <IconButton
+                          aria-label="edit"
+                          icon={<EditIcon />}
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => selectEdit(row.original.userID)}
+                        />
+                      )}
+                      {permissionCheck("canRemove") && (
+                        <IconButton
+                          aria-label="delete"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => setDeleteData(row.original.userID)}
+                        />
+                      )}
                     </Flex>
                   )}
                 </Td>

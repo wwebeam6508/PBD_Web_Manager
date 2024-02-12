@@ -33,6 +33,7 @@ import {
 } from "@chakra-ui/icons";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { isEmpty } from "/util/helper";
+import { useSelector } from "react-redux";
 export default function ColumnsTable(props) {
   const {
     columnsData,
@@ -110,12 +111,15 @@ export default function ColumnsTable(props) {
   };
   const auth = useSelector((state) => state.auth);
   const permissions = auth.user
-    ? auth.user.userProfile.userType.permission
+    ? auth.user.userProfile.userType.permission.project
     : null;
 
   const permissionCheck = (permission) => {
     if (permissions) {
-      return permissions.includes(permission);
+      //check permission include in object
+      if (permissions[permission]) {
+        return true;
+      }
     }
     return false;
   };
@@ -378,22 +382,26 @@ export default function ColumnsTable(props) {
                   minW={{ sm: "150px", md: "200px", lg: "auto" }}
                 >
                   <Flex justify="space-around">
-                    <IconButton
-                      aria-label="edit"
-                      icon={<EditIcon />}
-                      size="sm"
-                      colorScheme="blue"
-                      onClick={() => selectEdit(row.original.projectID)}
-                    />
-                    <IconButton
-                      aria-label="delete"
-                      icon={<DeleteIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() =>
-                        setDeleteProjectData(row.original.projectID)
-                      }
-                    />
+                    {permissionCheck("canEdit") && (
+                      <IconButton
+                        aria-label="edit"
+                        icon={<EditIcon />}
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={() => selectEdit(row.original.projectID)}
+                      />
+                    )}
+                    {permissionCheck("CanRemove") && (
+                      <IconButton
+                        aria-label="delete"
+                        icon={<DeleteIcon />}
+                        size="sm"
+                        colorScheme="red"
+                        onClick={() =>
+                          setDeleteProjectData(row.original.projectID)
+                        }
+                      />
+                    )}
                   </Flex>
                 </Td>
               </Tr>

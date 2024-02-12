@@ -237,7 +237,6 @@ export default function FormUserModal({
     setIsSubmitting(true);
     const res = await getUserByID(userID);
     const user = res.data;
-
     const form = {
       ...user,
       userType: user.userType,
@@ -275,7 +274,13 @@ export default function FormUserModal({
       userID: userID,
     };
     delete passData._id;
-    const res = await updateUser(passData);
+    //delete passData that not change
+    for (let key in passData) {
+      if (passData[key] === formOldData[key]) {
+        delete passData[key];
+      }
+    }
+    const res = await updateUser(userID, passData);
     if (res && res.code === 200) {
       closingModal();
       MySwal.fire({

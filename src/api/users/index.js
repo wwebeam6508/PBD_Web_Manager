@@ -61,9 +61,12 @@ export const addUser = async (formData) => {
   }
 };
 
-export const updateUser = async (formData) => {
+export const updateUser = async (id, formData) => {
   try {
     const response = await axios.post(`${APIURL}/updateUser`, formData, {
+      params: {
+        userID: id,
+      },
       headers: headers(),
     });
     return response.data;
