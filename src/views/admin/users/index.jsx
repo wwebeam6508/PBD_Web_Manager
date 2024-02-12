@@ -134,23 +134,23 @@ export default function Settings() {
         searchFilter: searchFilterBar,
       });
       if (result) {
-        if (result.data) {
-          const resultData = result.data.map((item) => {
-            let returnData = item;
-            if (returnData.date) {
-              returnData.date = moment(returnData.date)
-                .add(543, "year")
-                .format("DD.MM.YYYY");
-            }
-            return returnData;
-          });
-          setUsers(resultData);
-        } else {
-          setUsers([]);
-        }
         setLastPage(result.lastPage);
         setCurrentPage(result.currentPage);
         setPages(result.pages);
+        if (!result.data) {
+          setUsers([]);
+          return MySwal.fire("ไม่พบข้อมูล", "ไม่พบข้อมูลที่ค้นหา", "warning");
+        }
+        const resultData = result.data.map((item) => {
+          let returnData = item;
+          if (returnData.date) {
+            returnData.date = moment(returnData.date)
+              .add(543, "year")
+              .format("DD.MM.YYYY");
+          }
+          return returnData;
+        });
+        setUsers(resultData);
       }
     } finally {
       hideLoading();

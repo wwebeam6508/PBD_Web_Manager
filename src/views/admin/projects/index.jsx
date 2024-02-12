@@ -143,8 +143,11 @@ export default function Settings() {
         searchFilter: searchFilterBar,
       });
       if (result) {
-        if (result.data === null || result.data.length === 0) {
-          hideLoading();
+        setLastPage(result.lastPage);
+        setCurrentPage(result.currentPage);
+        setPages(result.pages);
+        if (!result.data) {
+          setProjects([]);
           return MySwal.fire("ไม่พบข้อมูล!", "ไม่พบข้อมูลโครงการ", "warning");
         }
         const resultData = result.data.map((item) => {
@@ -161,9 +164,6 @@ export default function Settings() {
           }
           return returnData;
         });
-        setLastPage(result.lastPage);
-        setCurrentPage(result.currentPage);
-        setPages(result.pages);
         setProjects(resultData);
       }
     } finally {
