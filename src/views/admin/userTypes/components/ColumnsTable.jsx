@@ -32,7 +32,7 @@ import {
   TriangleUpIcon,
 } from "@chakra-ui/icons";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import { isEmpty } from "/util/helper";
+import { isEmpty, PermissionCheck } from "/util/helper";
 import { useSelector } from "react-redux";
 export default function ColumnsTable(props) {
   const {
@@ -112,6 +112,11 @@ export default function ColumnsTable(props) {
       ? [new Date(searchBar.split(",")[0])]
       : [new Date()];
   };
+
+  const auth = useSelector((state) => state.auth);
+  const permissions = auth.user
+    ? auth.user.userProfile.userType.permission.userType
+    : null;
 
   return (
     <Card
@@ -244,7 +249,17 @@ export default function ColumnsTable(props) {
             />
           </Button>
         </Flex>
-        <Button onClick={setAddFormOpen}>เพิ่ม +</Button>
+        <Button
+          style={{
+            visibility: PermissionCheck("canEdit", permissions)
+              ? "visible"
+              : "hidden",
+          }}
+          colorScheme="blue"
+          onClick={() => setAddFormOpen(true)}
+        >
+          เพิ่มประเภทผู้ใช้งาน
+        </Button>
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
         <Thead>
@@ -341,20 +356,24 @@ export default function ColumnsTable(props) {
                 >
                   {userTypeID !== row.original.userTypeID && (
                     <Flex justify="space-around">
-                      <IconButton
-                        aria-label="edit"
-                        icon={<EditIcon />}
-                        size="sm"
-                        colorScheme="blue"
-                        onClick={() => selectEdit(row.original.userTypeID)}
-                      />
-                      <IconButton
-                        aria-label="delete"
-                        icon={<DeleteIcon />}
-                        size="sm"
-                        colorScheme="red"
-                        onClick={() => setDeleteData(row.original.userTypeID)}
-                      />
+                      {PermissionCheck("canEdit", permissions) && (
+                        <IconButton
+                          aria-label="edit"
+                          icon={<EditIcon />}
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => selectEdit(row.original.userTypeID)}
+                        />
+                      )}
+                      {PermissionCheck("canRemove", permissions) && (
+                        <IconButton
+                          aria-label="delete"
+                          icon={<DeleteIcon />}
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => setDeleteData(row.original.userTypeID)}
+                        />
+                      )}
                     </Flex>
                   )}
                 </Td>

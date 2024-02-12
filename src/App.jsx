@@ -9,6 +9,10 @@ export default function App() {
   const auth = useSelector((state) => state.auth);
   useEffect(() => {
     if (auth.isAuthenticated) fetchUserData(auth.user);
+    //check fetchUserData every half hour
+    setInterval(() => {
+      if (auth.isAuthenticated) fetchUserData(auth.user);
+    }, 1800000);
   }, [auth.isAuthenticated]);
   return (
     <HashRouter>

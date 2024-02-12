@@ -201,8 +201,8 @@ export default function FormCustomerModal({
             {
               <Grid templateColumns="repeat(2, 1fr)" gap={4}>
                 {formData.phones.map((phone, index) => (
-                  <>
-                    <GridItem key={index}>
+                  <React.Fragment key={phone + index}>
+                    <GridItem>
                       <Input
                         pattern="[0-9]*"
                         type="text"
@@ -219,7 +219,7 @@ export default function FormCustomerModal({
                       onClick={() => handleRemovePhone(index)}
                       style={{ cursor: "pointer" }}
                     />
-                  </>
+                  </React.Fragment>
                 ))}
               </Grid>
             }
@@ -239,8 +239,8 @@ export default function FormCustomerModal({
             {
               <Grid templateColumns="repeat(2, 1fr)" gap={4}>
                 {formData.emails.map((email, index) => (
-                  <>
-                    <GridItem key={index}>
+                  <React.Fragment key={email + index}>
+                    <GridItem>
                       <Input
                         type="text"
                         id="emails"
@@ -256,7 +256,7 @@ export default function FormCustomerModal({
                       onClick={() => handleRemoveEmail(index)}
                       style={{ cursor: "pointer" }}
                     />
-                  </>
+                  </React.Fragment>
                 ))}
               </Grid>
             }
@@ -377,7 +377,6 @@ export default function FormCustomerModal({
     let passData;
     passData = {
       ...formData,
-      customerID: customerID,
       addPhones: addPhones,
       removePhones: removePhones,
       addEmails: addEmails,
@@ -385,11 +384,11 @@ export default function FormCustomerModal({
     };
     delete passData.phones;
     delete passData.emails;
-    await updateCustomer(passData)
+    await updateCustomer(customerID, passData)
       .then(() => {
         setIsSubmitting(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setIsSubmitting(false);
       });
     closingModal();

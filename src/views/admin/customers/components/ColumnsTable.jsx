@@ -39,10 +39,10 @@ export default function ColumnsTable(props) {
     setDeleteProjectData,
   } = props;
   const [columnsDataE, setColumnsDataE] = useState(columnsData);
-
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
   useEffect(() => {
+    //check columnsDataE is Array
     if (setting) {
       columnsDataE.forEach((column) => {
         if (setting.firstSort === column.accessor) {

@@ -49,9 +49,12 @@ export const addCustomer = async (formData) => {
   }
 };
 
-export const updateCustomer = async (formData) => {
+export const updateCustomer = async (id, formData) => {
   try {
     const response = await axios.post(`${APIURL}/update`, formData, {
+      params: {
+        customerID: id,
+      },
       headers: headers(),
     });
     return response.data;

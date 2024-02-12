@@ -17,7 +17,6 @@ import {
 
 // Admin Imports
 import MainDashboard from "/views/admin/default";
-import NFTMarketplace from "/views/admin/marketplace";
 import Profile from "/views/admin/profile";
 import Projects from "/views/admin/projects";
 import Customers from "/views/admin/customers";
@@ -98,7 +97,7 @@ const routes = [
       {
         name: "ประเภทผู้ใช้",
         layout: "/admin",
-        path: "/userTypes",
+        path: "/usertypes",
         icon: (
           <Icon as={MdGroupWork} width="20px" height="20px" color="inherit" />
         ),

@@ -175,6 +175,8 @@ export default function Settings() {
         });
         setExpenses(resultData);
       }
+    } catch (error) {
+      MySwal.fire("เกิดข้อผิดพลาด!", error.message, "error");
     } finally {
       hideLoading();
     }

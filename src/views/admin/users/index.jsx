@@ -152,6 +152,8 @@ export default function Settings() {
         });
         setUsers(resultData);
       }
+    } catch (error) {
+      MySwal.fire("เกิดข้อผิดพลาด!", error.message, "error");
     } finally {
       hideLoading();
     }

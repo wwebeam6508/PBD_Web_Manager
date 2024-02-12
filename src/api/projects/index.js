@@ -31,7 +31,7 @@ export const getProjects = async ({
   }
   try {
     const response = await axios.get(`${APIURL}/get`, requestOption);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     return await errorHandle(error);
   }

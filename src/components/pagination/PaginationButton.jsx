@@ -54,6 +54,7 @@ export default function PaginationButton(props) {
               );
             })}
           {props.lastPage != null &&
+            props.pages &&
             !props.pages.includes(Number(props.lastPage)) &&
             props.lastPage > 1 && (
               <Button

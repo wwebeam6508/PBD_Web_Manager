@@ -34,7 +34,6 @@ import { getCustomerName } from "/api/projects";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { deleteProject } from "/api/projects";
-import { fi } from "date-fns/locale";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
@@ -146,7 +145,7 @@ export default function Settings() {
         setLastPage(result.lastPage);
         setCurrentPage(result.currentPage);
         setPages(result.pages);
-        if (!result.data) {
+        if (result.data === null) {
           setProjects([]);
           return MySwal.fire("ไม่พบข้อมูล!", "ไม่พบข้อมูลโครงการ", "warning");
         }
@@ -166,6 +165,8 @@ export default function Settings() {
         });
         setProjects(resultData);
       }
+    } catch (error) {
+      MySwal.fire("เกิดข้อผิดพลาด!", error.message, "error");
     } finally {
       hideLoading();
     }

@@ -98,31 +98,40 @@ export default function Settings() {
     sortTitle = "",
     sortType = ""
   ) {
-    showLoading();
-    const result = await getUserType({
-      page: selectPage,
-      pageSize: defaultSetting.pageSize,
-      sortTitle: sortTitle,
-      sortType: sortType,
-      search: searchBar,
-      searchFilter: searchFilterBar,
-    });
-    if (result) {
-      const resultData = result.data.map((item) => {
-        let returnData = item;
-        if (returnData.date) {
-          returnData.date = moment(returnData.date)
-            .add(543, "year")
-            .format("DD.MM.YYYY");
-        }
-        return returnData;
+    try {
+      showLoading();
+      const result = await getUserType({
+        page: selectPage,
+        pageSize: defaultSetting.pageSize,
+        sortTitle: sortTitle,
+        sortType: sortType,
+        search: searchBar,
+        searchFilter: searchFilterBar,
       });
-      setLastPage(result.lastPage);
-      setCurrentPage(result.currentPage);
-      setPages(result.pages);
-      setUserTypes(resultData);
+      if (result) {
+        setLastPage(result.lastPage);
+        setCurrentPage(result.currentPage);
+        setPages(result.pages);
+        if (!result.data) {
+          setUserTypes([]);
+          return MySwal.fire("ไม่พบข้อมูล", "ไม่พบข้อมูลที่ค้นหา", "warning");
+        }
+        const resultData = result.data.map((item) => {
+          let returnData = item;
+          if (returnData.date) {
+            returnData.date = moment(returnData.date)
+              .add(543, "year")
+              .format("DD.MM.YYYY");
+          }
+          return returnData;
+        });
+        setUserTypes(resultData);
+      }
+    } catch (error) {
+      MySwal.fire("เกิดข้อผิดพลาด!", error.message, "error");
+    } finally {
+      hideLoading();
     }
-    hideLoading();
   }
 
   function selectSortData(sortTitle, sortType) {

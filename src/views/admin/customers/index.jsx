@@ -25,7 +25,6 @@ import { Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import ColumnsTable from "/views/admin/customers/components/ColumnsTable";
 import React, { useState, useContext, useEffect } from "react";
 import { customerDataColumns } from "./variables/columnsData";
-import moment from "moment";
 import PaginationButton from "/components/pagination/PaginationButton";
 import { LoadingContext } from "/contexts/LoadingContext";
 import FormCustomerModal from "/components/modals/customerModal/FormCustomerModal";
@@ -106,21 +105,27 @@ export default function Settings() {
     sortTitle = "",
     sortType = ""
   ) {
-    showLoading();
-    const result = await getCustomers({
-      page: selectPage,
-      pageSize: defaultSetting.pageSize,
-      sortTitle: sortTitle,
-      sortType: sortType,
-    });
-    if (result) {
-      const resultData = result.data;
-      setLastPage(result.lastPage);
-      setCurrentPage(result.currentPage);
-      setPages(result.pages);
-      setCustomers(resultData);
+    try {
+      showLoading();
+      const result = await getCustomers({
+        page: selectPage,
+        pageSize: defaultSetting.pageSize,
+        sortTitle: sortTitle,
+        sortType: sortType,
+      });
+      if (result) {
+        if (!Array.isArray(result.data)) {
+          setCustomers([]);
+        } else {
+          setCustomers(result.data);
+        }
+        setLastPage(result.lastPage);
+        setCurrentPage(result.currentPage);
+        setPages(result.pages);
+      }
+    } finally {
+      hideLoading();
     }
-    hideLoading();
   }
 
   function selectSortData(sortTitle, sortType) {

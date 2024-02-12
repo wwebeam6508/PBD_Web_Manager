@@ -161,6 +161,7 @@ async function requestAgain(config) {
         reqeustConfig.data,
         requestOption
       );
+      console.log(response.data);
       return response.data;
     }
   } catch (error) {
@@ -205,4 +206,14 @@ export function randomString(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+export function PermissionCheck(permission, userPermission) {
+  if (userPermission) {
+    //check permission include in object
+    if (userPermission[permission]) {
+      return true;
+    }
+  }
+  return false;
 }
