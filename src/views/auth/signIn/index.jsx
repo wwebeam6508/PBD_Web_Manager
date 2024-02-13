@@ -21,13 +21,11 @@
 
 */
 
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext } from "react";
 // Chakra imports
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -49,6 +47,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { isEmpty } from "/util/helper";
 import { login } from "/redux/auth/authAction";
 import { store } from "/redux/store";
+import { LoadingContext } from "/contexts/LoadingContext";
 
 function SignIn() {
   // Chakra color mode
@@ -60,6 +59,7 @@ function SignIn() {
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const { loading, showLoading, hideLoading } = useContext(LoadingContext);
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -104,6 +104,7 @@ function SignIn() {
               Username<Text color={brandStars}>*</Text>
             </FormLabel>
             <Input
+              zIndex={loading ? -1 : 1}
               isRequired={true}
               variant="auth"
               fontSize="sm"
@@ -125,8 +126,9 @@ function SignIn() {
             >
               Password<Text color={brandStars}>*</Text>
             </FormLabel>
-            <InputGroup size="md">
+            <InputGroup zIndex={0} size="md">
               <Input
+                zIndex={loading ? -1 : 1}
                 isRequired={true}
                 fontSize="sm"
                 placeholder="Min. 8 characters"
@@ -147,6 +149,7 @@ function SignIn() {
               </InputRightElement>
             </InputGroup>
             <Button
+              zIndex={loading ? -1 : 1}
               fontSize="sm"
               variant="brand"
               fontWeight="500"
@@ -164,8 +167,13 @@ function SignIn() {
     </DefaultAuth>
   );
 
-  function loginSubmit() {
-    store.dispatch(login(username, password));
+  async function loginSubmit() {
+    try {
+      showLoading();
+      await store.dispatch(login(username, password));
+    } finally {
+      hideLoading();
+    }
   }
 }
 
