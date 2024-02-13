@@ -128,11 +128,13 @@ export default function Conversion(props) {
                   </Text>
                   <Text fontSize="xs">{work.ratio}%</Text>
                 </Flex>
-                {index < rest.data.length - 1 && (
-                  <VSeparator
-                    mx={{ base: "60px", xl: "60px", "2xl": "60px" }}
-                  />
-                )}
+                <Flex textAlign={"center"}>
+                  {index < rest.data.length - 1 && (
+                    <VSeparator
+                      mx={{ base: "60px", xl: "60px", "2xl": "60px" }}
+                    />
+                  )}
+                </Flex>
               </Flex>
             );
           })}
