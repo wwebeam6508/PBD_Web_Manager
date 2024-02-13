@@ -161,8 +161,8 @@ export default function UserReports() {
         )}
         {yearsReport.length > 0 && <YearReport data={yearsReport} />}
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap="20px" mb="20px">
-        <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px">
+      <SimpleGrid columns={{ base: 1, md: 1, xl: 1 }} gap="20px" mb="20px">
+        <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap="20px">
           {customerProfitRatio.length > 0 && (
             <ProfitPieCard data={customerProfitRatio} />
           )}
