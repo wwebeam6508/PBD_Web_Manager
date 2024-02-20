@@ -9,9 +9,9 @@ export default function App() {
   const auth = useSelector((state) => state.auth);
   useEffect(() => {
     if (auth.isAuthenticated) fetchUserData(auth.user);
-    //check fetchUserData every half hour
+    clearInterval();
     setInterval(() => {
-      if (auth.isAuthenticated) fetchUserData(auth.user);
+      if (auth) fetchUserData(auth.user);
     }, 1800000);
   }, [auth.isAuthenticated]);
   return (
