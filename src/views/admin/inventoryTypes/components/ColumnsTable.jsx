@@ -133,95 +133,22 @@ export default function ColumnsTable(props) {
           ประเภทผู้ใช้งาน
         </Text>
         <Flex w="30%" align="center">
-          {searchFilterBar === "profit" ? (
-            <Flex w="80%" justify="space-between">
-              <Input
-                w="45%"
-                name="search"
-                placeholder="ค้นหา"
-                borderRadius="10px"
-                borderColor="gray.200"
-                fontSize="sm"
-                _placeholder={{
-                  color: "gray.400",
-                }}
-                _focus={{
-                  borderColor: "gray.200",
-                }}
-                value={searchBar ? searchBar.split(",")[0] : ""}
-                onChange={(e) => {
-                  const x = e.target.value;
-                  const y = searchBar ? searchBar.split(",")[1] : "";
-                  if (x === "" && y === "") {
-                    setSearchBar("");
-                    return;
-                  }
-                  setSearchBar(`${x},${y}`);
-                }}
-              />
-              <Input
-                w="45%"
-                name="search"
-                placeholder="ค้นหา"
-                borderRadius="10px"
-                borderColor="gray.200"
-                fontSize="sm"
-                _placeholder={{
-                  color: "gray.400",
-                }}
-                _focus={{
-                  borderColor: "gray.200",
-                }}
-                value={searchBar ? searchBar.split(",")[1] : ""}
-                onChange={(e) => {
-                  const x = searchBar ? searchBar.split(",")[0] : "";
-                  const y = e.target.value;
-                  if (x === "" && y === "") {
-                    setSearchBar("");
-                    return;
-                  }
-                  setSearchBar(`${x},${y}`);
-                }}
-              />
-            </Flex>
-          ) : searchFilterBar === "date" ? (
-            <RangeDatepicker
-              selectedDates={selectedDates()}
-              onDateChange={(date) => {
-                if (date.length === 0) {
-                  setSearchBar("");
-                  return;
-                }
-                if (date.length === 1) {
-                  setSearchBar(`${new Date(date[0]).toISOString()},`);
-                }
-                if (date.length === 2) {
-                  setSearchBar(
-                    `${new Date(date[0]).toISOString()},${new Date(
-                      date[1]
-                    ).toISOString()}`
-                  );
-                }
-              }}
-            />
-          ) : (
-            <Input
-              w="80%"
-              name="search"
-              placeholder="ค้นหา"
-              borderRadius="10px"
-              borderColor="gray.200"
-              fontSize="sm"
-              _placeholder={{
-                color: "gray.400",
-              }}
-              _focus={{
-                borderColor: "gray.200",
-              }}
-              value={searchBar}
-              onChange={(e) => setSearchBar(e.target.value)}
-            />
-          )}
+          <Input
+            w="80%"
+            name="search"
+            placeholder="ค้นหา"
+            borderRadius="10px"
+            borderColor="gray.200"
+            fontSize="sm"
+            _placeholder={{
+              color: "gray.400",
+            }}
+            _focus={{
+              borderColor: "gray.200",
+            }}
+            value={searchBar}
+            onChange={(e) => setSearchBar(e.target.value)}
+          />
 
           <Select
             name="searchfilter"
@@ -234,8 +161,7 @@ export default function ColumnsTable(props) {
               setSearchBar("");
             }}
           >
-            <option value="name">ชื่อประเภทผู้ใช้งาน</option>
-            <option value="date">วันที่สร้าง</option>
+            <option value="name">ชื่อประเภทของใช้</option>
           </Select>
           <Button onClick={searchTrigger} marginLeft="10px">
             <Icon
@@ -345,26 +271,28 @@ export default function ColumnsTable(props) {
                   fontSize={{ sm: "14px" }}
                   minW={{ sm: "150px", md: "200px", lg: "auto" }}
                 >
-                    <Flex justify="space-around">
-                      {PermissionCheck("canEdit", permissions) && (
-                        <IconButton
-                          aria-label="edit"
-                          icon={<EditIcon />}
-                          size="sm"
-                          colorScheme="blue"
-                          onClick={() => selectEdit(row.original.inventoryTypeID)}
-                        />
-                      )}
-                      {PermissionCheck("canRemove", permissions) && (
-                        <IconButton
-                          aria-label="delete"
-                          icon={<DeleteIcon />}
-                          size="sm"
-                          colorScheme="red"
-                          onClick={() => setDeleteData(row.original.inventoryTypeID)}
-                        />
-                      )}
-                    </Flex>
+                  <Flex justify="space-around">
+                    {PermissionCheck("canEdit", permissions) && (
+                      <IconButton
+                        aria-label="edit"
+                        icon={<EditIcon />}
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={() => selectEdit(row.original.inventoryTypeID)}
+                      />
+                    )}
+                    {PermissionCheck("canRemove", permissions) && (
+                      <IconButton
+                        aria-label="delete"
+                        icon={<DeleteIcon />}
+                        size="sm"
+                        colorScheme="red"
+                        onClick={() =>
+                          setDeleteData(row.original.inventoryTypeID)
+                        }
+                      />
+                    )}
+                  </Flex>
                 </Td>
               </Tr>
             );

@@ -40,7 +40,7 @@ export default function Settings() {
   const [editInventoryTypeID, setEditInventoryTypeID] = useState(null);
 
   const [searchBar, setSearchBar] = useState("");
-  const [searchFilterBar, setSearchFilterBar] = useState("username");
+  const [searchFilterBar, setSearchFilterBar] = useState("name");
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>

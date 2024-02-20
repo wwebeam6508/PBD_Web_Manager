@@ -238,7 +238,6 @@ export default function ColumnsTable(props) {
             }}
           >
             <option value="name">ชื่อประเภทผู้ใช้งาน</option>
-            <option value="date">วันที่สร้าง</option>
           </Select>
           <Button onClick={searchTrigger} marginLeft="10px">
             <Icon
