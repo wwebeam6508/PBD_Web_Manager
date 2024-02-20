@@ -13,6 +13,8 @@ import {
   MdCellTower,
   MdMoneyOff,
   MdGroupWork,
+  MdInventory,
+  MdTypeSpecimen,
 } from "react-icons/md";
 
 // Admin Imports
@@ -23,6 +25,7 @@ import Customers from "/views/admin/customers";
 import Expenses from "/views/admin/expenses";
 import Users from "/views/admin/users";
 import UserTypes from "/views/admin/userTypes";
+import InventoryType from "/views/admin/inventoryTypes";
 
 // Auth Imports
 import SignInCentered from "/views/auth/signIn";
@@ -76,6 +79,23 @@ const routes = [
           <Icon as={MdCellTower} width="20px" height="20px" color="inherit" />
         ),
         component: Customers,
+        isShow: true,
+        permission: "canView",
+      },
+    ],
+  },
+  {
+    category: "inventory",
+    name: "จัดการเครื่องใช้",
+    items: [
+      {
+        name: "ประเภทเครื่องใช้",
+        layout: "/admin",
+        path: "/inventoryTypes",
+        icon: (
+          <Icon as={MdTypeSpecimen} width="20px" height="20px" color="inherit" />
+        ),
+        component: InventoryType,
         isShow: true,
         permission: "canView",
       },
