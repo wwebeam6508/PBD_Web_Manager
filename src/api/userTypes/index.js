@@ -64,6 +64,9 @@ export const addUserType = async (formData) => {
 export const updateUserType = async (formData) => {
   try {
     const response = await axios.post(`${APIURL}/updateUserType`, formData, {
+      params: {
+        userTypeID: formData.userTypeID,
+      },
       headers: headers(),
     });
     return response.data;

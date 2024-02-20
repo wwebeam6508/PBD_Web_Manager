@@ -44,7 +44,11 @@ export default function FormInventoryTypeModal({
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
   const prePermission = useSelector((state) => state.auth.prePermission);
-
+  const isEditPermission = useSelector((state) =>
+    state.auth.user
+      ? state.auth.user.userProfile.userType.permission.inventoryType.canEdit
+      : false
+  );
   useEffect(() => {
     if (isEdit) {
       getEditInventoryTypeData();
@@ -119,6 +123,7 @@ export default function FormInventoryTypeModal({
                 placeholder="ชื่อประเภทผู้ใช้"
                 value={formData.name}
                 onChange={handleChange}
+                disabled={!isEditPermission}
               />
               {isEmpty(formData.name) && (
                 <Text color="red.500" marginBottom="1rem">
@@ -127,10 +132,9 @@ export default function FormInventoryTypeModal({
               )}
             </FormControl>
           </GridItem>
-          <GridItem>
-          </GridItem>
+          <GridItem></GridItem>
         </Grid>
-        <div style={{ textAlign: "center" }}>
+        <div hidden={!isEditPermission} style={{ textAlign: "center" }}>
           {!isEdit ? (
             <Button
               onClick={addSubmit}
@@ -183,7 +187,7 @@ export default function FormInventoryTypeModal({
               <ModalBody>{formAddInventoryType}</ModalBody>
               <ModalFooter>
                 <Button colorScheme="red" mr={3} onClick={closeModal}>
-                  ยกเลิก
+                  ปิด
                 </Button>
               </ModalFooter>
             </>

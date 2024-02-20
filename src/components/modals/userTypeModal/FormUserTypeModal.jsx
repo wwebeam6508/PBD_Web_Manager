@@ -44,7 +44,11 @@ export default function FormUserTypeModal({
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
   const prePermission = useSelector((state) => state.auth.prePermission);
-
+  const isEditPermission = useSelector((state) =>
+    state.auth.user
+      ? state.auth.user.userProfile.userType.permission.userType.canEdit
+      : false
+  );
   useEffect(() => {
     if (isEdit) {
       getEditUserTypeData();
@@ -113,6 +117,7 @@ export default function FormUserTypeModal({
                 ชื่อประเภทผู้ใช้
               </FormLabel>
               <Input
+                disabled={!isEditPermission}
                 type="text"
                 id="name"
                 name="name"
@@ -142,6 +147,7 @@ export default function FormUserTypeModal({
                       {Object.entries(value).map(([key2, value2]) => {
                         return (
                           <Checkbox
+                            disabled={!isEditPermission}
                             key={key2}
                             isChecked={value2}
                             onChange={(e) => {
@@ -167,7 +173,7 @@ export default function FormUserTypeModal({
             </FormControl>
           </GridItem>
         </Grid>
-        <div style={{ textAlign: "center" }}>
+        <div hidden={!isEditPermission} style={{ textAlign: "center" }}>
           {!isEdit ? (
             <Button
               onClick={addSubmit}
