@@ -34,6 +34,7 @@ import {
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { isEmpty, PermissionCheck } from "/util/helper";
 import { useSelector } from "react-redux";
+import SearchOption from "./SearchOption";
 export default function ColumnsTable(props) {
   const {
     columnsData,
@@ -101,15 +102,6 @@ export default function ColumnsTable(props) {
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
 
-  const selectedDates = () => {
-    return searchBar.split(",").length === 2 &&
-      !isEmpty(searchBar.split(",")[1])
-      ? [new Date(searchBar.split(",")[0]), new Date(searchBar.split(",")[1])]
-      : !isEmpty(searchBar.split(",")[0]) && isEmpty(searchBar.split(",")[1])
-      ? [new Date(searchBar.split(",")[0])]
-      : [new Date()];
-  };
-
   const auth = useSelector((state) => state.auth);
   const permissions = auth.user
     ? auth.user.userProfile.userType.permission.inventoryType
@@ -132,46 +124,15 @@ export default function ColumnsTable(props) {
         >
           ประเภทผู้ใช้งาน
         </Text>
-        <Flex w="30%" align="center">
-          <Input
-            w="80%"
-            name="search"
-            placeholder="ค้นหา"
-            borderRadius="10px"
-            borderColor="gray.200"
-            fontSize="sm"
-            _placeholder={{
-              color: "gray.400",
-            }}
-            _focus={{
-              borderColor: "gray.200",
-            }}
-            value={searchBar}
-            onChange={(e) => setSearchBar(e.target.value)}
+        {
+          <SearchOption
+            searchBar={searchBar}
+            setSearchBar={setSearchBar}
+            searchFilterBar={searchFilterBar}
+            setSearchFilter={setSearchFilter}
+            searchTrigger={searchTrigger}
           />
-
-          <Select
-            name="searchfilter"
-            fontSize="sm"
-            width="unset"
-            variant="subtle"
-            value={searchFilterBar}
-            onChange={(e) => {
-              setSearchFilter(e.target.value);
-              setSearchBar("");
-            }}
-          >
-            <option value="name">ชื่อประเภทของใช้</option>
-          </Select>
-          <Button onClick={searchTrigger} marginLeft="10px">
-            <Icon
-              as={SearchIcon}
-              color="gray.400"
-              fontSize="20px"
-              cursor="pointer"
-            />
-          </Button>
-        </Flex>
+        }
         <Button
           style={{
             visibility: PermissionCheck("canEdit", permissions)
