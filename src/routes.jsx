@@ -26,6 +26,7 @@ import Expenses from "/views/admin/expenses";
 import Users from "/views/admin/users";
 import UserTypes from "/views/admin/userTypes";
 import InventoryType from "/views/admin/inventoryTypes";
+import Inventory from "/views/admin/inventory";
 
 // Auth Imports
 import SignInCentered from "/views/auth/signIn";
@@ -89,11 +90,27 @@ const routes = [
     name: "จัดการเครื่องใช้",
     items: [
       {
+        name: "เครื่องใช้",
+        layout: "/admin",
+        path: "/inventory",
+        icon: (
+          <Icon as={MdInventory} width="20px" height="20px" color="inherit" />
+        ),
+        component: Inventory,
+        isShow: true,
+        permission: "canView",
+      },
+      {
         name: "ประเภทเครื่องใช้",
         layout: "/admin",
         path: "/inventoryTypes",
         icon: (
-          <Icon as={MdTypeSpecimen} width="20px" height="20px" color="inherit" />
+          <Icon
+            as={MdTypeSpecimen}
+            width="20px"
+            height="20px"
+            color="inherit"
+          />
         ),
         component: InventoryType,
         isShow: true,

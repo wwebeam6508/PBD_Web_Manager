@@ -99,7 +99,7 @@ export default function ColumnsTable(props) {
 
   const auth = useSelector((state) => state.auth);
   const permissions = auth.user
-    ? auth.user.userProfile.userType.permission.inventoryType
+    ? auth.user.userProfile.userType.permission.inventory
     : null;
 
   return (
@@ -117,7 +117,7 @@ export default function ColumnsTable(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          ประเภทของใช้งาน
+          ประเภทผู้ใช้งาน
         </Text>
         {
           <SearchOption
@@ -137,7 +137,7 @@ export default function ColumnsTable(props) {
           colorScheme="blue"
           onClick={() => setAddFormOpen(true)}
         >
-          เพิ่มประเภทของใช้งาน
+          เพิ่มของใช้งาน
         </Button>
       </Flex>
       <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
@@ -145,12 +145,7 @@ export default function ColumnsTable(props) {
           {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
               {headerGroup.headers.map((column, index) => (
-                <Th
-                  // {...column.getHeaderProps(column.getSortByToggleProps())}
-                  pe="10px"
-                  key={index}
-                  borderColor={borderColor}
-                >
+                <Th pe="10px" key={index} borderColor={borderColor}>
                   <Flex
                     justify="space-between"
                     align="center"
@@ -209,6 +204,22 @@ export default function ColumnsTable(props) {
                         </Text>
                       </Flex>
                     );
+                  } else if (cell.column.id === "quantity") {
+                    data = (
+                      <Flex align="center">
+                        <Text color={textColor} fontSize="sm">
+                          {cell.value}
+                        </Text>
+                      </Flex>
+                    );
+                  } else if (cell.column.id === "inventoryType") {
+                    data = (
+                      <Flex align="center">
+                        <Text color={textColor} fontSize="sm">
+                          {cell.value}
+                        </Text>
+                      </Flex>
+                    );
                   }
                   return (
                     <Td
@@ -234,7 +245,7 @@ export default function ColumnsTable(props) {
                         icon={<EditIcon />}
                         size="sm"
                         colorScheme="blue"
-                        onClick={() => selectEdit(row.original.inventoryTypeID)}
+                        onClick={() => selectEdit(row.original.inventoryID)}
                       />
                     )}
                     {PermissionCheck("canRemove", permissions) && (
@@ -243,9 +254,7 @@ export default function ColumnsTable(props) {
                         icon={<DeleteIcon />}
                         size="sm"
                         colorScheme="red"
-                        onClick={() =>
-                          setDeleteData(row.original.inventoryTypeID)
-                        }
+                        onClick={() => setDeleteData(row.original.inventoryID)}
                       />
                     )}
                   </Flex>

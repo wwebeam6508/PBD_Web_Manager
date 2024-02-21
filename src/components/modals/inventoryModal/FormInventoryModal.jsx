@@ -16,14 +16,15 @@ import {
   Center,
   Spinner,
   Container,
-  Checkbox,
+  Textarea,
+  Select,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { isEmpty } from "/util/helper";
 import _ from "lodash";
-import { addInventoryType } from "/api/inventoryTypes";
-import { updateInventoryType } from "/api/inventoryTypes";
-import { getInventoryTypeByID } from "/api/inventoryTypes";
+import { addInventory } from "/api/inventory";
+import { updateInventory } from "/api/inventory";
+import { getInventoryByID } from "/api/inventory";
 
 //import sweet alert
 import Swal from "sweetalert2";
@@ -31,11 +32,11 @@ import withReactContent from "sweetalert2-react-content";
 import { useSelector } from "react-redux";
 import { PermissionCheck } from "/util/helper";
 const MySwal = withReactContent(Swal);
-export default function FormInventoryTypeModal({
+export default function FormInventoryModal({
   stateOpen = false,
   isEdit = false,
   closeModal,
-  inventoryTypeID = null,
+  inventoryID = null,
 }) {
   const defaultForm = {
     name: "",
@@ -44,6 +45,7 @@ export default function FormInventoryTypeModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(defaultForm);
   const [formOldData, setFormOldData] = useState(defaultForm);
+  const [inventoryTypeOptions, setInventoryTypeOptions] = useState([]);
   const prePermission = useSelector((state) => state.auth.prePermission);
   const auth = useSelector((state) => state.auth);
   const permissions = auth.user
@@ -51,7 +53,7 @@ export default function FormInventoryTypeModal({
     : null;
   useEffect(() => {
     if (isEdit) {
-      getEditInventoryTypeData();
+      getEditInventoryData();
     } else {
       setFormData(defaultForm);
       setFormOldData(defaultForm);
@@ -98,7 +100,6 @@ export default function FormInventoryTypeModal({
         return true;
       }
     }
-    //check if form data is not change
     const compareData = formData;
     const compareDataOld = formOldData;
     if (JSON.stringify(compareData) === JSON.stringify(compareDataOld)) {
@@ -107,7 +108,7 @@ export default function FormInventoryTypeModal({
     return false;
   };
 
-  const formAddInventoryType = (
+  const formAddInventory = (
     <form>
       <Container maxW="container.xl">
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
@@ -130,6 +131,91 @@ export default function FormInventoryTypeModal({
                   กรุณากรอกชื่อประเภทเครื่องใช้
                 </Text>
               )}
+            </FormControl>
+          </GridItem>
+          {/* description */}
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel fontSize={20} htmlFor="description">
+                รายละเอียด
+              </FormLabel>
+              <Textarea
+                type="text"
+                id="description"
+                name="description"
+                placeholder="รายละเอียด"
+                value={formData.description}
+                onChange={handleChange}
+                disabled={!PermissionCheck("canEdit", permissions)}
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel fontSize={20} htmlFor="quantity">
+                จำนวน
+              </FormLabel>
+              <Input
+                type="number"
+                id="quantity"
+                name="quantity"
+                placeholder="จำนวน"
+                value={formData.quantity}
+                onChange={handleChange}
+                disabled={!PermissionCheck("canEdit", permissions)}
+              />
+              {isEmpty(formData.quantity) && (
+                <Text color="red.500" marginBottom="1rem">
+                  กรุณากรอกจำนวน
+                </Text>
+              )}
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel fontSize={20} htmlFor="price">
+                ราคา
+              </FormLabel>
+              <Input
+                type="number"
+                id="price"
+                name="price"
+                placeholder="ราคา"
+                value={formData.price}
+                onChange={handleChange}
+                disabled={!PermissionCheck("canEdit", permissions)}
+              />
+              {isEmpty(formData.price) && (
+                <Text color="red.500" marginBottom="1rem">
+                  กรุณากรอกราคา
+                </Text>
+              )}
+            </FormControl>
+          </GridItem>
+          {/* selection option of inventoryTypeOptions  */}
+          <GridItem>
+            <FormControl marginBottom="1rem">
+              <FormLabel fontSize={20} htmlFor="inventoryType">
+                ประเภทเครื่องใช้
+              </FormLabel>
+              <Select
+                id="inventoryType"
+                name="inventoryType"
+                value={formData.inventoryType}
+                onChange={handleChange}
+                disabled={!PermissionCheck("canEdit", permissions)}
+              >
+                {inventoryTypeOptions.map((inventoryType) => {
+                  return (
+                    <option
+                      key={inventoryType.inventoryTypeID}
+                      value={inventoryType.inventoryTypeID}
+                    >
+                      {inventoryType.name}
+                    </option>
+                  );
+                })}
+              </Select>
             </FormControl>
           </GridItem>
         </Grid>
@@ -186,7 +272,7 @@ export default function FormInventoryTypeModal({
                 {!isEdit ? "เพิ่มผู้ใช้" : "แก้ไขผู้ใช้"}
               </ModalHeader>
               <ModalCloseButton />
-              <ModalBody>{formAddInventoryType}</ModalBody>
+              <ModalBody>{formAddInventory}</ModalBody>
               <ModalFooter>
                 <Button colorScheme="red" mr={3} onClick={closeModal}>
                   ปิด
@@ -199,14 +285,16 @@ export default function FormInventoryTypeModal({
     </>
   );
 
-  async function getEditInventoryTypeData() {
+  async function getEditInventoryData() {
     try {
       setIsSubmitting(true);
-      const res = await getInventoryTypeByID(inventoryTypeID);
-      const inventoryType = res.data;
+      const res = await getInventoryByID(inventoryID);
+      const inventory = res.data;
       const form = {
-        ...inventoryType,
+        ...inventory,
       };
+      setInventoryTypeOptions(_.cloneDeep(form.inventoryTypeName));
+      delete form.inventoryType;
       setFormData(_.cloneDeep(form));
       setFormOldData(_.cloneDeep(form));
     } catch (error) {
@@ -221,7 +309,7 @@ export default function FormInventoryTypeModal({
     let passData = {
       ...formData,
     };
-    const res = await addInventoryType(passData);
+    const res = await addInventory(passData);
     if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
@@ -240,10 +328,10 @@ export default function FormInventoryTypeModal({
     let passData;
     passData = {
       ..._.cloneDeep(formData),
-      inventoryTypeID: inventoryTypeID,
+      inventoryID: inventoryID,
     };
     delete passData._id;
-    const res = await updateInventoryType(passData);
+    const res = await updateInventory(passData);
     if (res && res.code === 200) {
       closingModal();
       MySwal.fire({
